@@ -136,7 +136,7 @@
 | 2 | AI grading quality insufficient for productive skills (Writing/Speaking) | High | Medium | Confidence-based routing: low/medium confidence → instructor review queue. Audit flag tracks AI vs. human score discrepancies for model improvement. |
 | 3 | Team members lack experience with Bun/Elysia/Drizzle stack | Medium | High | Training plan (Week 1-2). Team lead provides code review and pair programming. Comprehensive technical specs pre-written. |
 | 4 | JSONB schema complexity causes data inconsistency | Medium | Medium | TypeBox validation at API boundary. Seed data validated against schemas. Question content schemas documented in specs. |
-| 5 | Scope creep — Phase 2 features expanding into core development time | High | Medium | Strict phase separation (Phase 1: MVP Months 1-3, Phase 2: Enhancement Month 4). Features FE-12 to FE-16 explicitly deferred. Rate Limiting, Circuit Breaker, Observability, Data Retention phases dropped from capstone scope. |
+| 5 | Scope creep — Phase 2 features expanding into core development time | High | Medium | Strict phase separation (Phase 1: MVP Weeks 1-10/Sprints 1-5, Phase 2: Enhancement Weeks 11-14/Sprints 6-7). Features FE-12 to FE-16 explicitly deferred. Rate Limiting, Circuit Breaker, Observability, Data Retention phases dropped from capstone scope. |
 | 6 | Integration issues between Bun Main App and Python Grading Worker | Medium | Medium | Shared-DB architecture (both services write to same PostgreSQL). Redis queue contract defined in specs. Integration tested early in Sprint 3. |
 | 7 | Audio file handling for Speaking assessment (upload, storage, transcription) | Medium | Low | Use pre-signed URLs for audio upload. Whisper transcription via LiteLLM with Redis caching (avoid re-transcription). |
 
@@ -153,10 +153,10 @@ Sprint Planning → Development → Code Review → Testing → Sprint Review �
      (Day 1)       (Day 2-9)     (ongoing)    (Day 8-10)   (Day 10)      (Day 10)
 ```
 
-**Two-Phase Development Model**:
+**Two-Phase Development Model** (total duration: 4 months — 14 weeks — 7 sprints):
 
-- **Phase 1 — MVP (Months 1-3, Sprints 1-6)**: 11 core features (FE-01 to FE-11) focusing on the learning experience and AI Grading pipeline
-- **Phase 2 — Enhancement (Month 4, Sprints 7-8)**: 5 admin and support features (FE-12 to FE-16) after core features stabilize
+- **Phase 1 — MVP (Weeks 1-10, Sprints 1-5)**: 11 core features (FE-01 to FE-11) focusing on the learning experience and AI Grading pipeline
+- **Phase 2 — Enhancement (Weeks 11-14, Sprints 6-7)**: 5 admin and support features (FE-12 to FE-16) after core features stabilize
 
 **Backend Implementation Phases** (from implementation roadmap):
 
@@ -235,9 +235,9 @@ Phases 6 (Rate Limiting), 10 (Circuit Breaker), 12 (Admin & Observability), 13 (
 | 4 | Database Schema (Drizzle ORM + migrations) | 31/01/2026 | PostgreSQL tables, enums, indexes |
 | 5 | Sprint 1-2: Foundation + Auth + Questions + Submissions | 28/02/2026 | Backend Phases 1-3 |
 | 6 | Sprint 3-4: AI Grading Service + Auto-grading + Review | 15/03/2026 | Grading worker + human review workflow |
-| 7 | Sprint 5-6: Progress Tracking + Scaffolding + Exams + Frontend MVP | 31/03/2026 | Backend Phases 4-5, 11 + Frontend core |
+| 7 | Sprint 5: Progress Tracking + Scaffolding + Exams + Frontend MVP | 31/03/2026 | Backend Phases 4-5, 11 + Frontend core |
 | 8 | Report 3 — SRS Document | 15/03/2026 | Software Requirements Specification |
-| 9 | Sprint 7-8: Enhancement features + System testing | 15/04/2026 | Phase 2 features (FE-12 to FE-16) |
+| 9 | Sprint 6-7: Enhancement features + System testing | 15/04/2026 | Phase 2 features (FE-12 to FE-16) |
 | 10 | Final Report + Demo | 30/04/2026 | Final presentation and deployment |
 
 ---

@@ -136,7 +136,7 @@
 | 2 | Chất lượng chấm AI không đủ tốt cho kỹ năng Viết/Nói | Cao | Trung bình | Định tuyến theo confidence: low/medium → hàng đợi review giảng viên. Audit flag theo dõi chênh lệch điểm AI vs. giảng viên để cải thiện mô hình. |
 | 3 | Thành viên thiếu kinh nghiệm với Bun/Elysia/Drizzle | Trung bình | Cao | Kế hoạch đào tạo (Tuần 1-2). Leader review code và pair programming. Technical specs viết trước khi code. |
 | 4 | Độ phức tạp schema JSONB gây không nhất quán dữ liệu | Trung bình | Trung bình | TypeBox validation tại API boundary. Seed data được validate theo schema. Schema nội dung câu hỏi được tài liệu hóa trong specs. |
-| 5 | Phình phạm vi — tính năng Phase 2 lấn vào thời gian phát triển lõi | Cao | Trung bình | Phân tách phase nghiêm ngặt (Phase 1: MVP tháng 1-3, Phase 2: nâng cao tháng 4). Tính năng FE-12 đến FE-16 hoãn rõ ràng. Các phase Rate Limiting, Circuit Breaker, Observability, Data Retention bị loại khỏi phạm vi capstone. |
+| 5 | Phình phạm vi — tính năng Phase 2 lấn vào thời gian phát triển lõi | Cao | Trung bình | Phân tách phase nghiêm ngặt (Phase 1: MVP tuần 1-10/Sprint 1-5, Phase 2: nâng cao tuần 11-14/Sprint 6-7). Tính năng FE-12 đến FE-16 hoãn rõ ràng. Các phase Rate Limiting, Circuit Breaker, Observability, Data Retention bị loại khỏi phạm vi capstone. |
 | 6 | Vấn đề tích hợp giữa Bun Main App và Python Grading Worker | Trung bình | Trung bình | Kiến trúc Shared-DB (cả hai service ghi cùng PostgreSQL). Redis queue contract được định nghĩa trong specs. Integration test sớm từ Sprint 3. |
 | 7 | Xử lý file âm thanh cho đánh giá Nói (upload, lưu trữ, phiên âm) | Trung bình | Thấp | Sử dụng pre-signed URL cho upload audio. Whisper transcription qua LiteLLM với Redis caching (tránh phiên âm lại). |
 
@@ -153,10 +153,10 @@ Sprint Planning → Phát triển → Code Review → Kiểm thử → Sprint Re
     (Ngày 1)      (Ngày 2-9)    (liên tục)   (Ngày 8-10)   (Ngày 10)     (Ngày 10)
 ```
 
-**Mô hình phát triển 2 giai đoạn**:
+**Mô hình phát triển 2 giai đoạn** (tổng thời lượng: 4 tháng — 14 tuần — 7 sprint):
 
-- **Phase 1 — MVP (Tháng 1-3, Sprint 1-6)**: 11 tính năng cốt lõi (FE-01 đến FE-11), tập trung vào trải nghiệm học tập và pipeline chấm điểm AI
-- **Phase 2 — Nâng cao (Tháng 4, Sprint 7-8)**: 5 tính năng quản trị và hỗ trợ (FE-12 đến FE-16) sau khi tính năng cốt lõi ổn định
+- **Phase 1 — MVP (Tuần 1-10, Sprint 1-5)**: 11 tính năng cốt lõi (FE-01 đến FE-11), tập trung vào trải nghiệm học tập và pipeline chấm điểm AI
+- **Phase 2 — Nâng cao (Tuần 11-14, Sprint 6-7)**: 5 tính năng quản trị và hỗ trợ (FE-12 đến FE-16) sau khi tính năng cốt lõi ổn định
 
 **Các phase triển khai Backend** (từ implementation roadmap):
 
@@ -235,9 +235,9 @@ Các phase 6 (Rate Limiting), 10 (Circuit Breaker), 12 (Admin & Observability), 
 | 4 | Database Schema (Drizzle ORM + migrations) | 31/01/2026 | PostgreSQL tables, enums, indexes |
 | 5 | Sprint 1-2: Nền tảng + Auth + Questions + Submissions | 28/02/2026 | Backend Phases 1-3 |
 | 6 | Sprint 3-4: Dịch vụ chấm AI + Chấm tự động + Review | 15/03/2026 | Grading worker + quy trình chấm thủ công |
-| 7 | Sprint 5-6: Theo dõi tiến độ + Scaffolding + Exams + Frontend MVP | 31/03/2026 | Backend Phases 4-5, 11 + Frontend cốt lõi |
+| 7 | Sprint 5: Theo dõi tiến độ + Scaffolding + Exams + Frontend MVP | 31/03/2026 | Backend Phases 4-5, 11 + Frontend cốt lõi |
 | 8 | Report 3 — Tài liệu SRS | 15/03/2026 | Đặc tả yêu cầu phần mềm |
-| 9 | Sprint 7-8: Tính năng nâng cao + Kiểm thử hệ thống | 15/04/2026 | Tính năng Phase 2 (FE-12 đến FE-16) |
+| 9 | Sprint 6-7: Tính năng nâng cao + Kiểm thử hệ thống | 15/04/2026 | Tính năng Phase 2 (FE-12 đến FE-16) |
 | 10 | Báo cáo cuối + Demo | 30/04/2026 | Thuyết trình cuối và triển khai |
 
 ---
