@@ -335,7 +335,7 @@ FE-03: Practice Mode - Listening - Listening skill practice with Adaptive Scaffo
 
 FE-04: Practice Mode - Reading - Reading skill practice with VSTEP-format question types: True/False/Not Given, Multiple Choice, Matching Headings, Fill in the Blanks.
 
-FE-05: Practice Mode - Writing + AI Grading - Writing skill practice with fast AI feedback. Using LLM API (GPT/Gemini) to evaluate grammar, vocabulary, coherence, and task achievement according to VSTEP rubric. SLA timeout: 20 minutes.
+FE-05: Practice Mode - Writing + AI Grading - Writing skill practice with fast AI feedback. Using LLM API (Groq Llama 3.3 70B via LiteLLM) to evaluate grammar, vocabulary, coherence, and task achievement according to VSTEP rubric. SLA timeout: 20 minutes.
 
 FE-06: Practice Mode - Speaking + AI Grading - Speaking skill practice with recording and AI feedback. Integrating Speech-to-Text for transcription, then using LLM to evaluate pronunciation, fluency, and content. SLA timeout: 60 minutes.
 
