@@ -14,7 +14,7 @@
 
 # I. Record of Changes
 
-\*A — Added · M — Modified · D — Deleted
+*A — Added · M — Modified · D — Deleted
 
 | Date | A/M/D | In Charge | Change Description |
 |------|-------|-----------|-------------------|
@@ -1447,20 +1447,20 @@ stateDiagram-v2
     pending --> processing: L/R auto-grade, W/S dispatch to grading queue
     pending --> failed: Validation error
 
-    processing --> completed: Auto-grade (L/R) or AI high confidence (W/S)
-    processing --> review_pending: AI medium or low confidence (W/S)
+    processing --> completed: Auto-grade #40;L/R#41; or AI high confidence #40;W/S#41;
+    processing --> review_pending: AI medium or low confidence #40;W/S#41;
     processing --> failed: Grading error or max retries
 
-    review_pending --> completed: Instructor submits review (PUT /:id/review)
+    review_pending --> completed: Instructor submits review #40;PUT /:id/review#41;
 
     completed --> [*]
     failed --> [*]
 
     note right of pending
         MUTABLE: learner can update answer
-        Created with: userId, questionId,
+        Created with userId, questionId,
         skill, status = pending
-        submissionDetails.answer (JSONB)
+        submissionDetails.answer #40;JSONB#41;
     end note
 
     note right of processing
@@ -1477,7 +1477,7 @@ stateDiagram-v2
     end note
 
     note right of completed
-        Score: 0-10 (half-step)
+        Score 0-10 #40;half-step#41;
         Band: B1/B2/C1 or null
         Progress recorded + synced
     end note
