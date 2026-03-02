@@ -54,7 +54,7 @@ Follow `biome.json` for all formatting and lint rules. Do not override Biome rul
 ### Components
 
 - Functional components with TypeScript. No class components.
-- shadcn primitives from `@/components/ui/` — do not edit these files.
+- shadcn primitives live in `@/components/ui/` — you own these files. Customize freely (styling, props, variants) but preserve accessibility (Radix primitives, ARIA attributes, keyboard nav).
 - Composite components in `@/components/common/` (used across 2+ routes).
 - Feature-specific components in `@/components/features/` (scoped to one route/domain).
 - Use `cn()` from `@/lib/utils` for conditional classes.
