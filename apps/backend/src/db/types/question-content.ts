@@ -158,7 +158,7 @@ export const VALID_PARTS = {
   speaking: [1, 2, 3],
 } as const;
 
-export const OBJECTIVE_SKILLS = new Set(["listening", "reading"] as const);
+export const OBJECTIVE_SKILLS: Set<string> = new Set(["listening", "reading"]);
 
 const ReadingContentUnion = t.Union([
   ReadingContent,
