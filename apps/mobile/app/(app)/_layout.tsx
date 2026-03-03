@@ -16,7 +16,7 @@ export default function AppLayout() {
       <Stack.Screen name="onboarding" options={{ presentation: "modal", gestureEnabled: false, headerShown: false }} />
       <Stack.Screen
         name="exam/[id]"
-        options={{ headerShown: true, title: "Chi tiết đề thi" }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="session/[id]"
