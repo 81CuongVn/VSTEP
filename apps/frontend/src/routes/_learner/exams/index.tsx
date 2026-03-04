@@ -71,12 +71,15 @@ function ExamCard({ exam }: { exam: Exam }) {
 		<div className="flex flex-col gap-4 rounded-xl bg-muted/30 p-5">
 			<div className="flex items-center justify-between">
 				<span className="rounded-lg bg-primary/10 px-2.5 py-1 text-xs font-bold text-primary">
+					<span className="text-xs font-medium text-muted-foreground">
+						{exam.title || `${exam.level} — Đề thi`}
+					</span>
 					{exam.level}
 				</span>
-				{bp.durationMinutes && (
+				{(exam.durationMinutes ?? bp.durationMinutes) && (
 					<span className="flex items-center gap-1 text-xs text-muted-foreground">
 						<HugeiconsIcon icon={Clock01Icon} className="size-3.5" />
-						{bp.durationMinutes} phút
+						{exam.durationMinutes ?? bp.durationMinutes} phút
 					</span>
 				)}
 			</div>

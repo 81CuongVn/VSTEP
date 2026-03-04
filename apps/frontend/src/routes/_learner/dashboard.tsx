@@ -84,7 +84,7 @@ function ExamCard({ exam, skill }: { exam: Exam; skill: Skill }) {
 	const bp = getBlueprint(exam)
 	const section = bp[skill]
 	const questionCount = section?.questionIds.length ?? 0
-	const duration = bp.durationMinutes
+	const duration = exam.durationMinutes ?? bp.durationMinutes
 
 	return (
 		<Link
@@ -95,7 +95,7 @@ function ExamCard({ exam, skill }: { exam: Exam; skill: Skill }) {
 				"bg-muted/30 hover:bg-muted/50",
 			)}
 		>
-			<p className="font-medium">{exam.level} — Đề thi</p>
+			<p className="font-medium">{exam.title || `${exam.level} — Đề thi`}</p>
 			<p className="mt-1 text-sm text-muted-foreground">
 				{questionCount} câu{duration ? ` • ${duration} phút` : ""}
 			</p>
