@@ -1,19 +1,15 @@
 import { afterAll, beforeEach, describe, expect, it } from "bun:test";
-import {
-  api,
-  cleanupTestData,
-  createTestUser,
-  expectError,
-  loginTestUser,
-} from "./helpers";
+import { api, createTestContext, expectError } from "./helpers";
+
+const t = createTestContext();
 
 describe("users integration", () => {
-  beforeEach(() => cleanupTestData());
-  afterAll(() => cleanupTestData());
+  beforeEach(() => t.cleanup());
+  afterAll(() => t.cleanup());
 
   it("admin can create user and find them in list", async () => {
-    const admin = await loginTestUser({ role: "admin" });
-    const email = `itest-${crypto.randomUUID()}@test.com`;
+    const admin = await t.login({ role: "admin" });
+    const email = `${t.prefix}${crypto.randomUUID()}@test.com`;
 
     const { status, data } = await api.post("/api/users", {
       token: admin.accessToken,
@@ -45,13 +41,13 @@ describe("users integration", () => {
   });
 
   it("regular user cannot access admin list endpoint", async () => {
-    const learner = await loginTestUser({ role: "learner" });
+    const learner = await t.login({ role: "learner" });
     const result = await api.get("/api/users", { token: learner.accessToken });
     expectError(result, 403, "FORBIDDEN");
   });
 
   it("owner can read and update own profile", async () => {
-    const learner = await loginTestUser({ role: "learner" });
+    const learner = await t.login({ role: "learner" });
 
     const get = await api.get(`/api/users/${learner.user.id}`, {
       token: learner.accessToken,
@@ -69,8 +65,8 @@ describe("users integration", () => {
   });
 
   it("learner cannot view another user profile", async () => {
-    const learner = await loginTestUser({ role: "learner" });
-    const other = await createTestUser({ role: "learner" });
+    const learner = await t.login({ role: "learner" });
+    const other = await t.createUser({ role: "learner" });
 
     const result = await api.get(`/api/users/${other.user.id}`, {
       token: learner.accessToken,
@@ -79,7 +75,7 @@ describe("users integration", () => {
   });
 
   it("regular user cannot change role", async () => {
-    const learner = await loginTestUser({ role: "learner" });
+    const learner = await t.login({ role: "learner" });
 
     const result = await api.patch(`/api/users/${learner.user.id}`, {
       token: learner.accessToken,
@@ -89,8 +85,8 @@ describe("users integration", () => {
   });
 
   it("admin can update another user role and delete user", async () => {
-    const admin = await loginTestUser({ role: "admin" });
-    const learner = await createTestUser({ role: "learner" });
+    const admin = await t.login({ role: "admin" });
+    const learner = await t.createUser({ role: "learner" });
 
     const patch = await api.patch(`/api/users/${learner.user.id}`, {
       token: admin.accessToken,
@@ -112,9 +108,9 @@ describe("users integration", () => {
   });
 
   it("rejects update with duplicate email", async () => {
-    const admin = await loginTestUser({ role: "admin" });
-    const userA = await createTestUser({ role: "learner" });
-    const userB = await createTestUser({ role: "learner" });
+    const admin = await t.login({ role: "admin" });
+    const userA = await t.createUser({ role: "learner" });
+    const userB = await t.createUser({ role: "learner" });
 
     const result = await api.patch(`/api/users/${userA.user.id}`, {
       token: admin.accessToken,
@@ -124,7 +120,7 @@ describe("users integration", () => {
   });
 
   it("owner can change password and login with new password", async () => {
-    const learner = await loginTestUser({
+    const learner = await t.login({
       role: "learner",
       password: "OldPass123!",
     });
@@ -151,8 +147,8 @@ describe("users integration", () => {
   });
 
   it("admin can change another user password when current password is known", async () => {
-    const admin = await loginTestUser({ role: "admin" });
-    const learner = await createTestUser({
+    const admin = await t.login({ role: "admin" });
+    const learner = await t.createUser({
       role: "learner",
       password: "KnownPass123!",
     });
@@ -173,7 +169,7 @@ describe("users integration", () => {
   });
 
   it("rejects password change with incorrect current password", async () => {
-    const learner = await loginTestUser({
+    const learner = await t.login({
       role: "learner",
       password: "Correct123!",
     });

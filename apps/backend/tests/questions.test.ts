@@ -1,20 +1,16 @@
 import { afterAll, beforeEach, describe, expect, it } from "bun:test";
-import {
-  api,
-  cleanupTestData,
-  createTestQuestion,
-  expectError,
-  loginTestUser,
-} from "./helpers";
+import { api, createTestContext, expectError } from "./helpers";
+
+const t = createTestContext();
 
 describe("questions integration", () => {
-  beforeEach(() => cleanupTestData());
-  afterAll(() => cleanupTestData());
+  beforeEach(() => t.cleanup());
+  afterAll(() => t.cleanup());
 
   // ── CRUD ─────────────────────────────────────────────────
 
   it("instructor creates a question", async () => {
-    const instructor = await loginTestUser({ role: "instructor" });
+    const instructor = await t.login({ role: "instructor" });
 
     const { status, data } = await api.post("/api/questions", {
       token: instructor.accessToken,
@@ -43,7 +39,7 @@ describe("questions integration", () => {
   });
 
   it("learner cannot create a question", async () => {
-    const learner = await loginTestUser({ role: "learner" });
+    const learner = await t.login({ role: "learner" });
 
     const result = await api.post("/api/questions", {
       token: learner.accessToken,
@@ -68,8 +64,8 @@ describe("questions integration", () => {
   });
 
   it("gets a question by ID", async () => {
-    const { questionId } = await createTestQuestion();
-    const viewer = await loginTestUser({ role: "learner" });
+    const { questionId } = await t.createQuestion();
+    const viewer = await t.login({ role: "learner" });
 
     const { status, data } = await api.get(`/api/questions/${questionId}`, {
       token: viewer.accessToken,
@@ -81,7 +77,7 @@ describe("questions integration", () => {
   });
 
   it("returns 404 for non-existent question", async () => {
-    const viewer = await loginTestUser({ role: "learner" });
+    const viewer = await t.login({ role: "learner" });
 
     const result = await api.get(
       "/api/questions/00000000-0000-0000-0000-000000000000",
@@ -92,7 +88,7 @@ describe("questions integration", () => {
   });
 
   it("instructor updates own question metadata", async () => {
-    const { questionId, instructor } = await createTestQuestion();
+    const { questionId, instructor } = await t.createQuestion();
 
     const { status, data } = await api.patch(`/api/questions/${questionId}`, {
       token: instructor.accessToken,
@@ -104,7 +100,7 @@ describe("questions integration", () => {
   });
 
   it("instructor updates content", async () => {
-    const { questionId, instructor } = await createTestQuestion();
+    const { questionId, instructor } = await t.createQuestion();
 
     const { status, data } = await api.patch(`/api/questions/${questionId}`, {
       token: instructor.accessToken,
@@ -126,8 +122,8 @@ describe("questions integration", () => {
   });
 
   it("other instructor cannot update question they did not create", async () => {
-    const { questionId } = await createTestQuestion();
-    const other = await loginTestUser({ role: "instructor" });
+    const { questionId } = await t.createQuestion();
+    const other = await t.login({ role: "instructor" });
 
     const result = await api.patch(`/api/questions/${questionId}`, {
       token: other.accessToken,
@@ -138,8 +134,8 @@ describe("questions integration", () => {
   });
 
   it("admin can update any question", async () => {
-    const { questionId } = await createTestQuestion();
-    const admin = await loginTestUser({ role: "admin" });
+    const { questionId } = await t.createQuestion();
+    const admin = await t.login({ role: "admin" });
 
     const { status, data } = await api.patch(`/api/questions/${questionId}`, {
       token: admin.accessToken,
@@ -153,8 +149,8 @@ describe("questions integration", () => {
   // ── Delete ───────────────────────────────────────────────
 
   it("admin deletes a question", async () => {
-    const { questionId } = await createTestQuestion();
-    const admin = await loginTestUser({ role: "admin" });
+    const { questionId } = await t.createQuestion();
+    const admin = await t.login({ role: "admin" });
 
     const { status, data } = await api.delete(`/api/questions/${questionId}`, {
       token: admin.accessToken,
@@ -164,7 +160,7 @@ describe("questions integration", () => {
     expect(data.id).toBe(questionId);
 
     // Deleted question returns 404
-    const viewer = await loginTestUser({ role: "learner" });
+    const viewer = await t.login({ role: "learner" });
     const get = await api.get(`/api/questions/${questionId}`, {
       token: viewer.accessToken,
     });
@@ -172,7 +168,7 @@ describe("questions integration", () => {
   });
 
   it("instructor cannot delete a question", async () => {
-    const { questionId, instructor } = await createTestQuestion();
+    const { questionId, instructor } = await t.createQuestion();
 
     const result = await api.delete(`/api/questions/${questionId}`, {
       token: instructor.accessToken,
@@ -184,7 +180,7 @@ describe("questions integration", () => {
   // ── List / filter ────────────────────────────────────────
 
   it("lists questions with pagination", async () => {
-    const instructor = await loginTestUser({ role: "instructor" });
+    const instructor = await t.login({ role: "instructor" });
 
     // Create 3 questions
     for (let i = 0; i < 3; i++) {
@@ -221,7 +217,7 @@ describe("questions integration", () => {
   });
 
   it("filters questions by skill", async () => {
-    const instructor = await loginTestUser({ role: "instructor" });
+    const instructor = await t.login({ role: "instructor" });
 
     await api.post("/api/questions", {
       token: instructor.accessToken,
@@ -268,7 +264,7 @@ describe("questions integration", () => {
   });
 
   it("non-admin only sees active questions", async () => {
-    const { questionId, instructor } = await createTestQuestion();
+    const { questionId, instructor } = await t.createQuestion();
 
     // Deactivate
     await api.patch(`/api/questions/${questionId}`, {
@@ -276,7 +272,7 @@ describe("questions integration", () => {
       body: { isActive: false },
     });
 
-    const learner = await loginTestUser({ role: "learner" });
+    const learner = await t.login({ role: "learner" });
     const { data } = await api.get("/api/questions", {
       token: learner.accessToken,
     });

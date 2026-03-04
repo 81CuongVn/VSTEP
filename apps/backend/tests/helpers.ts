@@ -241,10 +241,12 @@ interface TestExamResult {
   admin: LoginResult;
 }
 
-export async function createTestExam(): Promise<TestExamResult> {
+export async function createTestExam(
+  emailPrefix?: string,
+): Promise<TestExamResult> {
   const [admin, instructor] = await Promise.all([
-    loginTestUser({ role: "admin" }),
-    loginTestUser({ role: "instructor" }),
+    loginTestUser({ role: "admin", email: buildTestEmail(emailPrefix) }),
+    loginTestUser({ role: "instructor", email: buildTestEmail(emailPrefix) }),
   ]);
 
   const createQ = async (
@@ -346,6 +348,56 @@ export async function createTestExam(): Promise<TestExamResult> {
       speaking: [speakingId],
     },
     admin,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Scoped test context — each test file gets its own namespace
+// ---------------------------------------------------------------------------
+
+export interface TestContext {
+  prefix: string;
+  cleanup: () => Promise<void>;
+  buildEmail: () => string;
+  createUser: (input?: TestUserInput) => Promise<TestUserResult>;
+  login: (input?: TestUserInput) => Promise<LoginResult>;
+  createQuestion: (
+    instructorInput?: TestUserInput,
+  ) => Promise<TestQuestionResult>;
+  createExam: () => Promise<TestExamResult>;
+  createClass: (instructorInput?: TestUserInput) => Promise<TestClassResult>;
+  joinClass: (
+    inviteCode: string,
+    learnerInput?: TestUserInput,
+  ) => Promise<LoginResult>;
+}
+
+export function createTestContext(): TestContext {
+  const prefix = `t-${crypto.randomUUID().slice(0, 8)}-`;
+
+  const buildEmail = () => buildTestEmail(prefix);
+
+  const withEmail = (input?: TestUserInput): TestUserInput => ({
+    ...input,
+    email: input?.email ?? buildEmail(),
+  });
+
+  return {
+    prefix,
+    cleanup: () => cleanupTestData(prefix),
+    buildEmail,
+    createUser: (input?) => createTestUser(withEmail(input)),
+    login: (input?) => loginTestUser(withEmail(input)),
+    createQuestion: (instructorInput?) =>
+      createTestQuestion(withEmail({ role: "instructor", ...instructorInput })),
+    createExam: () => createTestExam(prefix),
+    createClass: (instructorInput?) =>
+      createTestClass(withEmail({ role: "instructor", ...instructorInput })),
+    joinClass: (inviteCode, learnerInput?) =>
+      joinTestClass(
+        inviteCode,
+        withEmail({ role: "learner", ...learnerInput }),
+      ),
   };
 }
 
