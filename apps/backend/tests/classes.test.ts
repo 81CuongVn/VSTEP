@@ -252,7 +252,7 @@ describe("classes integration", () => {
     );
 
     expect(status).toBe(200);
-    expect(data.removedAt).toBeString();
+    expect(data.id).toBeString();
 
     // No longer appears in class detail
     const detail = await api.get(`/api/classes/${cls.classId}`, {
@@ -286,7 +286,7 @@ describe("classes integration", () => {
     );
 
     expect(status).toBe(200);
-    expect(data.removedAt).toBeString();
+    expect(data.id).toBeString();
   });
 
   it("learner cannot remove another member", async () => {

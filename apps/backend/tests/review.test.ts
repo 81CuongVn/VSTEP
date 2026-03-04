@@ -16,6 +16,7 @@ async function createReviewPendingSub() {
     token: instructor.accessToken,
     body: {
       skill: "reading",
+      level: "B1",
       part: 1,
       content: {
         passage: "Review workflow test passage.",

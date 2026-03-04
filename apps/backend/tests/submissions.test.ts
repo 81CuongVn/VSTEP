@@ -162,6 +162,7 @@ describe("submissions integration", () => {
       token: instructor.accessToken,
       body: {
         skill: "writing",
+        level: "B1",
         part: 1,
         content: {
           prompt: "Write about your day.",

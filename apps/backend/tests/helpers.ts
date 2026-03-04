@@ -205,6 +205,7 @@ export async function createTestQuestion(
     token: instructor.accessToken,
     body: {
       skill: "reading",
+      level: "B1",
       part: 1,
       content: {
         passage: "Test passage for integration testing.",
@@ -256,6 +257,7 @@ export async function createTestExam(): Promise<TestExamResult> {
       token: instructor.accessToken,
       body: {
         skill,
+        level: "B2",
         part,
         content,
         ...(answerKey && { answerKey }),

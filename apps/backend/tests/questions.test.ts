@@ -20,6 +20,7 @@ describe("questions integration", () => {
       token: instructor.accessToken,
       body: {
         skill: "reading",
+        level: "B1",
         part: 1,
         content: {
           passage: "The quick brown fox.",
@@ -48,6 +49,7 @@ describe("questions integration", () => {
       token: learner.accessToken,
       body: {
         skill: "reading",
+        level: "B1",
         part: 1,
         content: {
           passage: "Should fail.",
@@ -190,6 +192,7 @@ describe("questions integration", () => {
         token: instructor.accessToken,
         body: {
           skill: "reading",
+          level: "B1",
           part: 1,
           content: {
             passage: `Passage ${i}`,
@@ -224,6 +227,7 @@ describe("questions integration", () => {
       token: instructor.accessToken,
       body: {
         skill: "writing",
+        level: "B1",
         part: 1,
         content: {
           prompt: "Write about your day.",
@@ -236,6 +240,7 @@ describe("questions integration", () => {
       token: instructor.accessToken,
       body: {
         skill: "reading",
+        level: "B1",
         part: 1,
         content: {
           passage: "Reading passage",
