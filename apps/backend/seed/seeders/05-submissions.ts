@@ -45,7 +45,7 @@ function autoGradeResult(
   };
 }
 
-function aiGradeResult(
+function writingGradeResult(
   overallScore: number,
   band: string,
   confidence: "high" | "medium" | "low",
@@ -55,10 +55,31 @@ function aiGradeResult(
     overallScore,
     band,
     criteriaScores: {
-      taskAchievement: overallScore + 0.5,
-      coherenceCohesion: overallScore - 0.5,
-      lexicalResource: overallScore,
-      grammaticalRange: overallScore - 0.5,
+      taskFulfillment: overallScore + 0.5,
+      organization: overallScore - 0.5,
+      vocabulary: overallScore,
+      grammar: overallScore - 0.5,
+    },
+    feedback: `Overall performance at ${band} level. ${confidence === "high" ? "Strong command of language." : confidence === "medium" ? "Adequate but inconsistent performance." : "Needs significant improvement."}`,
+    confidence,
+    gradedAt: new Date().toISOString(),
+  };
+}
+
+function speakingGradeResult(
+  overallScore: number,
+  band: string,
+  confidence: "high" | "medium" | "low",
+): Result {
+  return {
+    type: "ai" as const,
+    overallScore,
+    band,
+    criteriaScores: {
+      fluencyOrganization: overallScore + 0.5,
+      pronunciation: overallScore,
+      vocabulary: overallScore,
+      grammar: overallScore - 0.5,
     },
     feedback: `Overall performance at ${band} level. ${confidence === "high" ? "Strong command of language." : confidence === "medium" ? "Adequate but inconsistent performance." : "Needs significant improvement."}`,
     confidence,
@@ -146,7 +167,7 @@ export async function seedSubmissions(
       answer: {
         text: "In today's rapidly changing world, education plays a crucial role in shaping the future of society. This essay will discuss the importance of higher education and its impact on personal and professional development.",
       },
-      result: aiGradeResult(6.5, "B2", "high"),
+      result: writingGradeResult(6.5, "B2", "high"),
     },
     {
       submission: {
@@ -164,7 +185,7 @@ export async function seedSubmissions(
       answer: {
         text: "I think technology is very important for education. Many students use computers and phones to learn new things every day.",
       },
-      result: aiGradeResult(5.0, "B1", "medium"),
+      result: writingGradeResult(5.0, "B1", "medium"),
     },
     {
       submission: {
@@ -178,7 +199,7 @@ export async function seedSubmissions(
         audioUrl: "https://storage.vstep.test/audio/learner1-speaking-01.webm",
         durationSeconds: 120,
       },
-      result: aiGradeResult(4.5, "B1", "low"),
+      result: speakingGradeResult(4.5, "B1", "low"),
     },
     {
       submission: {
@@ -214,12 +235,33 @@ export async function seedSubmissions(
         userId: learner2,
         questionId: writingQ,
         skill: "writing",
-        status: "pending",
+        status: "completed",
+        score: 4.0,
+        band: "B1",
+        gradingMode: "auto",
+        completedAt: new Date("2026-01-20T10:00:00Z").toISOString(),
       },
       answer: {
         text: "Learning English is very important for my future career. I want to improve my writing skills to pass the VSTEP exam.",
       },
-      result: null,
+      result: writingGradeResult(4.0, "B1", "high"),
+    },
+    {
+      submission: {
+        userId: learner2,
+        questionId: speakingQ,
+        skill: "speaking",
+        status: "completed",
+        score: 4.0,
+        band: "B1",
+        gradingMode: "auto",
+        completedAt: new Date("2026-01-20T10:00:00Z").toISOString(),
+      },
+      answer: {
+        audioUrl: "https://storage.vstep.test/audio/learner2-speaking-01.webm",
+        durationSeconds: 90,
+      },
+      result: speakingGradeResult(4.0, "B1", "high"),
     },
     {
       submission: {

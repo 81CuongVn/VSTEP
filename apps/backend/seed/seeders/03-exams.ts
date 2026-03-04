@@ -8,7 +8,7 @@ import type { SeededQuestions } from "./02-questions";
 type Level = NewExam["level"];
 
 export interface SeededExams {
-  all: Array<{ id: string; level: string }>;
+  all: Array<{ id: string; level: string; type: string }>;
 }
 
 export async function seedExams(
@@ -22,18 +22,26 @@ export async function seedExams(
     level: Level;
     title: string;
     description: string | undefined;
+    type?: NewExam["type"];
   }> = [
     {
       level: "B1",
       title: "Đề thi thử VSTEP B1 - Đề số 1",
       description:
-        "Đề thi thử trình độ B1 gồm 4 kỹ năng: Nghe, Đọc, Viết, Nói. Thời gian làm bài 150 phút.",
+        "Đề thi thử trình độ B1 gồm 4 kỹ năng: Nghe, Đọc, Viết, Nói. Thời gian làm bài 172 phút.",
     },
     {
       level: "B2",
       title: "Đề thi thử VSTEP B2 - Đề số 1",
       description:
-        "Đề thi thử trình độ B2 gồm 4 kỹ năng: Nghe, Đọc, Viết, Nói. Thời gian làm bài 150 phút.",
+        "Đề thi thử trình độ B2 gồm 4 kỹ năng: Nghe, Đọc, Viết, Nói. Thời gian làm bài 172 phút.",
+    },
+    {
+      level: "B1",
+      type: "placement",
+      title: "Bài kiểm tra xếp lớp VSTEP",
+      description:
+        "Bài kiểm tra đầu vào để xác định trình độ hiện tại của học viên.",
     },
   ];
 
@@ -41,6 +49,8 @@ export async function seedExams(
     title: config.title,
     description: config.description,
     level: config.level,
+    type: config.type,
+    durationMinutes: 172,
     blueprint: buildBlueprint(questions, config.level),
     isActive: true,
     createdBy: adminId,
@@ -49,7 +59,11 @@ export async function seedExams(
   const inserted = await db
     .insert(table.exams)
     .values(examsToInsert)
-    .returning({ id: table.exams.id, level: table.exams.level });
+    .returning({
+      id: table.exams.id,
+      level: table.exams.level,
+      type: table.exams.type,
+    });
 
   for (const exam of inserted) {
     console.log(`  ${exam.level} exam: ${exam.id}`);
@@ -64,7 +78,7 @@ function buildBlueprint(
   questions: SeededQuestions["all"],
   _level: string,
 ): ExamBlueprint {
-  const blueprint: ExamBlueprint = { durationMinutes: 150 };
+  const blueprint: ExamBlueprint = { durationMinutes: 172 };
 
   for (const skill of SKILLS) {
     // Pick first few questions per skill for this exam
