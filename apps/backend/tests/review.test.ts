@@ -1,5 +1,7 @@
 import { afterAll, beforeEach, describe, expect, it } from "bun:test";
-import { api, cleanupTestData, expectError, loginTestUser } from "./helpers";
+import { api, createTestContext, expectError } from "./helpers";
+
+const t = createTestContext();
 
 // ---------------------------------------------------------------------------
 // Setup: create a submission in review_pending state via reading question
@@ -7,15 +9,16 @@ import { api, cleanupTestData, expectError, loginTestUser } from "./helpers";
 // ---------------------------------------------------------------------------
 
 async function createReviewPendingSub() {
-  const instructor = await loginTestUser({ role: "instructor" });
-  const learner = await loginTestUser({ role: "learner" });
-  const admin = await loginTestUser({ role: "admin" });
+  const instructor = await t.login({ role: "instructor" });
+  const learner = await t.login({ role: "learner" });
+  const admin = await t.login({ role: "admin" });
 
   // Create reading question — avoids Redis grading dispatch
   const { data: question } = await api.post("/api/questions", {
     token: instructor.accessToken,
     body: {
       skill: "reading",
+      level: "B1",
       part: 1,
       content: {
         passage: "Review workflow test passage.",
@@ -55,8 +58,8 @@ async function createReviewPendingSub() {
 }
 
 describe("review workflow integration", () => {
-  beforeEach(() => cleanupTestData());
-  afterAll(() => cleanupTestData());
+  beforeEach(() => t.cleanup());
+  afterAll(() => t.cleanup());
 
   // ── Review Queue ─────────────────────────────────────────
 
@@ -116,7 +119,7 @@ describe("review workflow integration", () => {
 
   it("second instructor cannot claim already-claimed submission", async () => {
     const { subId, instructor } = await createReviewPendingSub();
-    const instructor2 = await loginTestUser({ role: "instructor" });
+    const instructor2 = await t.login({ role: "instructor" });
 
     await api.post(`/api/submissions/${subId}/claim`, {
       token: instructor.accessToken,
@@ -159,7 +162,7 @@ describe("review workflow integration", () => {
     expect(status).toBe(200);
 
     // After release, another instructor should be able to claim
-    const instructor2 = await loginTestUser({ role: "instructor" });
+    const instructor2 = await t.login({ role: "instructor" });
     const { status: claimStatus } = await api.post(
       `/api/submissions/${subId}/claim`,
       { token: instructor2.accessToken },
@@ -169,7 +172,7 @@ describe("review workflow integration", () => {
 
   it("cannot release submission claimed by another", async () => {
     const { subId, instructor } = await createReviewPendingSub();
-    const instructor2 = await loginTestUser({ role: "instructor" });
+    const instructor2 = await t.login({ role: "instructor" });
 
     await api.post(`/api/submissions/${subId}/claim`, {
       token: instructor.accessToken,
@@ -206,7 +209,7 @@ describe("review workflow integration", () => {
 
   it("cannot review without claiming first", async () => {
     const { subId } = await createReviewPendingSub();
-    const instructor2 = await loginTestUser({ role: "instructor" });
+    const instructor2 = await t.login({ role: "instructor" });
 
     const result = await api.put(`/api/submissions/${subId}/review`, {
       token: instructor2.accessToken,

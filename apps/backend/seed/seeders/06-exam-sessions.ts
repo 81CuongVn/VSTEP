@@ -1,3 +1,4 @@
+import { scoreToBand } from "../../src/common/scoring";
 import type { DbTransaction } from "../../src/db/index";
 import type {
   NewExamAnswer,
@@ -12,9 +13,18 @@ import type { SeededQuestions } from "./02-questions";
 import type { SeededExams } from "./03-exams";
 import type { SeededSubmissions } from "./05-submissions";
 
-function findExam(exams: SeededExams["all"], level: string): string {
-  const exam = exams.find((e) => e.level === level);
-  if (!exam) throw new Error(`No exam found for level: ${level}`);
+function findExam(
+  exams: SeededExams["all"],
+  level: string,
+  type?: string,
+): string {
+  const exam = exams.find(
+    (e) => e.level === level && (!type || e.type === type),
+  );
+  if (!exam)
+    throw new Error(
+      `No exam found for level: ${level}${type ? `, type: ${type}` : ""}`,
+    );
   return exam.id;
 }
 
@@ -36,19 +46,24 @@ function objectiveAnswer(count: number): SubmissionAnswer {
   return { answers };
 }
 
+export interface SeededSessions {
+  all: Array<{ id: string; status: string }>;
+}
+
 export async function seedExamSessions(
   db: DbTransaction,
   users: SeededUsers,
   exams: SeededExams,
   questions: SeededQuestions["all"],
   submissions: SeededSubmissions,
-): Promise<void> {
+): Promise<SeededSessions> {
   logSection("Exam Sessions");
 
   const learner1 = users.learners[0].id;
   const learner2 = users.learners[1].id;
   const b2ExamId = findExam(exams.all, "B2");
   const b1ExamId = findExam(exams.all, "B1");
+  const placementExamId = findExam(exams.all, "B1", "placement");
 
   const sessionData: NewExamSession[] = [
     // Session 1: Learner 1, B2 exam, completed
@@ -61,6 +76,7 @@ export async function seedExamSessions(
       writingScore: 6.0,
       speakingScore: 5.5,
       overallScore: 6.5,
+      overallBand: scoreToBand(6.5),
       startedAt: new Date("2026-01-10T08:00:00Z").toISOString(),
       completedAt: new Date("2026-01-10T10:30:00Z").toISOString(),
     },
@@ -81,8 +97,23 @@ export async function seedExamSessions(
       writingScore: 4.0,
       speakingScore: 4.0,
       overallScore: 4.5,
+      overallBand: scoreToBand(4.5),
       startedAt: new Date("2026-01-20T08:00:00Z").toISOString(),
       completedAt: new Date("2026-01-20T10:30:00Z").toISOString(),
+    },
+    // Session 4: Learner 1, placement exam, completed
+    {
+      userId: learner1,
+      examId: placementExamId,
+      status: "completed",
+      listeningScore: 5.0,
+      readingScore: 6.0,
+      writingScore: 5.5,
+      speakingScore: 4.5,
+      overallScore: 5.5,
+      overallBand: scoreToBand(5.5),
+      startedAt: new Date("2025-12-15T08:00:00Z").toISOString(),
+      completedAt: new Date("2025-12-15T10:00:00Z").toISOString(),
     },
   ];
 
@@ -146,6 +177,19 @@ export async function seedExamSessions(
       answer: objectiveAnswer(10),
       isCorrect: true,
     },
+    // Session 4 (placement): listening + reading answers
+    {
+      sessionId: sessions[3].id,
+      questionId: listeningQ,
+      answer: objectiveAnswer(10),
+      isCorrect: true,
+    },
+    {
+      sessionId: sessions[3].id,
+      questionId: readingQ,
+      answer: objectiveAnswer(10),
+      isCorrect: true,
+    },
   ];
 
   await db.insert(table.examAnswers).values(answerData);
@@ -170,6 +214,7 @@ export async function seedExamSessions(
       sessionId: sessions[0].id,
       submissionId: learner1WritingSub.id,
       skill: "writing",
+      part: 2,
     });
   }
   if (learner1SpeakingSub) {
@@ -177,6 +222,7 @@ export async function seedExamSessions(
       sessionId: sessions[0].id,
       submissionId: learner1SpeakingSub.id,
       skill: "speaking",
+      part: 1,
     });
   }
 
@@ -189,6 +235,20 @@ export async function seedExamSessions(
       sessionId: sessions[2].id,
       submissionId: learner2WritingSub.id,
       skill: "writing",
+      part: 2,
+    });
+  }
+
+  // Link learner 2's speaking submission to session 3
+  const learner2SpeakingSub = submissions.all.find(
+    (s) => s.userId === learner2 && s.skill === "speaking",
+  );
+  if (learner2SpeakingSub) {
+    examSubmissionData.push({
+      sessionId: sessions[2].id,
+      submissionId: learner2SpeakingSub.id,
+      skill: "speaking",
+      part: 1,
     });
   }
 
@@ -196,4 +256,6 @@ export async function seedExamSessions(
     await db.insert(table.examSubmissions).values(examSubmissionData);
   }
   logResult("Exam submissions (linked)", examSubmissionData.length);
+
+  return { all: sessions };
 }

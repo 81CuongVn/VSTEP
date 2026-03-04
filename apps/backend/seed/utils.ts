@@ -17,6 +17,7 @@ const SEED_DIR = join(import.meta.dir, "data");
 
 export interface SeedRecord {
   skill: NewQuestion["skill"];
+  level: NewQuestion["level"];
   part: NewQuestion["part"];
   content: NewQuestion["content"];
   answerKey: NewQuestion["answerKey"];
@@ -71,7 +72,12 @@ function validateSeedRecord(
   if (!Value.Check(MetadataSchema, obj.metadata))
     throw new Error(`${skill}/${file}: invalid metadata`);
 
-  return obj as unknown as SeedRecord;
+  return { ...obj, level: extractLevel(file) } as unknown as SeedRecord;
+}
+
+function extractLevel(filename: string): NewQuestion["level"] {
+  const match = filename.toLowerCase().match(/-(a2|b1|b2|c1)-/);
+  return match ? (match[1].toUpperCase() as NewQuestion["level"]) : "B1";
 }
 
 export async function readSeedFiles(skill: string): Promise<SeedRecord[]> {

@@ -125,6 +125,7 @@ export async function list(query: QuestionListQuery, actor: Actor) {
       ? eq(questions.isActive, query.isActive)
       : undefined,
     query.skill ? eq(questions.skill, query.skill) : undefined,
+    query.level ? eq(questions.level, query.level) : undefined,
     query.part ? eq(questions.part, query.part) : undefined,
     hasKpFilter
       ? eq(
@@ -181,6 +182,7 @@ export async function create(userId: string, body: QuestionCreateBody) {
       .insert(questions)
       .values({
         skill: body.skill,
+        level: body.level,
         part: body.part,
         content: body.content,
         answerKey,
@@ -233,6 +235,7 @@ export async function update(
       .update(questions)
       .set({
         ...(body.part !== undefined && { part: body.part }),
+        ...(body.level !== undefined && { level: body.level }),
         ...(body.content !== undefined && { content: body.content }),
         ...(body.answerKey !== undefined && { answerKey: body.answerKey }),
         ...(body.explanation !== undefined && {

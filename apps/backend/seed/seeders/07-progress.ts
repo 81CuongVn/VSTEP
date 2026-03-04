@@ -1,14 +1,17 @@
+import { scoreToLevel } from "../../src/common/scoring";
 import type { DbTransaction } from "../../src/db/index";
 import { table } from "../../src/db/schema/index";
 import type {
   NewUserGoal,
   NewUserKnowledgeProgress,
+  NewUserPlacement,
   NewUserProgress,
   NewUserSkillScore,
 } from "../../src/db/schema/progress";
 import { logResult, logSection } from "../utils";
 import type { SeededUsers } from "./01-users";
 import type { SeededSubmissions } from "./05-submissions";
+import type { SeededSessions } from "./06-exam-sessions";
 import type { SeededKnowledgePoints } from "./08-knowledge-points";
 
 export async function seedProgress(
@@ -16,6 +19,7 @@ export async function seedProgress(
   users: SeededUsers,
   submissions: SeededSubmissions,
   knowledgePoints: SeededKnowledgePoints,
+  sessions: SeededSessions,
 ): Promise<void> {
   logSection("Progress");
 
@@ -29,7 +33,7 @@ export async function seedProgress(
       userId: learner1,
       skill: "reading",
       currentLevel: "B2",
-      scaffoldLevel: 2,
+      scaffoldLevel: 3,
       streakCount: 3,
       streakDirection: "up",
       attemptCount: 5,
@@ -38,7 +42,7 @@ export async function seedProgress(
       userId: learner1,
       skill: "listening",
       currentLevel: "B1",
-      scaffoldLevel: 1,
+      scaffoldLevel: 2,
       streakCount: 1,
       streakDirection: "up",
       attemptCount: 3,
@@ -47,7 +51,7 @@ export async function seedProgress(
       userId: learner1,
       skill: "writing",
       currentLevel: "B1",
-      scaffoldLevel: 1,
+      scaffoldLevel: 2,
       streakCount: 2,
       streakDirection: "neutral",
       attemptCount: 4,
@@ -56,7 +60,7 @@ export async function seedProgress(
       userId: learner1,
       skill: "speaking",
       currentLevel: "B1",
-      scaffoldLevel: 1,
+      scaffoldLevel: 2,
       streakCount: 0,
       streakDirection: "neutral",
       attemptCount: 2,
@@ -66,7 +70,7 @@ export async function seedProgress(
       userId: learner2,
       skill: "reading",
       currentLevel: "B1",
-      scaffoldLevel: 1,
+      scaffoldLevel: 2,
       streakCount: 1,
       streakDirection: "up",
       attemptCount: 2,
@@ -248,7 +252,7 @@ export async function seedProgress(
     {
       userId: learner2,
       targetBand: "B1",
-      currentEstimatedBand: "A2",
+      currentEstimatedBand: "B1",
       deadline: new Date("2026-08-15T00:00:00Z").toISOString(),
       dailyStudyTimeMinutes: 30,
     },
@@ -359,4 +363,23 @@ export async function seedProgress(
 
   await db.insert(table.userKnowledgeProgress).values(knowledgeProgressData);
   logResult("User knowledge progress", knowledgeProgressData.length);
+
+  // User placements: learner 1 completed the placement exam
+  const placementSession = sessions.all[3]; // Session 4 = placement
+  const placementData: NewUserPlacement[] = [
+    {
+      userId: learner1,
+      sessionId: placementSession.id,
+      status: "completed",
+      listeningLevel: scoreToLevel(5.0),
+      readingLevel: scoreToLevel(6.0),
+      writingLevel: scoreToLevel(5.5),
+      speakingLevel: scoreToLevel(4.5),
+      writingSource: "ai",
+      speakingSource: "ai",
+    },
+  ];
+
+  await db.insert(table.userPlacements).values(placementData);
+  logResult("User placements", placementData.length);
 }

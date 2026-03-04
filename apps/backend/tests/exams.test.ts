@@ -1,20 +1,18 @@
 import { afterAll, beforeEach, describe, expect, it } from "bun:test";
-import {
-  api,
-  cleanupTestData,
-  createTestExam,
-  expectError,
-  loginTestUser,
-} from "./helpers";
+import { db, table } from "@db/index";
+import { eq } from "drizzle-orm";
+import { api, createTestContext, expectError } from "./helpers";
+
+const t = createTestContext();
 
 describe("exams integration", () => {
-  beforeEach(() => cleanupTestData());
-  afterAll(() => cleanupTestData());
+  beforeEach(() => t.cleanup());
+  afterAll(() => t.cleanup());
 
   // ── Exam CRUD ────────────────────────────────────────────
 
   it("admin creates an exam with valid blueprint", async () => {
-    const exam = await createTestExam();
+    const exam = await t.createExam();
 
     expect(exam.examId).toBeString();
     expect(exam.questionIds.listening).toHaveLength(1);
@@ -24,11 +22,12 @@ describe("exams integration", () => {
   });
 
   it("non-admin cannot create an exam", async () => {
-    const instructor = await loginTestUser({ role: "instructor" });
+    const instructor = await t.login({ role: "instructor" });
 
     const result = await api.post("/api/exams", {
       token: instructor.accessToken,
       body: {
+        title: "Unauthorized Exam",
         level: "B2",
         blueprint: {
           listening: { questionIds: [] },
@@ -43,7 +42,7 @@ describe("exams integration", () => {
   });
 
   it("lists exams with pagination", async () => {
-    const exam = await createTestExam();
+    const exam = await t.createExam();
 
     const { status, data } = await api.get(
       "/api/exams?page=1&limit=10&level=B2",
@@ -60,8 +59,8 @@ describe("exams integration", () => {
   });
 
   it("gets exam by ID", async () => {
-    const exam = await createTestExam();
-    const learner = await loginTestUser({ role: "learner" });
+    const exam = await t.createExam();
+    const learner = await t.login({ role: "learner" });
 
     const { status, data } = await api.get(`/api/exams/${exam.examId}`, {
       token: learner.accessToken,
@@ -74,7 +73,7 @@ describe("exams integration", () => {
   });
 
   it("admin updates exam", async () => {
-    const exam = await createTestExam();
+    const exam = await t.createExam();
 
     const { status, data } = await api.patch(`/api/exams/${exam.examId}`, {
       token: exam.admin.accessToken,
@@ -88,8 +87,8 @@ describe("exams integration", () => {
   // ── Session management ───────────────────────────────────
 
   it("learner starts an exam session", async () => {
-    const exam = await createTestExam();
-    const learner = await loginTestUser({ role: "learner" });
+    const exam = await t.createExam();
+    const learner = await t.login({ role: "learner" });
 
     const { status, data } = await api.post(`/api/exams/${exam.examId}/start`, {
       token: learner.accessToken,
@@ -102,8 +101,8 @@ describe("exams integration", () => {
   });
 
   it("resuming returns the same session", async () => {
-    const exam = await createTestExam();
-    const learner = await loginTestUser({ role: "learner" });
+    const exam = await t.createExam();
+    const learner = await t.login({ role: "learner" });
 
     const first = await api.post(`/api/exams/${exam.examId}/start`, {
       token: learner.accessToken,
@@ -116,8 +115,8 @@ describe("exams integration", () => {
   });
 
   it("gets session by ID", async () => {
-    const exam = await createTestExam();
-    const learner = await loginTestUser({ role: "learner" });
+    const exam = await t.createExam();
+    const learner = await t.login({ role: "learner" });
 
     const started = await api.post(`/api/exams/${exam.examId}/start`, {
       token: learner.accessToken,
@@ -134,9 +133,9 @@ describe("exams integration", () => {
   });
 
   it("other learner cannot view session", async () => {
-    const exam = await createTestExam();
-    const learnerA = await loginTestUser({ role: "learner" });
-    const learnerB = await loginTestUser({ role: "learner" });
+    const exam = await t.createExam();
+    const learnerA = await t.login({ role: "learner" });
+    const learnerB = await t.login({ role: "learner" });
 
     const started = await api.post(`/api/exams/${exam.examId}/start`, {
       token: learnerA.accessToken,
@@ -153,8 +152,8 @@ describe("exams integration", () => {
   // ── Answer submission ────────────────────────────────────
 
   it("submits a single answer", async () => {
-    const exam = await createTestExam();
-    const learner = await loginTestUser({ role: "learner" });
+    const exam = await t.createExam();
+    const learner = await t.login({ role: "learner" });
 
     const started = await api.post(`/api/exams/${exam.examId}/start`, {
       token: learner.accessToken,
@@ -177,8 +176,8 @@ describe("exams integration", () => {
   });
 
   it("bulk saves answers", async () => {
-    const exam = await createTestExam();
-    const learner = await loginTestUser({ role: "learner" });
+    const exam = await t.createExam();
+    const learner = await t.login({ role: "learner" });
 
     const started = await api.post(`/api/exams/${exam.examId}/start`, {
       token: learner.accessToken,
@@ -206,9 +205,9 @@ describe("exams integration", () => {
   });
 
   it("rejects answer for question not in blueprint", async () => {
-    const exam = await createTestExam();
-    const otherExam = await createTestExam();
-    const learner = await loginTestUser({ role: "learner" });
+    const exam = await t.createExam();
+    const otherExam = await t.createExam();
+    const learner = await t.login({ role: "learner" });
 
     const started = await api.post(`/api/exams/${exam.examId}/start`, {
       token: learner.accessToken,
@@ -229,8 +228,8 @@ describe("exams integration", () => {
   // ── Submit exam ──────────────────────────────────────────
 
   it("submits exam and auto-grades objective answers", async () => {
-    const exam = await createTestExam();
-    const learner = await loginTestUser({ role: "learner" });
+    const exam = await t.createExam();
+    const learner = await t.login({ role: "learner" });
 
     // Start session
     const started = await api.post(`/api/exams/${exam.examId}/start`, {
@@ -281,5 +280,53 @@ describe("exams integration", () => {
     expect(data.listeningScore).toBeNumber();
     expect(data.readingScore).toBeNumber();
     expect(data.status).toBeOneOf(["submitted", "completed"]);
+  });
+
+  it("stores part on exam_submissions for subjective skills", async () => {
+    const exam = await t.createExam();
+    const learner = await t.login({ role: "learner" });
+
+    const started = await api.post(`/api/exams/${exam.examId}/start`, {
+      token: learner.accessToken,
+    });
+    const sessionId = started.data.id as string;
+
+    // Answer all 4 skills
+    for (const [qid, answer] of [
+      [exam.questionIds.listening[0], { answers: { "1": "A" } }],
+      [exam.questionIds.reading[0], { answers: { "1": "A" } }],
+      [exam.questionIds.writing[0], { text: "Essay text." }],
+      [
+        exam.questionIds.speaking[0],
+        { audioUrl: "https://example.com/a.mp3", durationSeconds: 60 },
+      ],
+    ] as const) {
+      await api.post(`/api/exams/sessions/${sessionId}/answer`, {
+        token: learner.accessToken,
+        body: { questionId: qid, answer },
+      });
+    }
+
+    await api.post(`/api/exams/sessions/${sessionId}/submit`, {
+      token: learner.accessToken,
+    });
+
+    // Verify exam_submissions have part set from the question
+    const rows = await db
+      .select({
+        skill: table.examSubmissions.skill,
+        part: table.examSubmissions.part,
+      })
+      .from(table.examSubmissions)
+      .where(eq(table.examSubmissions.sessionId, sessionId));
+
+    expect(rows.length).toBeGreaterThanOrEqual(2); // writing + speaking
+    for (const row of rows) {
+      expect(row.part).toBeNumber();
+    }
+    const writing = rows.find((r) => r.skill === "writing");
+    const speaking = rows.find((r) => r.skill === "speaking");
+    expect(writing?.part).toBe(1); // writing question is part 1
+    expect(speaking?.part).toBe(1); // speaking question is part 1
   });
 });

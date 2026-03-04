@@ -1,6 +1,10 @@
 import type { Actor } from "@common/auth-types";
 import { BadRequestError } from "@common/errors";
-import { calculateScore } from "@common/scoring";
+import {
+  calculateOverallScore,
+  calculateScore,
+  scoreToBand,
+} from "@common/scoring";
 import { assertExists } from "@common/utils";
 import { db, table, takeFirstOrThrow } from "@db/index";
 import { and, eq, inArray } from "drizzle-orm";
@@ -10,6 +14,7 @@ import {
   prepare,
   type Task,
 } from "@/modules/submissions/grading-dispatch";
+import { writePlacement } from "./finalize";
 import { gradeAnswers, persistCorrectness } from "./grading";
 import { SESSION_COLUMNS } from "./schema";
 import type { ExamSessionStatus } from "./service";
@@ -37,12 +42,16 @@ export async function submit(sessionId: string, actor: Actor) {
         id: table.questions.id,
         skill: table.questions.skill,
         answerKey: table.questions.answerKey,
+        part: table.questions.part,
       })
       .from(table.questions)
       .where(inArray(table.questions.id, questionIds));
 
     const questionsMap = new Map(
-      questions.map((q) => [q.id, { skill: q.skill, answerKey: q.answerKey }]),
+      questions.map((q) => [
+        q.id,
+        { skill: q.skill, answerKey: q.answerKey, part: q.part },
+      ]),
     );
 
     const grade = gradeAnswers(answers, questionsMap);
@@ -90,6 +99,7 @@ export async function submit(sessionId: string, actor: Actor) {
           sessionId,
           submissionId: sub.id,
           skill: entry.skill,
+          part: questionsMap.get(entry.questionId)?.part,
         })),
       );
 
@@ -138,19 +148,61 @@ export async function submit(sessionId: string, actor: Actor) {
     const progressUpdates: Promise<void>[] = [];
     if (listeningScore !== null) {
       progressUpdates.push(
-        record(session.userId, "listening", null, listeningScore, tx).then(() =>
-          sync(session.userId, "listening", tx),
-        ),
+        record(
+          session.userId,
+          "listening",
+          null,
+          sessionId,
+          listeningScore,
+          tx,
+        ).then(() => sync(session.userId, "listening", tx)),
       );
     }
     if (readingScore !== null) {
       progressUpdates.push(
-        record(session.userId, "reading", null, readingScore, tx).then(() =>
-          sync(session.userId, "reading", tx),
-        ),
+        record(
+          session.userId,
+          "reading",
+          null,
+          sessionId,
+          readingScore,
+          tx,
+        ).then(() => sync(session.userId, "reading", tx)),
       );
     }
     if (progressUpdates.length > 0) await Promise.all(progressUpdates);
+
+    if (status === "completed") {
+      const exam = await tx
+        .select({ type: table.exams.type })
+        .from(table.exams)
+        .where(eq(table.exams.id, session.examId))
+        .limit(1)
+        .then((rows) => rows[0]);
+
+      if (exam?.type === "placement") {
+        const overallScore = calculateOverallScore(
+          listeningScore,
+          readingScore,
+          null,
+          null,
+        );
+        const overallBand =
+          overallScore !== null ? scoreToBand(overallScore) : null;
+
+        await tx
+          .update(table.examSessions)
+          .set({ overallScore, overallBand, updatedAt: ts })
+          .where(eq(table.examSessions.id, sessionId));
+
+        await writePlacement(tx, session.userId, sessionId, {
+          listening: listeningScore,
+          reading: readingScore,
+          writing: null,
+          speaking: null,
+        });
+      }
+    }
 
     return result;
   });

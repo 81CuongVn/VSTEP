@@ -74,6 +74,7 @@ export async function record(
   userId: string,
   skill: UserProgress["skill"],
   submissionId: string | null,
+  sessionId: string | null,
   score: number,
   tx?: DbTransaction,
 ) {
@@ -82,6 +83,7 @@ export async function record(
     userId,
     skill,
     submissionId,
+    sessionId,
     score,
   });
 }

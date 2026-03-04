@@ -11,7 +11,13 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { createdAt, timestamps } from "./columns";
-import { questionLevelEnum, skillEnum, vstepBandEnum } from "./enums";
+import {
+  placementStatusEnum,
+  questionLevelEnum,
+  skillEnum,
+  vstepBandEnum,
+} from "./enums";
+import { examSessions } from "./exams";
 import { knowledgePoints } from "./knowledge-points";
 import { submissions } from "./submissions";
 import { users } from "./users";
@@ -57,6 +63,9 @@ export const userSkillScores = pgTable(
     submissionId: uuid("submission_id").references(() => submissions.id, {
       onDelete: "cascade",
     }),
+    sessionId: uuid("session_id").references(() => examSessions.id, {
+      onDelete: "cascade",
+    }),
     score: numeric("score", {
       precision: 3,
       scale: 1,
@@ -82,7 +91,7 @@ export const userGoals = pgTable(
       .references(() => users.id, { onDelete: "cascade" })
       .notNull(),
     targetBand: vstepBandEnum("target_band").notNull(),
-    currentEstimatedBand: varchar("current_estimated_band", { length: 10 }),
+    currentEstimatedBand: vstepBandEnum("current_estimated_band"),
     deadline: timestamp("deadline", { withTimezone: true, mode: "string" }),
     dailyStudyTimeMinutes: integer("daily_study_time_minutes")
       .default(30)
@@ -90,7 +99,7 @@ export const userGoals = pgTable(
     ...timestamps,
   },
   (table) => ({
-    userIdx: index("user_goals_user_idx").on(table.userId),
+    userUnique: uniqueIndex("user_goals_user_idx").on(table.userId),
   }),
 );
 
@@ -129,6 +138,28 @@ export const userKnowledgeProgress = pgTable(
     }).onDelete("cascade"),
   }),
 );
+
+export const userPlacements = pgTable("user_placements", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull()
+    .unique(),
+  sessionId: uuid("session_id").references(() => examSessions.id, {
+    onDelete: "set null",
+  }),
+  status: placementStatusEnum("status").notNull(),
+  listeningLevel: questionLevelEnum("listening_level").notNull(),
+  readingLevel: questionLevelEnum("reading_level").notNull(),
+  writingLevel: questionLevelEnum("writing_level").notNull(),
+  speakingLevel: questionLevelEnum("speaking_level").notNull(),
+  writingSource: varchar("writing_source", { length: 20 }).notNull(),
+  speakingSource: varchar("speaking_source", { length: 20 }).notNull(),
+  ...timestamps,
+});
+
+export type UserPlacement = typeof userPlacements.$inferSelect;
+export type NewUserPlacement = typeof userPlacements.$inferInsert;
 
 export type UserGoal = typeof userGoals.$inferSelect;
 export type NewUserGoal = typeof userGoals.$inferInsert;

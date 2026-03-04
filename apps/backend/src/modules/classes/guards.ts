@@ -3,7 +3,7 @@ import { ROLES } from "@common/auth-types";
 import { ForbiddenError } from "@common/errors";
 import { assertExists } from "@common/utils";
 import { db, table } from "@db/index";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 export async function assertClassOwner(classId: string, actor: Actor) {
   const cls = assertExists(
@@ -26,7 +26,6 @@ export async function assertActiveMember(classId: string, userId: string) {
       where: and(
         eq(table.classMembers.classId, classId),
         eq(table.classMembers.userId, userId),
-        isNull(table.classMembers.removedAt),
       ),
     }),
     "Class member",

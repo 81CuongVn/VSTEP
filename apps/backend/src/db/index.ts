@@ -4,7 +4,8 @@ import { drizzle } from "drizzle-orm/bun-sql";
 import * as relations from "./relations";
 import { table } from "./schema";
 
-export const db = drizzle(env.DATABASE_URL, {
+export const db = drizzle({
+  connection: { url: env.DATABASE_URL, max: 10, idleTimeout: 30 },
   schema: { ...table, ...relations },
 });
 

@@ -6,6 +6,14 @@ import { app } from "@/app";
 
 export const testEmailPrefix = "itest-";
 
+let cachedDefaultHash: string | null = null;
+async function getDefaultHash(): Promise<string> {
+  if (!cachedDefaultHash) {
+    cachedDefaultHash = await Bun.password.hash("Password123!", "argon2id");
+  }
+  return cachedDefaultHash;
+}
+
 // ---------------------------------------------------------------------------
 // Request helpers
 // ---------------------------------------------------------------------------
@@ -107,7 +115,10 @@ export async function createTestUser(
 ): Promise<TestUserResult> {
   const password = input.password ?? "Password123!";
   const email = input.email ?? buildTestEmail();
-  const passwordHash = await Bun.password.hash(password, "argon2id");
+  const passwordHash =
+    password === "Password123!"
+      ? await getDefaultHash()
+      : await Bun.password.hash(password, "argon2id");
 
   const [user] = await db
     .insert(table.users)
@@ -194,6 +205,7 @@ export async function createTestQuestion(
     token: instructor.accessToken,
     body: {
       skill: "reading",
+      level: "B1",
       part: 1,
       content: {
         passage: "Test passage for integration testing.",
@@ -229,9 +241,13 @@ interface TestExamResult {
   admin: LoginResult;
 }
 
-export async function createTestExam(): Promise<TestExamResult> {
-  const admin = await loginTestUser({ role: "admin" });
-  const instructor = await loginTestUser({ role: "instructor" });
+export async function createTestExam(
+  emailPrefix?: string,
+): Promise<TestExamResult> {
+  const [admin, instructor] = await Promise.all([
+    loginTestUser({ role: "admin", email: buildTestEmail(emailPrefix) }),
+    loginTestUser({ role: "instructor", email: buildTestEmail(emailPrefix) }),
+  ]);
 
   const createQ = async (
     skill: string,
@@ -243,6 +259,7 @@ export async function createTestExam(): Promise<TestExamResult> {
       token: instructor.accessToken,
       body: {
         skill,
+        level: "B2",
         part,
         content,
         ...(answerKey && { answerKey }),
@@ -311,6 +328,7 @@ export async function createTestExam(): Promise<TestExamResult> {
   const { data } = await api.post("/api/exams", {
     token: admin.accessToken,
     body: {
+      title: "Đề thi VSTEP B2 - Test",
       level: "B2",
       blueprint: {
         listening: { questionIds: [listeningId] },
@@ -330,6 +348,56 @@ export async function createTestExam(): Promise<TestExamResult> {
       speaking: [speakingId],
     },
     admin,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Scoped test context — each test file gets its own namespace
+// ---------------------------------------------------------------------------
+
+export interface TestContext {
+  prefix: string;
+  cleanup: () => Promise<void>;
+  buildEmail: () => string;
+  createUser: (input?: TestUserInput) => Promise<TestUserResult>;
+  login: (input?: TestUserInput) => Promise<LoginResult>;
+  createQuestion: (
+    instructorInput?: TestUserInput,
+  ) => Promise<TestQuestionResult>;
+  createExam: () => Promise<TestExamResult>;
+  createClass: (instructorInput?: TestUserInput) => Promise<TestClassResult>;
+  joinClass: (
+    inviteCode: string,
+    learnerInput?: TestUserInput,
+  ) => Promise<LoginResult>;
+}
+
+export function createTestContext(): TestContext {
+  const prefix = `t-${crypto.randomUUID().slice(0, 8)}-`;
+
+  const buildEmail = () => buildTestEmail(prefix);
+
+  const withEmail = (input?: TestUserInput): TestUserInput => ({
+    ...input,
+    email: input?.email ?? buildEmail(),
+  });
+
+  return {
+    prefix,
+    cleanup: () => cleanupTestData(prefix),
+    buildEmail,
+    createUser: (input?) => createTestUser(withEmail(input)),
+    login: (input?) => loginTestUser(withEmail(input)),
+    createQuestion: (instructorInput?) =>
+      createTestQuestion(withEmail({ role: "instructor", ...instructorInput })),
+    createExam: () => createTestExam(prefix),
+    createClass: (instructorInput?) =>
+      createTestClass(withEmail({ role: "instructor", ...instructorInput })),
+    joinClass: (inviteCode, learnerInput?) =>
+      joinTestClass(
+        inviteCode,
+        withEmail({ role: "learner", ...learnerInput }),
+      ),
   };
 }
 

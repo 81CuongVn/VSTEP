@@ -1,12 +1,14 @@
 import { afterAll, beforeEach, describe, expect, it } from "bun:test";
-import { api, cleanupTestData, expectError, loginTestUser } from "./helpers";
+import { api, createTestContext, expectError } from "./helpers";
+
+const t = createTestContext();
 
 describe("progress integration", () => {
-  beforeEach(() => cleanupTestData());
-  afterAll(() => cleanupTestData());
+  beforeEach(() => t.cleanup());
+  afterAll(() => t.cleanup());
 
   it("returns progress overview for authenticated user", async () => {
-    const learner = await loginTestUser({ role: "learner" });
+    const learner = await t.login({ role: "learner" });
 
     const { status, data } = await api.get("/api/progress", {
       token: learner.accessToken,
@@ -23,7 +25,7 @@ describe("progress integration", () => {
   });
 
   it("returns spider chart data structure", async () => {
-    const learner = await loginTestUser({ role: "learner" });
+    const learner = await t.login({ role: "learner" });
 
     const { status, data } = await api.get("/api/progress/spider-chart", {
       token: learner.accessToken,
@@ -42,7 +44,7 @@ describe("progress integration", () => {
   });
 
   it("returns skill detail for a specific skill", async () => {
-    const learner = await loginTestUser({ role: "learner" });
+    const learner = await t.login({ role: "learner" });
 
     const { status, data } = await api.get("/api/progress/reading", {
       token: learner.accessToken,
@@ -54,7 +56,7 @@ describe("progress integration", () => {
   });
 
   it("returns skill detail for all four skills", async () => {
-    const learner = await loginTestUser({ role: "learner" });
+    const learner = await t.login({ role: "learner" });
 
     for (const skill of ["reading", "writing", "listening", "speaking"]) {
       const { status } = await api.get(`/api/progress/${skill}`, {
@@ -65,7 +67,7 @@ describe("progress integration", () => {
   });
 
   it("creates a learning goal", async () => {
-    const learner = await loginTestUser({ role: "learner" });
+    const learner = await t.login({ role: "learner" });
 
     const { status, data } = await api.post("/api/progress/goals", {
       token: learner.accessToken,
@@ -83,7 +85,7 @@ describe("progress integration", () => {
   });
 
   it("rejects second active goal (only 1 allowed)", async () => {
-    const learner = await loginTestUser({ role: "learner" });
+    const learner = await t.login({ role: "learner" });
     const body = {
       targetBand: "B2",
       deadline: new Date(Date.now() + 90 * 86400000).toISOString(),
@@ -103,7 +105,7 @@ describe("progress integration", () => {
   });
 
   it("updates a goal", async () => {
-    const learner = await loginTestUser({ role: "learner" });
+    const learner = await t.login({ role: "learner" });
     const deadline = new Date(Date.now() + 90 * 86400000).toISOString();
 
     const created = await api.post("/api/progress/goals", {
@@ -123,7 +125,7 @@ describe("progress integration", () => {
   });
 
   it("deletes a goal", async () => {
-    const learner = await loginTestUser({ role: "learner" });
+    const learner = await t.login({ role: "learner" });
     const deadline = new Date(Date.now() + 90 * 86400000).toISOString();
 
     const created = await api.post("/api/progress/goals", {
@@ -148,8 +150,8 @@ describe("progress integration", () => {
   });
 
   it("returns forbidden when updating another user's goal", async () => {
-    const learnerA = await loginTestUser({ role: "learner" });
-    const learnerB = await loginTestUser({ role: "learner" });
+    const learnerA = await t.login({ role: "learner" });
+    const learnerB = await t.login({ role: "learner" });
     const deadline = new Date(Date.now() + 90 * 86400000).toISOString();
 
     const created = await api.post("/api/progress/goals", {
@@ -167,8 +169,8 @@ describe("progress integration", () => {
   });
 
   it("returns forbidden when deleting another user's goal", async () => {
-    const learnerA = await loginTestUser({ role: "learner" });
-    const learnerB = await loginTestUser({ role: "learner" });
+    const learnerA = await t.login({ role: "learner" });
+    const learnerB = await t.login({ role: "learner" });
     const deadline = new Date(Date.now() + 90 * 86400000).toISOString();
 
     const created = await api.post("/api/progress/goals", {
@@ -185,7 +187,7 @@ describe("progress integration", () => {
   });
 
   it("overview includes the active goal", async () => {
-    const learner = await loginTestUser({ role: "learner" });
+    const learner = await t.login({ role: "learner" });
     const deadline = new Date(Date.now() + 90 * 86400000).toISOString();
 
     await api.post("/api/progress/goals", {
@@ -205,7 +207,7 @@ describe("progress integration", () => {
   });
 
   it("spider chart includes the active goal", async () => {
-    const learner = await loginTestUser({ role: "learner" });
+    const learner = await t.login({ role: "learner" });
     const deadline = new Date(Date.now() + 90 * 86400000).toISOString();
 
     await api.post("/api/progress/goals", {

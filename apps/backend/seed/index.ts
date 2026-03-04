@@ -29,9 +29,15 @@ async function main(): Promise<void> {
     const { all: questions } = await seedQuestions(tx, users.admin.id);
     const exams = await seedExams(tx, users.admin.id, questions);
     const submissions = await seedSubmissions(tx, users, questions);
-    await seedExamSessions(tx, users, exams, questions, submissions);
+    const sessions = await seedExamSessions(
+      tx,
+      users,
+      exams,
+      questions,
+      submissions,
+    );
     const knowledgePoints = await seedKnowledgePoints(tx, questions);
-    await seedProgress(tx, users, submissions, knowledgePoints);
+    await seedProgress(tx, users, submissions, knowledgePoints, sessions);
     await seedClasses(tx, users);
     return users;
   });

@@ -2,7 +2,7 @@ import type { Actor } from "@common/auth-types";
 import { BadRequestError, ConflictError } from "@common/errors";
 import { assertExists } from "@common/utils";
 import { db, table, takeFirst } from "@db/index";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { assertClassOwner } from "./guards";
 
 export async function join(body: { inviteCode: string }, actor: Actor) {
@@ -21,17 +21,8 @@ export async function join(body: { inviteCode: string }, actor: Actor) {
       ),
     });
 
-    if (existing && !existing.removedAt) {
+    if (existing) {
       throw new ConflictError("Already a member of this class");
-    }
-
-    if (existing?.removedAt) {
-      // Re-join: clear removedAt + update joinedAt
-      await tx
-        .update(table.classMembers)
-        .set({ removedAt: null, joinedAt: new Date().toISOString() })
-        .where(eq(table.classMembers.id, existing.id));
-      return { classId: cls.id, className: cls.name };
     }
     // New join: use onConflictDoNothing to handle race condition
     const inserted = await tx
@@ -68,19 +59,16 @@ export async function leave(classId: string, actor: Actor) {
       where: and(
         eq(table.classMembers.classId, classId),
         eq(table.classMembers.userId, actor.sub),
-        isNull(table.classMembers.removedAt),
       ),
     }),
     "Not a member of this class",
   );
 
-  const ts = new Date().toISOString();
   await db
-    .update(table.classMembers)
-    .set({ removedAt: ts })
+    .delete(table.classMembers)
     .where(eq(table.classMembers.id, membership.id));
 
-  return { id: membership.id, removedAt: ts };
+  return { id: membership.id };
 }
 
 export async function remove(classId: string, userId: string, actor: Actor) {
@@ -91,17 +79,14 @@ export async function remove(classId: string, userId: string, actor: Actor) {
       where: and(
         eq(table.classMembers.classId, classId),
         eq(table.classMembers.userId, userId),
-        isNull(table.classMembers.removedAt),
       ),
     }),
     "Class member",
   );
 
-  const ts = new Date().toISOString();
   await db
-    .update(table.classMembers)
-    .set({ removedAt: ts })
+    .delete(table.classMembers)
     .where(eq(table.classMembers.id, membership.id));
 
-  return { id: membership.id, removedAt: ts };
+  return { id: membership.id };
 }

@@ -125,7 +125,6 @@ export const classes = new Elysia({
     response: {
       200: t.Object({
         id: t.String({ format: "uuid" }),
-        removedAt: t.String({ format: "date-time" }),
       }),
       ...CrudErrors,
     },
@@ -144,7 +143,6 @@ export const classes = new Elysia({
       response: {
         200: t.Object({
           id: t.String({ format: "uuid" }),
-          removedAt: t.String({ format: "date-time" }),
         }),
         ...CrudErrors,
       },

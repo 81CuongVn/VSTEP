@@ -40,6 +40,7 @@ export async function seedQuestions(
 function toQuestion(record: SeedRecord, createdBy: string): NewQuestion {
   return {
     skill: record.skill,
+    level: record.level,
     part: record.part,
     content: record.content,
     answerKey: record.answerKey,

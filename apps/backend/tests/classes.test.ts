@@ -1,23 +1,17 @@
 import { afterAll, beforeEach, describe, expect, it } from "bun:test";
 import { db, table } from "@db/index";
-import {
-  api,
-  cleanupTestData,
-  createTestClass,
-  createTestUser,
-  expectError,
-  joinTestClass,
-  loginTestUser,
-} from "./helpers";
+import { api, createTestContext, expectError } from "./helpers";
+
+const t = createTestContext();
 
 describe("classes integration", () => {
-  beforeEach(() => cleanupTestData());
-  afterAll(() => cleanupTestData());
+  beforeEach(() => t.cleanup());
+  afterAll(() => t.cleanup());
 
   // ── CRUD ─────────────────────────────────────────────────
 
   it("instructor creates a class", async () => {
-    const instructor = await loginTestUser({ role: "instructor" });
+    const instructor = await t.login({ role: "instructor" });
 
     const { status, data } = await api.post("/api/classes", {
       token: instructor.accessToken,
@@ -32,7 +26,7 @@ describe("classes integration", () => {
   });
 
   it("learner cannot create a class", async () => {
-    const learner = await loginTestUser({ role: "learner" });
+    const learner = await t.login({ role: "learner" });
 
     const result = await api.post("/api/classes", {
       token: learner.accessToken,
@@ -43,7 +37,7 @@ describe("classes integration", () => {
   });
 
   it("instructor updates own class", async () => {
-    const { classId, instructor } = await createTestClass();
+    const { classId, instructor } = await t.createClass();
 
     const { status, data } = await api.patch(`/api/classes/${classId}`, {
       token: instructor.accessToken,
@@ -56,8 +50,8 @@ describe("classes integration", () => {
   });
 
   it("other instructor cannot update class they do not own", async () => {
-    const { classId } = await createTestClass();
-    const other = await loginTestUser({ role: "instructor" });
+    const { classId } = await t.createClass();
+    const other = await t.login({ role: "instructor" });
 
     const result = await api.patch(`/api/classes/${classId}`, {
       token: other.accessToken,
@@ -68,7 +62,7 @@ describe("classes integration", () => {
   });
 
   it("instructor deletes own class", async () => {
-    const { classId, instructor } = await createTestClass();
+    const { classId, instructor } = await t.createClass();
 
     const { status, data } = await api.delete(`/api/classes/${classId}`, {
       token: instructor.accessToken,
@@ -88,8 +82,8 @@ describe("classes integration", () => {
   // ── List classes (role-based) ────────────────────────────
 
   it("instructor sees only own classes", async () => {
-    const cls1 = await createTestClass();
-    await createTestClass(); // different instructor
+    const cls1 = await t.createClass();
+    await t.createClass(); // different instructor
 
     const list = await api.get("/api/classes", {
       token: cls1.instructor.accessToken,
@@ -102,9 +96,9 @@ describe("classes integration", () => {
   });
 
   it("learner sees only enrolled classes", async () => {
-    const cls1 = await createTestClass();
-    await createTestClass(); // not enrolled in this one
-    const learner = await joinTestClass(cls1.inviteCode);
+    const cls1 = await t.createClass();
+    await t.createClass(); // not enrolled in this one
+    const learner = await t.joinClass(cls1.inviteCode);
 
     const list = await api.get("/api/classes", {
       token: learner.accessToken,
@@ -117,9 +111,9 @@ describe("classes integration", () => {
   });
 
   it("admin sees all classes", async () => {
-    await createTestClass();
-    await createTestClass();
-    const admin = await loginTestUser({ role: "admin" });
+    await t.createClass();
+    await t.createClass();
+    const admin = await t.login({ role: "admin" });
 
     const list = await api.get("/api/classes", { token: admin.accessToken });
 
@@ -131,8 +125,8 @@ describe("classes integration", () => {
   // ── Get class detail ─────────────────────────────────────
 
   it("returns class detail with members", async () => {
-    const cls = await createTestClass();
-    const learner = await joinTestClass(cls.inviteCode);
+    const cls = await t.createClass();
+    const learner = await t.joinClass(cls.inviteCode);
 
     const { status, data } = await api.get(`/api/classes/${cls.classId}`, {
       token: cls.instructor.accessToken,
@@ -147,8 +141,8 @@ describe("classes integration", () => {
   });
 
   it("hides invite code from learner in class detail", async () => {
-    const cls = await createTestClass();
-    const learner = await joinTestClass(cls.inviteCode);
+    const cls = await t.createClass();
+    const learner = await t.joinClass(cls.inviteCode);
 
     const { status, data } = await api.get(`/api/classes/${cls.classId}`, {
       token: learner.accessToken,
@@ -159,8 +153,8 @@ describe("classes integration", () => {
   });
 
   it("non-member cannot view class detail", async () => {
-    const cls = await createTestClass();
-    const outsider = await loginTestUser({ role: "learner" });
+    const cls = await t.createClass();
+    const outsider = await t.login({ role: "learner" });
 
     const result = await api.get(`/api/classes/${cls.classId}`, {
       token: outsider.accessToken,
@@ -172,7 +166,7 @@ describe("classes integration", () => {
   // ── Invite code ──────────────────────────────────────────
 
   it("rotates invite code", async () => {
-    const cls = await createTestClass();
+    const cls = await t.createClass();
 
     const { status, data } = await api.post(
       `/api/classes/${cls.classId}/rotate-code`,
@@ -187,8 +181,8 @@ describe("classes integration", () => {
   // ── Join / Leave ─────────────────────────────────────────
 
   it("learner joins class by invite code", async () => {
-    const cls = await createTestClass();
-    const learner = await loginTestUser({ role: "learner" });
+    const cls = await t.createClass();
+    const learner = await t.login({ role: "learner" });
 
     const { status, data } = await api.post("/api/classes/join", {
       token: learner.accessToken,
@@ -201,7 +195,7 @@ describe("classes integration", () => {
   });
 
   it("rejects join with invalid invite code", async () => {
-    const learner = await loginTestUser({ role: "learner" });
+    const learner = await t.login({ role: "learner" });
 
     const result = await api.post("/api/classes/join", {
       token: learner.accessToken,
@@ -212,8 +206,8 @@ describe("classes integration", () => {
   });
 
   it("rejects duplicate join", async () => {
-    const cls = await createTestClass();
-    const learner = await joinTestClass(cls.inviteCode);
+    const cls = await t.createClass();
+    const learner = await t.joinClass(cls.inviteCode);
 
     const result = await api.post("/api/classes/join", {
       token: learner.accessToken,
@@ -224,8 +218,8 @@ describe("classes integration", () => {
   });
 
   it("learner can rejoin after leaving", async () => {
-    const cls = await createTestClass();
-    const learner = await joinTestClass(cls.inviteCode);
+    const cls = await t.createClass();
+    const learner = await t.joinClass(cls.inviteCode);
 
     // Leave
     const leave = await api.post(`/api/classes/${cls.classId}/leave`, {
@@ -243,8 +237,8 @@ describe("classes integration", () => {
   });
 
   it("learner leaves class", async () => {
-    const cls = await createTestClass();
-    const learner = await joinTestClass(cls.inviteCode);
+    const cls = await t.createClass();
+    const learner = await t.joinClass(cls.inviteCode);
 
     const { status, data } = await api.post(
       `/api/classes/${cls.classId}/leave`,
@@ -252,7 +246,7 @@ describe("classes integration", () => {
     );
 
     expect(status).toBe(200);
-    expect(data.removedAt).toBeString();
+    expect(data.id).toBeString();
 
     // No longer appears in class detail
     const detail = await api.get(`/api/classes/${cls.classId}`, {
@@ -263,7 +257,7 @@ describe("classes integration", () => {
   });
 
   it("instructor cannot leave their own class", async () => {
-    const cls = await createTestClass();
+    const cls = await t.createClass();
 
     // Instructor needs to be a member first — join via direct DB or just test the endpoint
     const result = await api.post(`/api/classes/${cls.classId}/leave`, {
@@ -277,8 +271,8 @@ describe("classes integration", () => {
   // ── Member management ────────────────────────────────────
 
   it("instructor removes a member", async () => {
-    const cls = await createTestClass();
-    const learner = await joinTestClass(cls.inviteCode);
+    const cls = await t.createClass();
+    const learner = await t.joinClass(cls.inviteCode);
 
     const { status, data } = await api.delete(
       `/api/classes/${cls.classId}/members/${learner.user.id}`,
@@ -286,13 +280,13 @@ describe("classes integration", () => {
     );
 
     expect(status).toBe(200);
-    expect(data.removedAt).toBeString();
+    expect(data.id).toBeString();
   });
 
   it("learner cannot remove another member", async () => {
-    const cls = await createTestClass();
-    const learnerA = await joinTestClass(cls.inviteCode);
-    const learnerB = await joinTestClass(cls.inviteCode);
+    const cls = await t.createClass();
+    const learnerA = await t.joinClass(cls.inviteCode);
+    const learnerB = await t.joinClass(cls.inviteCode);
 
     const result = await api.delete(
       `/api/classes/${cls.classId}/members/${learnerB.user.id}`,
@@ -305,8 +299,8 @@ describe("classes integration", () => {
   // ── Feedback ─────────────────────────────────────────────
 
   it("instructor sends feedback to a member", async () => {
-    const cls = await createTestClass();
-    const learner = await joinTestClass(cls.inviteCode);
+    const cls = await t.createClass();
+    const learner = await t.joinClass(cls.inviteCode);
 
     const { status, data } = await api.post(
       `/api/classes/${cls.classId}/feedback`,
@@ -328,8 +322,8 @@ describe("classes integration", () => {
   });
 
   it("instructor cannot send feedback to non-member", async () => {
-    const cls = await createTestClass();
-    const outsider = await createTestUser({ role: "learner" });
+    const cls = await t.createClass();
+    const outsider = await t.createUser({ role: "learner" });
 
     const result = await api.post(`/api/classes/${cls.classId}/feedback`, {
       token: cls.instructor.accessToken,
@@ -343,9 +337,9 @@ describe("classes integration", () => {
   });
 
   it("learner sees only own feedback", async () => {
-    const cls = await createTestClass();
-    const learnerA = await joinTestClass(cls.inviteCode);
-    const learnerB = await joinTestClass(cls.inviteCode);
+    const cls = await t.createClass();
+    const learnerA = await t.joinClass(cls.inviteCode);
+    const learnerB = await t.joinClass(cls.inviteCode);
 
     // Send feedback to both
     await api.post(`/api/classes/${cls.classId}/feedback`, {
@@ -368,9 +362,9 @@ describe("classes integration", () => {
   });
 
   it("instructor sees all feedback for their class", async () => {
-    const cls = await createTestClass();
-    const learnerA = await joinTestClass(cls.inviteCode);
-    const learnerB = await joinTestClass(cls.inviteCode);
+    const cls = await t.createClass();
+    const learnerA = await t.joinClass(cls.inviteCode);
+    const learnerB = await t.joinClass(cls.inviteCode);
 
     await api.post(`/api/classes/${cls.classId}/feedback`, {
       token: cls.instructor.accessToken,
@@ -392,8 +386,8 @@ describe("classes integration", () => {
   // ── Dashboard ────────────────────────────────────────────
 
   it("instructor views class dashboard", async () => {
-    const cls = await createTestClass();
-    await joinTestClass(cls.inviteCode);
+    const cls = await t.createClass();
+    await t.joinClass(cls.inviteCode);
 
     const { status, data } = await api.get(
       `/api/classes/${cls.classId}/dashboard`,
@@ -407,8 +401,8 @@ describe("classes integration", () => {
   });
 
   it("learner cannot access dashboard", async () => {
-    const cls = await createTestClass();
-    const learner = await joinTestClass(cls.inviteCode);
+    const cls = await t.createClass();
+    const learner = await t.joinClass(cls.inviteCode);
 
     const result = await api.get(`/api/classes/${cls.classId}/dashboard`, {
       token: learner.accessToken,
@@ -420,8 +414,8 @@ describe("classes integration", () => {
   // ── Instructor progress / at-risk detection ─────────────
 
   it("dashboard detects at-risk learner with low average", async () => {
-    const cls = await createTestClass();
-    const learner = await joinTestClass(cls.inviteCode);
+    const cls = await t.createClass();
+    const learner = await t.joinClass(cls.inviteCode);
     const userId = learner.user.id;
 
     await db.insert(table.userProgress).values({
@@ -460,8 +454,8 @@ describe("classes integration", () => {
   });
 
   it("dashboard detects at-risk learner with declining trend", async () => {
-    const cls = await createTestClass();
-    const learner = await joinTestClass(cls.inviteCode);
+    const cls = await t.createClass();
+    const learner = await t.joinClass(cls.inviteCode);
     const userId = learner.user.id;
 
     await db.insert(table.userProgress).values({
@@ -502,8 +496,8 @@ describe("classes integration", () => {
   });
 
   it("member progress returns skill data", async () => {
-    const cls = await createTestClass();
-    const learner = await joinTestClass(cls.inviteCode);
+    const cls = await t.createClass();
+    const learner = await t.joinClass(cls.inviteCode);
     const userId = learner.user.id;
 
     await db.insert(table.userProgress).values({
@@ -541,8 +535,8 @@ describe("classes integration", () => {
   });
 
   it("non-owner instructor cannot access dashboard", async () => {
-    const cls = await createTestClass();
-    const otherInstructor = await loginTestUser({ role: "instructor" });
+    const cls = await t.createClass();
+    const otherInstructor = await t.login({ role: "instructor" });
 
     const result = await api.get(`/api/classes/${cls.classId}/dashboard`, {
       token: otherInstructor.accessToken,

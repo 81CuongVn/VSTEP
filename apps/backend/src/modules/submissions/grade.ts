@@ -2,10 +2,11 @@ import { BadRequestError, ConflictError } from "@common/errors";
 import { scoreToBand } from "@common/scoring";
 import { db, table, takeFirst } from "@db/index";
 import { and, eq, inArray } from "drizzle-orm";
+import { tryFinalizeSession } from "@/modules/exams/finalize";
 import { record, sync } from "@/modules/progress/service";
 import type { SubmissionGradeBody } from "./schema";
 import { SUBMISSION_COLUMNS } from "./schema";
-import { details, GRADABLE_STATUSES } from "./shared";
+import { COMPLETABLE_STATUSES, details } from "./shared";
 
 export async function grade(submissionId: string, body: SubmissionGradeBody) {
   return db.transaction(async (tx) => {
@@ -26,7 +27,7 @@ export async function grade(submissionId: string, body: SubmissionGradeBody) {
       .where(
         and(
           eq(table.submissions.id, submissionId),
-          inArray(table.submissions.status, GRADABLE_STATUSES),
+          inArray(table.submissions.status, COMPLETABLE_STATUSES),
         ),
       )
       .returning(SUBMISSION_COLUMNS)
@@ -45,8 +46,16 @@ export async function grade(submissionId: string, body: SubmissionGradeBody) {
         .where(eq(table.submissionDetails.submissionId, submissionId));
     }
 
-    await record(updated.userId, updated.skill, submissionId, body.score, tx);
+    await record(
+      updated.userId,
+      updated.skill,
+      submissionId,
+      null,
+      body.score,
+      tx,
+    );
     await sync(updated.userId, updated.skill, tx);
+    await tryFinalizeSession(submissionId, tx);
 
     return {
       ...updated,

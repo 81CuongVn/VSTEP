@@ -4,16 +4,26 @@ import { sql } from "drizzle-orm";
 import {
   boolean,
   index,
+  integer,
   jsonb,
   numeric,
   pgEnum,
   pgTable,
+  smallint,
+  text,
   timestamp,
   uniqueIndex,
   uuid,
+  varchar,
 } from "drizzle-orm/pg-core";
 import { createdAt, timestamps } from "./columns";
-import { questionLevelEnum, skillEnum } from "./enums";
+
+import {
+  examTypeEnum,
+  questionLevelEnum,
+  skillEnum,
+  vstepBandEnum,
+} from "./enums";
 import { questions } from "./questions";
 import { submissions } from "./submissions";
 import { users } from "./users";
@@ -30,6 +40,10 @@ export const exams = pgTable(
   {
     id: uuid("id").primaryKey().defaultRandom(),
     level: questionLevelEnum("level").notNull(),
+    title: varchar("title", { length: 255 }).notNull(),
+    description: text("description"),
+    type: examTypeEnum("type").default("practice").notNull(),
+    durationMinutes: integer("duration_minutes"),
     blueprint: jsonb("blueprint").$type<ExamBlueprint>().notNull(),
     isActive: boolean("is_active").default(true).notNull(),
     createdBy: uuid("created_by").references(() => users.id, {
@@ -81,6 +95,7 @@ export const examSessions = pgTable(
       scale: 1,
       mode: "number",
     }),
+    overallBand: vstepBandEnum("overall_band"),
     startedAt: timestamp("started_at", { withTimezone: true, mode: "string" })
       .defaultNow()
       .notNull(),
@@ -134,6 +149,7 @@ export const examSubmissions = pgTable(
       .references(() => submissions.id, { onDelete: "cascade" })
       .notNull(),
     skill: skillEnum("skill").notNull(),
+    part: smallint("part"),
     createdAt,
   },
   (table) => ({

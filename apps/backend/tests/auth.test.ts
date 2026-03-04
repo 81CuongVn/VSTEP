@@ -1,20 +1,14 @@
 import { afterAll, beforeEach, describe, expect, it } from "bun:test";
-import {
-  api,
-  buildTestEmail,
-  cleanupTestData,
-  createTestUser,
-  expectError,
-  loginTestUser,
-  testEmailPrefix,
-} from "./helpers";
+import { api, createTestContext, expectError } from "./helpers";
+
+const t = createTestContext();
 
 describe("auth integration", () => {
-  beforeEach(() => cleanupTestData());
-  afterAll(() => cleanupTestData());
+  beforeEach(() => t.cleanup());
+  afterAll(() => t.cleanup());
 
   it("registers a learner account", async () => {
-    const email = buildTestEmail();
+    const email = t.buildEmail();
     const { status, data } = await api.post("/api/auth/register", {
       body: {
         email,
@@ -32,7 +26,7 @@ describe("auth integration", () => {
   });
 
   it("normalizes email to lowercase on register", async () => {
-    const rawEmail = `${testEmailPrefix}${crypto.randomUUID()}@TEST.COM`;
+    const rawEmail = `${t.prefix}${crypto.randomUUID()}@TEST.COM`;
     const { status, data } = await api.post("/api/auth/register", {
       body: {
         email: rawEmail,
@@ -47,7 +41,7 @@ describe("auth integration", () => {
   });
 
   it("rejects duplicate register email", async () => {
-    const email = buildTestEmail();
+    const email = t.buildEmail();
     const body = {
       email,
       password: "Password123!",
@@ -61,7 +55,7 @@ describe("auth integration", () => {
   });
 
   it("logs in with valid credentials", async () => {
-    const testUser = await createTestUser({ role: "learner" });
+    const testUser = await t.createUser({ role: "learner" });
     const { status, data } = await api.post("/api/auth/login", {
       body: { email: testUser.user.email, password: testUser.password },
     });
@@ -74,7 +68,7 @@ describe("auth integration", () => {
   });
 
   it("rejects login with invalid password", async () => {
-    const testUser = await createTestUser();
+    const testUser = await t.createUser();
     const result = await api.post("/api/auth/login", {
       body: { email: testUser.user.email, password: "WrongPassword123!" },
     });
@@ -83,7 +77,7 @@ describe("auth integration", () => {
   });
 
   it("refreshes token and revokes old refresh token", async () => {
-    const login = await loginTestUser({ role: "learner" });
+    const login = await t.login({ role: "learner" });
 
     const { status, data } = await api.post("/api/auth/refresh", {
       body: { refreshToken: login.refreshToken },
@@ -101,7 +95,7 @@ describe("auth integration", () => {
   });
 
   it("detects refresh token reuse and revokes all sessions", async () => {
-    const login = await loginTestUser({ role: "learner" });
+    const login = await t.login({ role: "learner" });
 
     const { data } = await api.post("/api/auth/refresh", {
       body: { refreshToken: login.refreshToken },
@@ -125,7 +119,7 @@ describe("auth integration", () => {
   });
 
   it("evicts oldest refresh token when max sessions exceeded", async () => {
-    const user = await createTestUser({
+    const user = await t.createUser({
       role: "learner",
       password: "Test123!",
     });
@@ -153,7 +147,7 @@ describe("auth integration", () => {
   });
 
   it("logs out and revokes refresh token", async () => {
-    const login = await loginTestUser({ role: "learner" });
+    const login = await t.login({ role: "learner" });
 
     const { status, data } = await api.post("/api/auth/logout", {
       token: login.accessToken,
@@ -175,7 +169,7 @@ describe("auth integration", () => {
   });
 
   it("returns current user from /me with bearer token", async () => {
-    const login = await loginTestUser({ role: "instructor" });
+    const login = await t.login({ role: "instructor" });
 
     const { status, data } = await api.get("/api/auth/me", {
       token: login.accessToken,

@@ -18,7 +18,8 @@
 		"rules": {
 			"recommended": true,
 			"suspicious": {
-				"noDocumentCookie": "off"
+				"noDocumentCookie": "off",
+				"noArrayIndexKey": "off"
 			},
 			"a11y": {
 				"useFocusableInteractive": "off",

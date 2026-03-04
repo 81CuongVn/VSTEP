@@ -1,21 +1,17 @@
 import { afterAll, beforeEach, describe, expect, it } from "bun:test";
-import {
-  api,
-  cleanupTestData,
-  createTestQuestion,
-  expectError,
-  loginTestUser,
-} from "./helpers";
+import { api, createTestContext, expectError } from "./helpers";
+
+const t = createTestContext();
 
 describe("submissions integration", () => {
-  beforeEach(() => cleanupTestData());
-  afterAll(() => cleanupTestData());
+  beforeEach(() => t.cleanup());
+  afterAll(() => t.cleanup());
 
   // ── Create submission ────────────────────────────────────
 
   it("creates a submission for an active question", async () => {
-    const { questionId } = await createTestQuestion();
-    const learner = await loginTestUser({ role: "learner" });
+    const { questionId } = await t.createQuestion();
+    const learner = await t.login({ role: "learner" });
 
     const { status, data } = await api.post("/api/submissions", {
       token: learner.accessToken,
@@ -35,7 +31,7 @@ describe("submissions integration", () => {
   });
 
   it("rejects submission for non-existent question", async () => {
-    const learner = await loginTestUser({ role: "learner" });
+    const learner = await t.login({ role: "learner" });
 
     const result = await api.post("/api/submissions", {
       token: learner.accessToken,
@@ -51,8 +47,8 @@ describe("submissions integration", () => {
   // ── Get / List submissions ───────────────────────────────
 
   it("gets own submission by ID", async () => {
-    const { questionId } = await createTestQuestion();
-    const learner = await loginTestUser({ role: "learner" });
+    const { questionId } = await t.createQuestion();
+    const learner = await t.login({ role: "learner" });
 
     const created = await api.post("/api/submissions", {
       token: learner.accessToken,
@@ -69,9 +65,9 @@ describe("submissions integration", () => {
   });
 
   it("cannot view another user submission", async () => {
-    const { questionId } = await createTestQuestion();
-    const learnerA = await loginTestUser({ role: "learner" });
-    const learnerB = await loginTestUser({ role: "learner" });
+    const { questionId } = await t.createQuestion();
+    const learnerA = await t.login({ role: "learner" });
+    const learnerB = await t.login({ role: "learner" });
 
     const created = await api.post("/api/submissions", {
       token: learnerA.accessToken,
@@ -87,8 +83,8 @@ describe("submissions integration", () => {
   });
 
   it("lists own submissions with pagination", async () => {
-    const { questionId } = await createTestQuestion();
-    const learner = await loginTestUser({ role: "learner" });
+    const { questionId } = await t.createQuestion();
+    const learner = await t.login({ role: "learner" });
 
     await api.post("/api/submissions", {
       token: learner.accessToken,
@@ -114,9 +110,9 @@ describe("submissions integration", () => {
   // ── Auto-grade ───────────────────────────────────────────
 
   it("auto-grades an objective submission", async () => {
-    const { questionId } = await createTestQuestion(); // reading_mcq with answerKey
-    const learner = await loginTestUser({ role: "learner" });
-    const admin = await loginTestUser({ role: "admin" });
+    const { questionId } = await t.createQuestion(); // reading_mcq with answerKey
+    const learner = await t.login({ role: "learner" });
+    const admin = await t.login({ role: "admin" });
 
     const created = await api.post("/api/submissions", {
       token: learner.accessToken,
@@ -135,8 +131,8 @@ describe("submissions integration", () => {
   });
 
   it("non-admin cannot auto-grade", async () => {
-    const { questionId, instructor } = await createTestQuestion();
-    const learner = await loginTestUser({ role: "learner" });
+    const { questionId, instructor } = await t.createQuestion();
+    const learner = await t.login({ role: "learner" });
 
     const created = await api.post("/api/submissions", {
       token: learner.accessToken,
@@ -154,14 +150,15 @@ describe("submissions integration", () => {
   // ── Manual grading ──────────────────────────────────────
 
   it("instructor grades a submission", async () => {
-    const instructor = await loginTestUser({ role: "instructor" });
-    const learner = await loginTestUser({ role: "learner" });
+    const instructor = await t.login({ role: "instructor" });
+    const learner = await t.login({ role: "learner" });
 
     // Create writing question + submission for manual grading
     const { data: writingQ } = await api.post("/api/questions", {
       token: instructor.accessToken,
       body: {
         skill: "writing",
+        level: "B1",
         part: 1,
         content: {
           prompt: "Write about your day.",
@@ -181,7 +178,7 @@ describe("submissions integration", () => {
     const subId = created.data.id as string;
 
     // Transition through valid states: pending → processing → review_pending
-    const admin = await loginTestUser({ role: "admin" });
+    const admin = await t.login({ role: "admin" });
     await api.patch(`/api/submissions/${subId}`, {
       token: admin.accessToken,
       body: { status: "processing" },
@@ -204,8 +201,8 @@ describe("submissions integration", () => {
   // ── Delete submission ────────────────────────────────────
 
   it("deletes own submission", async () => {
-    const { questionId } = await createTestQuestion();
-    const learner = await loginTestUser({ role: "learner" });
+    const { questionId } = await t.createQuestion();
+    const learner = await t.login({ role: "learner" });
 
     const created = await api.post("/api/submissions", {
       token: learner.accessToken,
@@ -222,9 +219,9 @@ describe("submissions integration", () => {
   });
 
   it("cannot delete another user submission", async () => {
-    const { questionId } = await createTestQuestion();
-    const learnerA = await loginTestUser({ role: "learner" });
-    const learnerB = await loginTestUser({ role: "learner" });
+    const { questionId } = await t.createQuestion();
+    const learnerA = await t.login({ role: "learner" });
+    const learnerB = await t.login({ role: "learner" });
 
     const created = await api.post("/api/submissions", {
       token: learnerA.accessToken,
