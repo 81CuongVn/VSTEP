@@ -35,6 +35,7 @@ export const ExamCreateBody = t.Pick(InsertExam, [
   "blueprint",
   "isActive",
   "description",
+  "durationMinutes",
 ]);
 
 const UpdateExam = createUpdateSchema(exams, {
@@ -48,6 +49,7 @@ export const ExamUpdateBody = t.Pick(UpdateExam, [
   "blueprint",
   "isActive",
   "description",
+  "durationMinutes",
 ]);
 
 export const SessionListQuery = t.Object({

@@ -29,6 +29,19 @@ export const GRADABLE_STATUSES: SubmissionStatus[] = [
   "processing",
 ];
 
+/** Statuses from which a submission can transition to "completed" */
+export const COMPLETABLE_STATUSES: SubmissionStatus[] = [
+  "processing",
+  "review_pending",
+];
+
+/** Non-terminal statuses — submission is still in-flight */
+export const IN_FLIGHT_STATUSES: SubmissionStatus[] = [
+  "pending",
+  "processing",
+  "review_pending",
+];
+
 export async function details(tx: DbTransaction, submissionId: string) {
   const [row] = await tx
     .select(DETAIL_COLUMNS)

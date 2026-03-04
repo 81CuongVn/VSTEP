@@ -19,7 +19,7 @@ export const classes = pgTable(
     description: text("description"),
     instructorId: uuid("instructor_id")
       .notNull()
-      .references(() => users.id),
+      .references(() => users.id, { onDelete: "restrict" }),
     inviteCode: text("invite_code").notNull(),
     ...timestamps,
   },
@@ -44,7 +44,6 @@ export const classMembers = pgTable(
     joinedAt: timestamp("joined_at", { withTimezone: true, mode: "string" })
       .notNull()
       .defaultNow(),
-    removedAt: timestamp("removed_at", { withTimezone: true, mode: "string" }),
   },
   (table) => ({
     classUserUnique: uniqueIndex("class_members_class_user_idx").on(

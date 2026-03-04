@@ -14,7 +14,7 @@ Python microservice for AI-powered grading of VSTEP writing and speaking submiss
 
 ## Stack
 
-FastAPI . Uvicorn . LiteLLM (provider-agnostic LLM + STT) . psycopg3 (async PostgreSQL) . Redis (BRPOP queue) . Pydantic + Pydantic Settings . structlog (JSON logging)
+FastAPI . Uvicorn . LiteLLM (provider-agnostic LLM + STT) . Redis Streams (task queue + result delivery) . Pydantic + Pydantic Settings . structlog (JSON logging)
 
 Default provider: Groq free tier (Whisper large-v3-turbo for STT, Llama 3.3 70B for grading). Switch providers by changing `LLM_MODEL` / `STT_MODEL` env vars -- LiteLLM handles the rest.
 
@@ -33,15 +33,14 @@ app/
   writing.py     # Writing grading pipeline
   speaking.py    # Speaking grading pipeline (STT → LLM)
   grading.py     # Routes task.skill → writing/speaking
-  worker.py      # Redis BRPOP loop with retry + DLQ
-  db.py          # psycopg3 async pool, save_result/mark_failed
+  worker.py      # Redis Streams XREADGROUP loop with retry
   main.py        # FastAPI app + worker lifecycle
 tests/
   test_scoring.py  # Band mapping, round_score
   test_models.py   # Pydantic validation
 ```
 
-No Celery. Worker runs as an asyncio task inside the FastAPI process, polling Redis via BRPOP.
+No Celery. No direct DB access. Worker runs as an asyncio task inside the FastAPI process, consuming from Redis Streams. Results are pushed back to Redis for the backend to process.
 
 ## Config
 
@@ -51,21 +50,21 @@ All config via `.env` (see `.env.example`). Key variables:
 |----------|---------|-------------|
 | `LLM_MODEL` | `groq/llama-3.3-70b-versatile` | LiteLLM model identifier |
 | `STT_MODEL` | `groq/whisper-large-v3-turbo` | LiteLLM STT model |
-| `DATABASE_URL` | (required) | PostgreSQL connection string |
-| `REDIS_URL` | `redis://localhost:6379` | Redis for queue + STT cache |
+| `REDIS_URL` | `redis://localhost:6379` | Redis for streams + STT cache |
 | `LLM_FALLBACK_MODEL` | (none) | Optional fallback model |
 | `LOG_LEVEL` | `INFO` | structlog level |
 
 ## Grading Flow
 
-1. Backend pushes task JSON (camelCase) to `grading:tasks` Redis list
-2. Worker pops task via BRPOP, routes to writing or speaking pipeline
+1. Backend XADDs task JSON (camelCase) to `grading:tasks` Redis Stream
+2. Worker reads task via XREADGROUP, routes to writing or speaking pipeline
 3. Speaking: download audio → STT (cached) → LLM grade transcript
 4. Writing: LLM grade text directly
 5. LLM returns structured JSON (WritingGrade/SpeakingGrade)
-6. Result mapped to AIGradeResult, written to PostgreSQL (submissions + submission_details)
-7. Confidence determines status: high→completed, medium/low→review_pending
-8. On failure after retries: mark submission failed, push to DLQ
+6. Result XADDed to `grading:results` stream for backend to process
+7. Backend writes scores to DB, syncs progress, finalizes exam sessions
+8. Confidence determines status: high→completed, medium/low→review_pending
+9. On failure after retries: failure marker sent to results stream
 
 ## Naming
 

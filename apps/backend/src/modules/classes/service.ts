@@ -3,7 +3,7 @@ import { ROLES } from "@common/auth-types";
 import { ForbiddenError } from "@common/errors";
 import { assertExists, generateInviteCode } from "@common/utils";
 import { db, paginate, table, takeFirstOrThrow } from "@db/index";
-import { and, count, desc, eq, isNull, sql } from "drizzle-orm";
+import { and, count, desc, eq, sql } from "drizzle-orm";
 import { assertClassOwner } from "./guards";
 import type {
   ClassListQuery,
@@ -29,12 +29,7 @@ export async function list(query: ClassListQuery, actor: Actor) {
   const memberCountSq = db
     .select({ count: sql<number>`count(*)::int`.as("member_count") })
     .from(table.classMembers)
-    .where(
-      and(
-        eq(table.classMembers.classId, table.classes.id),
-        isNull(table.classMembers.removedAt),
-      ),
-    );
+    .where(eq(table.classMembers.classId, table.classes.id));
 
   const selectColumns = {
     id: table.classes.id,
@@ -74,10 +69,7 @@ export async function list(query: ClassListQuery, actor: Actor) {
   }
 
   // Learner: classes they are a member of
-  const where = and(
-    eq(table.classMembers.userId, actor.sub),
-    isNull(table.classMembers.removedAt),
-  );
+  const where = eq(table.classMembers.userId, actor.sub);
 
   return paginate(
     db
@@ -116,7 +108,6 @@ export async function find(classId: string, actor: Actor) {
       where: and(
         eq(table.classMembers.classId, classId),
         eq(table.classMembers.userId, actor.sub),
-        isNull(table.classMembers.removedAt),
       ),
     });
     if (!membership) {
@@ -134,12 +125,7 @@ export async function find(classId: string, actor: Actor) {
     })
     .from(table.classMembers)
     .innerJoin(table.users, eq(table.users.id, table.classMembers.userId))
-    .where(
-      and(
-        eq(table.classMembers.classId, classId),
-        isNull(table.classMembers.removedAt),
-      ),
-    );
+    .where(eq(table.classMembers.classId, classId));
 
   const isOwnerOrAdmin =
     actor.is(ROLES.ADMIN) || cls.instructorId === actor.sub;

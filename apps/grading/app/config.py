@@ -1,4 +1,3 @@
-from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -16,10 +15,8 @@ class Settings(BaseSettings):
     stt_model: str = "groq/whisper-large-v3-turbo"
 
     redis_url: str = "redis://localhost:6379"
-    database_url: str = Field(alias="DATABASE_URL")
 
     grading_queue: str = "grading:tasks"
-    dead_letter_queue: str = "grading:dlq"
     max_retries: int = 3
 
     log_level: str = "INFO"

@@ -1,7 +1,7 @@
 import type { Actor } from "@common/auth-types";
 import { db, table } from "@db/index";
 import { SKILLS } from "@db/schema/enums";
-import { and, eq, isNull } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { atRisk, forUsers } from "@/modules/progress/instructor";
 import { assertActiveMember, assertClassOwner } from "./guards";
 
@@ -16,12 +16,7 @@ export async function dashboard(classId: string, actor: Actor) {
     })
     .from(table.classMembers)
     .innerJoin(table.users, eq(table.users.id, table.classMembers.userId))
-    .where(
-      and(
-        eq(table.classMembers.classId, classId),
-        isNull(table.classMembers.removedAt),
-      ),
-    );
+    .where(eq(table.classMembers.classId, classId));
 
   const userIds = members.map((m) => m.userId);
   const progress = await forUsers(userIds);

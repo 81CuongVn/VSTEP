@@ -6,6 +6,7 @@ import { assertExists } from "@common/utils";
 import { db, paginate, table, takeFirst, takeFirstOrThrow } from "@db/index";
 import type { AIResult } from "@db/types/grading";
 import { and, asc, eq, isNull, lt, or, sql } from "drizzle-orm";
+import { tryFinalizeSession } from "@/modules/exams/finalize";
 import { record, sync } from "@/modules/progress/service";
 import type {
   ReviewQueueQuery,
@@ -209,10 +210,12 @@ export async function review(
       submission.userId,
       submission.skill,
       submissionId,
+      null,
       resolved.score,
       tx,
     );
     await sync(submission.userId, submission.skill, tx);
+    await tryFinalizeSession(submissionId, tx);
 
     return {
       ...updated,

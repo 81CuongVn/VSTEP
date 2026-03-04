@@ -90,6 +90,7 @@ export async function create(userId: string, body: ExamCreateBody) {
         blueprint: body.blueprint,
         isActive: body.isActive ?? true,
         description: body.description,
+        durationMinutes: body.durationMinutes,
         createdBy: userId,
       })
       .returning(EXAM_COLUMNS)
@@ -107,7 +108,9 @@ export async function update(id: string, body: ExamUpdateBody) {
     );
 
     const hasNonToggleFields =
-      body.level !== undefined || body.blueprint !== undefined;
+      body.level !== undefined ||
+      body.blueprint !== undefined ||
+      body.durationMinutes !== undefined;
     if (existing.isActive && hasNonToggleFields) {
       throw new ConflictError("Deactivate the exam before modifying it");
     }
@@ -123,6 +126,9 @@ export async function update(id: string, body: ExamUpdateBody) {
         ...(body.level !== undefined && { level: body.level }),
         ...(body.blueprint !== undefined && { blueprint: body.blueprint }),
         ...(body.isActive !== undefined && { isActive: body.isActive }),
+        ...(body.durationMinutes !== undefined && {
+          durationMinutes: body.durationMinutes,
+        }),
       })
       .where(eq(table.exams.id, id))
       .returning(EXAM_COLUMNS)

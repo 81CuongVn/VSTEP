@@ -35,6 +35,24 @@ export function calculateScore(correct: number, total: number): number | null {
   return Math.round(ratio * 10 * 2) / 2;
 }
 
+/** Average of 4 skill scores, rounded to nearest 0.5. Returns null if any skill is null. */
+export function calculateOverallScore(
+  listening: number | null,
+  reading: number | null,
+  writing: number | null,
+  speaking: number | null,
+): number | null {
+  if (
+    listening === null ||
+    reading === null ||
+    writing === null ||
+    speaking === null
+  )
+    return null;
+  const avg = (listening + reading + writing + speaking) / 4;
+  return Math.round(avg * 2) / 2;
+}
+
 /** Normalize for comparison: trim, collapse whitespace, lowercase */
 export function normalizeAnswer(value: string): string {
   return value.trim().replace(/\s+/g, " ").toLowerCase();

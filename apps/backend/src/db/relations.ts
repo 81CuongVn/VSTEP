@@ -13,6 +13,7 @@ import {
 import {
   userGoals,
   userKnowledgeProgress,
+  userPlacements,
   userProgress,
   userSkillScores,
 } from "./schema/progress";
@@ -34,6 +35,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   classMemberships: many(classMembers),
   feedbackGiven: many(instructorFeedback, { relationName: "feedbackFrom" }),
   feedbackReceived: many(instructorFeedback, { relationName: "feedbackTo" }),
+  placements: many(userPlacements),
 }));
 
 export const refreshTokensRelations = relations(refreshTokens, ({ one }) => ({
@@ -42,6 +44,10 @@ export const refreshTokensRelations = relations(refreshTokens, ({ one }) => ({
 
 export const submissionsRelations = relations(submissions, ({ one }) => ({
   user: one(users, { fields: [submissions.userId], references: [users.id] }),
+  question: one(questions, {
+    fields: [submissions.questionId],
+    references: [questions.id],
+  }),
   details: one(submissionDetails, {
     fields: [submissions.id],
     references: [submissionDetails.submissionId],
@@ -118,6 +124,10 @@ export const userSkillScoresRelations = relations(
       fields: [userSkillScores.submissionId],
       references: [submissions.id],
     }),
+    session: one(examSessions, {
+      fields: [userSkillScores.sessionId],
+      references: [examSessions.id],
+    }),
   }),
 );
 
@@ -171,6 +181,10 @@ export const examAnswersRelations = relations(examAnswers, ({ one }) => ({
   session: one(examSessions, {
     fields: [examAnswers.sessionId],
     references: [examSessions.id],
+  }),
+  question: one(questions, {
+    fields: [examAnswers.questionId],
+    references: [questions.id],
   }),
 }));
 
@@ -235,3 +249,11 @@ export const instructorFeedbackRelations = relations(
     }),
   }),
 );
+
+export const userPlacementsRelations = relations(userPlacements, ({ one }) => ({
+  user: one(users, { fields: [userPlacements.userId], references: [users.id] }),
+  session: one(examSessions, {
+    fields: [userPlacements.sessionId],
+    references: [examSessions.id],
+  }),
+}));

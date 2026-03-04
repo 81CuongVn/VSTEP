@@ -27,10 +27,15 @@ export const knowledgePointCategoryEnum = pgEnum("knowledge_point_category", [
   "strategy",
 ]);
 
-export const vstepBandEnum = pgEnum("vstep_band", [
-  "A1",
-  "A2",
-  "B1",
-  "B2",
-  "C1",
+export const vstepBandEnum = pgEnum("vstep_band", ["B1", "B2", "C1"]);
+
+export const examTypeEnum = pgEnum("exam_type", [
+  "practice",
+  "placement",
+  "mock",
+]);
+
+export const placementStatusEnum = pgEnum("placement_status", [
+  "completed",
+  "skipped",
 ]);

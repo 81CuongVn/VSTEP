@@ -5,7 +5,7 @@ import type { Skill } from "@db/schema/enums";
 import { redis } from "bun";
 import { eq } from "drizzle-orm";
 
-const GRADING_QUEUE = "grading:tasks";
+import { GRADING_TASKS_STREAM } from "./grading-streams";
 
 export interface Task {
   submissionId: string;
@@ -36,7 +36,12 @@ export async function dispatch(tasks: Task[]) {
   if (tasks.length === 0) return;
   await Promise.all(
     tasks.map((task) =>
-      redis.send("LPUSH", [GRADING_QUEUE, JSON.stringify(task)]),
+      redis.send("XADD", [
+        GRADING_TASKS_STREAM,
+        "*",
+        "payload",
+        JSON.stringify(task),
+      ]),
     ),
   );
   for (const task of tasks) {

@@ -10,6 +10,7 @@ import { knowledgePoints, questionKnowledgePoints } from "./knowledge-points";
 import {
   userGoals,
   userKnowledgeProgress,
+  userPlacements,
   userProgress,
   userSkillScores,
 } from "./progress";
@@ -34,6 +35,7 @@ export const table = {
   userProgress,
   userSkillScores,
   userGoals,
+  userPlacements,
   userKnowledgeProgress,
   exams,
   examSessions,
@@ -59,6 +61,7 @@ export {
   submissionDetails,
   submissions,
   userGoals,
+  userPlacements,
   userKnowledgeProgress,
   userProgress,
   userSkillScores,
@@ -80,7 +83,9 @@ export type {
 } from "./knowledge-points";
 export type {
   NewUserKnowledgeProgress,
+  NewUserPlacement,
   UserKnowledgeProgress,
+  UserPlacement,
   UserProgress,
 } from "./progress";
 export type { NewQuestion, Question } from "./questions";

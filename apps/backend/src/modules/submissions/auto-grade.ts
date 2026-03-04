@@ -99,7 +99,14 @@ export async function autoGrade(submissionId: string) {
       .where(eq(table.submissionDetails.submissionId, submissionId));
 
     await Promise.all([
-      record(submission.userId, submission.skill, submissionId, score, tx),
+      record(
+        submission.userId,
+        submission.skill,
+        submissionId,
+        null,
+        score,
+        tx,
+      ),
       sync(submission.userId, submission.skill, tx),
     ]);
 
