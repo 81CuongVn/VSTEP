@@ -2,7 +2,7 @@
 
 VSTEP exam practice platform with AI grading and adaptive learning. Capstone project (SP26SE145).
 
-- Demo-first: optimize for dev speed, fewer bugs, demo quality. Skip production-scale concerns.
+- Correctness-first: code quality, test coverage, clean architecture. Prioritize reliability and maintainability over dev speed.
 - Use Bun, not Node. `bun run`, `bun test`, `Bun.password`, `jose` — never npm/yarn/jest/bcrypt/jsonwebtoken. Bun auto-loads `.env`.
 - All commands run from `apps/backend/`.
 - `bun run verify` must pass before considering work complete (lint fix + typecheck).
