@@ -45,6 +45,8 @@ import type {
 	SubmissionAnswer,
 	WritingContent,
 } from "@/types/api"
+import { ListeningExamPanel } from "./-components/ListeningExamPanel"
+import { ReadingExamPanel } from "./-components/ReadingExamPanel"
 
 export const Route = createFileRoute("/_focused/practice/$sessionId")({
 	component: PracticePage,
@@ -233,7 +235,12 @@ function PracticePage() {
 				</span>
 
 				<div className="flex items-center gap-1">
-					<Button variant="ghost" size="sm" className="lg:hidden" onClick={() => setNavOpen((v) => !v)}>
+					<Button
+						variant="ghost"
+						size="sm"
+						className="lg:hidden"
+						onClick={() => setNavOpen((v) => !v)}
+					>
 						<HugeiconsIcon icon={Menu02Icon} className="size-4" />
 					</Button>
 					<Button variant="ghost" size="sm" asChild>
@@ -245,8 +252,8 @@ function PracticePage() {
 				</div>
 			</header>
 
-			{/* Mobile question nav dropdown */}
-			{navOpen && (
+			{/* Mobile question nav dropdown (not for listening — it has its own nav) */}
+			{navOpen && currentSkill !== "listening" && currentSkill !== "reading" && (
 				<div className="z-30 border-b bg-background p-4 shadow-sm lg:hidden">
 					<QuestionGrid
 						questions={currentQuestions}
@@ -257,78 +264,92 @@ function PracticePage() {
 			)}
 
 			{/* Body */}
-			<div className="flex flex-1 overflow-hidden">
-				{/* Desktop: stimulus (left) */}
-				<div className="hidden w-2/5 overflow-y-auto border-r bg-muted/10 p-6 lg:block">
-					<StimulusPanel skill={currentSkill} questions={currentQuestions} />
-				</div>
-
-				{/* Desktop: questions (center) */}
-				<div className="hidden flex-1 overflow-y-auto bg-background p-6 lg:block">
-					<QuestionsPanel
-						skill={currentSkill}
-						questions={currentQuestions}
-						answers={answers}
-						onSelectMCQ={handleMCQSelect}
-						onUpdateWriting={handleWritingUpdate}
-					/>
-				</div>
-
-				{/* Desktop: question nav (right sidebar) */}
-				<div className="hidden w-[200px] shrink-0 overflow-y-auto border-l bg-muted/5 p-4 lg:block">
-					<p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-						Danh sách câu hỏi
-					</p>
-					<QuestionGrid
-						questions={currentQuestions}
-						answeredIds={answeredIds}
-						onJump={handleJump}
-					/>
-				</div>
-
-				{/* Mobile tabbed layout */}
-				<div className="flex flex-1 flex-col overflow-hidden lg:hidden">
-					<div className="flex shrink-0 border-b">
-						<button
-							type="button"
-							onClick={() => setMobileTab("stimulus")}
-							className={cn(
-								"flex-1 py-2.5 text-center text-sm font-medium transition-colors",
-								mobileTab === "stimulus"
-									? "border-b-2 border-primary text-primary"
-									: "text-muted-foreground hover:text-foreground",
-							)}
-						>
-							Đề bài
-						</button>
-						<button
-							type="button"
-							onClick={() => setMobileTab("questions")}
-							className={cn(
-								"flex-1 py-2.5 text-center text-sm font-medium transition-colors",
-								mobileTab === "questions"
-									? "border-b-2 border-primary text-primary"
-									: "text-muted-foreground hover:text-foreground",
-							)}
-						>
-							Trả lời
-						</button>
+			{currentSkill === "listening" ? (
+				<ListeningExamPanel
+					questions={currentQuestions}
+					answers={answers}
+					onSelectMCQ={handleMCQSelect}
+				/>
+			) : currentSkill === "reading" ? (
+				<ReadingExamPanel
+					questions={currentQuestions}
+					answers={answers}
+					onSelectMCQ={handleMCQSelect}
+				/>
+			) : (
+				<div className="flex flex-1 overflow-hidden">
+					{/* Desktop: stimulus (left) */}
+					<div className="hidden w-2/5 overflow-y-auto border-r bg-muted/10 p-6 lg:block">
+						<StimulusPanel skill={currentSkill} questions={currentQuestions} />
 					</div>
-					<div className="flex-1 overflow-y-auto p-4">
-						{mobileTab === "stimulus" ? (
-							<StimulusPanel skill={currentSkill} questions={currentQuestions} />
-						) : (
-							<QuestionsPanel
-								skill={currentSkill}
-								questions={currentQuestions}
-								answers={answers}
-								onSelectMCQ={handleMCQSelect}
-								onUpdateWriting={handleWritingUpdate}
-							/>
-						)}
+
+					{/* Desktop: questions (center) */}
+					<div className="hidden flex-1 overflow-y-auto bg-background p-6 lg:block">
+						<QuestionsPanel
+							skill={currentSkill}
+							questions={currentQuestions}
+							answers={answers}
+							onSelectMCQ={handleMCQSelect}
+							onUpdateWriting={handleWritingUpdate}
+						/>
+					</div>
+
+					{/* Desktop: question nav (right sidebar) */}
+					<div className="hidden w-[200px] shrink-0 overflow-y-auto border-l bg-muted/5 p-4 lg:block">
+						<p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+							Danh sách câu hỏi
+						</p>
+						<QuestionGrid
+							questions={currentQuestions}
+							answeredIds={answeredIds}
+							onJump={handleJump}
+						/>
+					</div>
+
+					{/* Mobile tabbed layout */}
+					<div className="flex flex-1 flex-col overflow-hidden lg:hidden">
+						<div className="flex shrink-0 border-b">
+							<button
+								type="button"
+								onClick={() => setMobileTab("stimulus")}
+								className={cn(
+									"flex-1 py-2.5 text-center text-sm font-medium transition-colors",
+									mobileTab === "stimulus"
+										? "border-b-2 border-primary text-primary"
+										: "text-muted-foreground hover:text-foreground",
+								)}
+							>
+								Đề bài
+							</button>
+							<button
+								type="button"
+								onClick={() => setMobileTab("questions")}
+								className={cn(
+									"flex-1 py-2.5 text-center text-sm font-medium transition-colors",
+									mobileTab === "questions"
+										? "border-b-2 border-primary text-primary"
+										: "text-muted-foreground hover:text-foreground",
+								)}
+							>
+								Trả lời
+							</button>
+						</div>
+						<div className="flex-1 overflow-y-auto p-4">
+							{mobileTab === "stimulus" ? (
+								<StimulusPanel skill={currentSkill} questions={currentQuestions} />
+							) : (
+								<QuestionsPanel
+									skill={currentSkill}
+									questions={currentQuestions}
+									answers={answers}
+									onSelectMCQ={handleMCQSelect}
+									onUpdateWriting={handleWritingUpdate}
+								/>
+							)}
+						</div>
 					</div>
 				</div>
-			</div>
+			)}
 
 			{/* Footer */}
 			<footer className="z-40 flex h-12 shrink-0 items-center justify-between border-t px-4">
@@ -357,9 +378,7 @@ function PracticePage() {
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>Bạn có chắc muốn nộp bài?</DialogTitle>
-						<DialogDescription>
-							Sau khi nộp, bạn không thể chỉnh sửa câu trả lời.
-						</DialogDescription>
+						<DialogDescription>Sau khi nộp, bạn không thể chỉnh sửa câu trả lời.</DialogDescription>
 					</DialogHeader>
 					{totalQuestions > 0 && answerCount < totalQuestions && (
 						<p className="text-sm text-warning">
@@ -367,7 +386,11 @@ function PracticePage() {
 						</p>
 					)}
 					<DialogFooter>
-						<Button variant="outline" onClick={() => setConfirming(false)} disabled={submitExam.isPending}>
+						<Button
+							variant="outline"
+							onClick={() => setConfirming(false)}
+							disabled={submitExam.isPending}
+						>
 							Hủy
 						</Button>
 						<Button onClick={handleSubmit} disabled={submitExam.isPending}>
