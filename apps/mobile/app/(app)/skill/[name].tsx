@@ -1,4 +1,5 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import { BouncyScrollView } from "@/components/BouncyScrollView";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import { ErrorScreen } from "@/components/ErrorScreen";
@@ -34,7 +35,7 @@ export default function SkillDetailScreen() {
   const prog = data.progress;
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: c.background }]} contentContainerStyle={styles.content}>
+    <BouncyScrollView style={[styles.container, { backgroundColor: c.background }]} contentContainerStyle={styles.content}>
       <Text style={[styles.title, { color: c.foreground }]}>{SKILL_LABELS[skill]} — Chi tiết</Text>
 
       {/* Stats Grid */}
@@ -77,7 +78,7 @@ export default function SkillDetailScreen() {
           <SummaryItem label="ETA" value={data.eta != null ? `${data.eta} tuần` : "—"} colors={c} />
         </View>
       </View>
-    </ScrollView>
+    </BouncyScrollView>
   );
 }
 

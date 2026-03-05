@@ -1,4 +1,5 @@
-import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
+import { BouncyFlatList } from "@/components/BouncyScrollView";
 import { ScreenWrapper } from "@/components/ScreenWrapper";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -67,7 +68,7 @@ export default function ClassDetailScreen() {
 
   return (
     <ScreenWrapper>
-      <FlatList
+      <BouncyFlatList
         data={feedbackItems}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}

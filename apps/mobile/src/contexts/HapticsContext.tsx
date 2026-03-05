@@ -33,7 +33,7 @@ export function HapticsProvider({ children }: { children: React.ReactNode }) {
   const trigger = useCallback(
     () => {
       if (enabled) {
-        Haptics.selectionAsync();
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
       }
     },
     [enabled],

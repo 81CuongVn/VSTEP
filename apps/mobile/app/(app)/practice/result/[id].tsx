@@ -1,5 +1,6 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { ActivityIndicator } from "react-native";
+import { BouncyScrollView } from "@/components/BouncyScrollView";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { HapticTouchable } from "@/components/HapticTouchable";
@@ -53,7 +54,7 @@ export default function PracticeResultScreen() {
 
   return (
     <ScreenWrapper>
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+      <BouncyScrollView style={styles.scroll} contentContainerStyle={styles.content}>
         {/* Header */}
         <View style={[styles.card, { backgroundColor: c.card, borderColor: c.border }]}>
           <View style={styles.headerRow}>
@@ -145,7 +146,7 @@ export default function PracticeResultScreen() {
             <Text style={[styles.btnText, { color: c.foreground }]}>Xem chi tiết</Text>
           </HapticTouchable>
         </View>
-      </ScrollView>
+      </BouncyScrollView>
     </ScreenWrapper>
   );
 }

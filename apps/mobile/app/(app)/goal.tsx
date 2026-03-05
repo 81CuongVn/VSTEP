@@ -1,10 +1,10 @@
 import { useState } from "react";
 import {
-  ScrollView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+import { BouncyScrollView } from "@/components/BouncyScrollView";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { HapticTouchable } from "@/components/HapticTouchable";
@@ -72,7 +72,7 @@ export default function GoalScreen() {
 
   return (
     <ScreenWrapper>
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+      <BouncyScrollView style={styles.scroll} contentContainerStyle={styles.content}>
         {/* Band */}
         <View style={styles.sectionGap}>
           <Text style={[styles.sectionTitle, { color: c.foreground }]}>Mục tiêu band điểm</Text>
@@ -155,7 +155,7 @@ export default function GoalScreen() {
             {isMutating ? "Đang lưu..." : "Lưu mục tiêu"}
           </Text>
         </HapticTouchable>
-      </ScrollView>
+      </BouncyScrollView>
     </ScreenWrapper>
   );
 }

@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
+import { BouncyScrollView } from "@/components/BouncyScrollView";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Audio } from "expo-av";
@@ -126,7 +126,7 @@ export default function PracticeQuestionScreen() {
 
   return (
     <ScreenWrapper>
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+      <BouncyScrollView style={styles.scroll} contentContainerStyle={styles.content}>
         {/* Header */}
         <View style={styles.headerRow}>
           <HapticTouchable onPress={() => router.back()}>
@@ -212,7 +212,7 @@ export default function PracticeQuestionScreen() {
             {submitMutation.error?.message ?? "Lỗi khi nộp bài"}
           </Text>
         )}
-      </ScrollView>
+      </BouncyScrollView>
     </ScreenWrapper>
   );
 }

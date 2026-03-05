@@ -3,12 +3,12 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
+import { BouncyScrollView } from "@/components/BouncyScrollView";
 import { Ionicons } from "@expo/vector-icons";
 import { HapticTouchable } from "@/components/HapticTouchable";
 import { Link, useRouter } from "expo-router";
@@ -48,7 +48,7 @@ export default function LoginScreen() {
       style={[styles.flex, { backgroundColor: c.background }]}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      <ScrollView
+      <BouncyScrollView
         contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"
       >
@@ -136,7 +136,7 @@ export default function LoginScreen() {
         </Link>
 
         <Text style={[styles.version, { color: c.mutedForeground }]}>Phiên bản 1.0.0</Text>
-      </ScrollView>
+      </BouncyScrollView>
     </KeyboardAvoidingView>
   );
 }

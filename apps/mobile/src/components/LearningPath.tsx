@@ -2,15 +2,15 @@ import React, { useEffect, useRef } from "react";
 import {
   Animated,
   Dimensions,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { BouncyScrollView } from "@/components/BouncyScrollView";
 import Svg, { Path } from "react-native-svg";
 import { Ionicons } from "@expo/vector-icons";
-import { useThemeColors, useSkillColor, spacing, radius, fontSize } from "@/theme";
+import { useThemeColors, useSkillColor, spacing, radius, fontSize, fontFamily } from "@/theme";
 import { SKILL_ICONS, SKILL_LABELS } from "@/components/SkillIcon";
 import type { Skill } from "@/types/api";
 
@@ -98,7 +98,7 @@ export function LearningPath({ levels, onNodePress }: LearningPathProps) {
   const completedPath = completedCount >= 2 ? buildTrailPath(completedCount) : "";
 
   return (
-    <ScrollView
+    <BouncyScrollView
       style={{ flex: 1, backgroundColor: c.background }}
       contentContainerStyle={{ height: totalHeight }}
       showsVerticalScrollIndicator={false}
@@ -130,7 +130,7 @@ export function LearningPath({ levels, onNodePress }: LearningPathProps) {
           onPress={() => onNodePress(level)}
         />
       ))}
-    </ScrollView>
+    </BouncyScrollView>
   );
 }
 
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
   tooltipText: {
     color: "#FFFFFF",
     fontSize: fontSize.xs,
-    fontWeight: "800",
+    fontFamily: fontFamily.extraBold,
     letterSpacing: 1.2,
   },
   tooltipArrow: {
@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
   },
   nodeLabel: {
     fontSize: fontSize.xs,
-    fontWeight: "600",
+    fontFamily: fontFamily.semiBold,
     marginTop: spacing.sm,
     textAlign: "center",
     width: NODE_SIZE + 60,

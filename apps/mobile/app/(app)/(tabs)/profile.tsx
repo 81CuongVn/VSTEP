@@ -1,11 +1,11 @@
 import {
   Alert,
-  ScrollView,
   StyleSheet,
   Switch,
   Text,
   View,
 } from "react-native";
+import { BouncyScrollView } from "@/components/BouncyScrollView";
 import { HapticTouchable } from "@/components/HapticTouchable";
 import { ScreenWrapper } from "@/components/ScreenWrapper";
 import { Ionicons } from "@expo/vector-icons";
@@ -13,7 +13,7 @@ import { useRouter } from "expo-router";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { useAuth } from "@/hooks/use-auth";
 import { useUser } from "@/hooks/use-user";
-import { useThemeColors, spacing, radius, fontSize } from "@/theme";
+import { useThemeColors, spacing, radius, fontSize, fontFamily } from "@/theme";
 import { useHaptics } from "@/contexts/HapticsContext";
 
 function showComingSoon() {
@@ -48,7 +48,7 @@ export default function ProfileScreen() {
 
   return (
     <ScreenWrapper>
-    <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+    <BouncyScrollView style={styles.scroll} contentContainerStyle={styles.content}>
       <Text style={[styles.title, { color: c.foreground }]}>Tài khoản</Text>
 
       {/* Avatar */}
@@ -158,7 +158,7 @@ export default function ProfileScreen() {
       </View>
 
       <Text style={[styles.version, { color: c.mutedForeground }]}>Phiên bản 1.0.0</Text>
-    </ScrollView>
+    </BouncyScrollView>
     </ScreenWrapper>
   );
 }
@@ -166,17 +166,17 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   scroll: { flex: 1 },
   content: { padding: spacing.xl, paddingBottom: spacing["3xl"], gap: spacing.lg },
-  title: { fontSize: fontSize["2xl"], fontWeight: "700", textAlign: "center" },
+  title: { fontSize: fontSize["2xl"], fontFamily: fontFamily.bold, textAlign: "center" },
   avatarSection: { alignItems: "center", gap: spacing.sm },
   avatar: { width: 90, height: 90, borderRadius: 45, justifyContent: "center", alignItems: "center" },
-  avatarText: { fontSize: fontSize["3xl"], fontWeight: "700" },
-  name: { fontSize: fontSize.xl, fontWeight: "700" },
-  email: { fontSize: fontSize.sm },
+  avatarText: { fontSize: fontSize["3xl"], fontFamily: fontFamily.bold },
+  name: { fontSize: fontSize.xl, fontFamily: fontFamily.bold },
+  email: { fontSize: fontSize.sm, fontFamily: fontFamily.regular },
   section: { gap: spacing.sm },
-  sectionHeader: { fontSize: fontSize.xs, fontWeight: "700", letterSpacing: 0.5, paddingLeft: spacing.xs },
+  sectionHeader: { fontSize: fontSize.xs, fontFamily: fontFamily.bold, letterSpacing: 0.5, paddingLeft: spacing.xs },
   card: { borderWidth: 1, borderRadius: radius.xl, overflow: "hidden" },
   row: { flexDirection: "row", alignItems: "center", gap: spacing.md, paddingHorizontal: spacing.base, paddingVertical: spacing.base, borderBottomWidth: 1 },
   rowLast: { borderBottomWidth: 0 },
-  rowText: { flex: 1, fontSize: fontSize.sm, fontWeight: "500" },
-  version: { fontSize: fontSize.xs, textAlign: "center", marginTop: spacing.sm },
+  rowText: { flex: 1, fontSize: fontSize.sm, fontFamily: fontFamily.medium },
+  version: { fontSize: fontSize.xs, textAlign: "center", marginTop: spacing.sm, fontFamily: fontFamily.regular },
 });

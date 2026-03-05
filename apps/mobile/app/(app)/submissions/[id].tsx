@@ -1,4 +1,5 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import { BouncyScrollView } from "@/components/BouncyScrollView";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import { ErrorScreen } from "@/components/ErrorScreen";
@@ -27,7 +28,7 @@ export default function SubmissionDetailScreen() {
   const status = statusConfig[data.status];
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: c.background }]} contentContainerStyle={styles.content}>
+    <BouncyScrollView style={[styles.container, { backgroundColor: c.background }]} contentContainerStyle={styles.content}>
       {/* Header */}
       <View style={[styles.card, { backgroundColor: c.card, borderColor: c.border }]}>
         <View style={styles.headerRow}>
@@ -98,7 +99,7 @@ export default function SubmissionDetailScreen() {
           ) : null}
         </View>
       )}
-    </ScrollView>
+    </BouncyScrollView>
   );
 }
 

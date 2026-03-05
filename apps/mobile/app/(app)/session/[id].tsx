@@ -8,6 +8,7 @@ import {
   View,
   ActivityIndicator,
 } from "react-native";
+import { BouncyScrollView } from "@/components/BouncyScrollView";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { HapticTouchable } from "@/components/HapticTouchable";
@@ -256,7 +257,7 @@ function InProgress({ session, sessionId, exam }: { session: ExamSession; sessio
       </ScrollView>
 
       {/* Question area */}
-      <ScrollView style={styles.questionScroll} contentContainerStyle={styles.questionContent}>
+      <BouncyScrollView style={styles.questionScroll} contentContainerStyle={styles.questionContent}>
         {currentQuestion ? (
           <>
             <Text style={[styles.questionCounter, { color: c.mutedForeground }]}>
@@ -273,7 +274,7 @@ function InProgress({ session, sessionId, exam }: { session: ExamSession; sessio
             Không tìm thấy câu hỏi
           </Text>
         )}
-      </ScrollView>
+      </BouncyScrollView>
 
       {/* Bottom navigation */}
       <View style={[styles.navBar, { borderTopColor: c.border }]}>
@@ -657,7 +658,7 @@ function Completed({ session, exam }: { session: ExamSession; exam: any }) {
   const statusLabel: Record<string, string> = { submitted: "Đã nộp", completed: "Hoàn thành", abandoned: "Đã hủy" };
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: c.background }]} contentContainerStyle={styles.completedContent}>
+    <BouncyScrollView style={[styles.container, { backgroundColor: c.background }]} contentContainerStyle={styles.completedContent}>
       <View style={[styles.card, { backgroundColor: c.card, borderColor: c.border }]}>
         <Text style={[styles.heading, { color: c.foreground }]}>Kết quả thi {exam ? `— Đề ${exam.level}` : ""}</Text>
         <Text style={{ color: c.mutedForeground, fontSize: fontSize.sm }}>{statusLabel[session.status] ?? session.status}</Text>
@@ -679,7 +680,7 @@ function Completed({ session, exam }: { session: ExamSession; exam: any }) {
       <HapticTouchable style={[styles.outlineBtn, { borderColor: c.border }]} onPress={() => router.replace("/(app)/(tabs)")}>
         <Text style={{ color: c.foreground, fontWeight: "600" }}>Về trang chủ</Text>
       </HapticTouchable>
-    </ScrollView>
+    </BouncyScrollView>
   );
 }
 

@@ -1,4 +1,5 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import { BouncyScrollView } from "@/components/BouncyScrollView";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { HapticTouchable } from "@/components/HapticTouchable";
@@ -28,7 +29,7 @@ export default function PracticeScreen() {
 
   return (
     <ScreenWrapper>
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+      <BouncyScrollView style={styles.scroll} contentContainerStyle={styles.content}>
         <Text style={[styles.title, { color: c.foreground }]}>Luyện tập</Text>
         <Text style={[styles.subtitle, { color: c.mutedForeground }]}>
           Chọn kỹ năng để bắt đầu
@@ -44,7 +45,7 @@ export default function PracticeScreen() {
             />
           ))}
         </View>
-      </ScrollView>
+      </BouncyScrollView>
     </ScreenWrapper>
   );
 }

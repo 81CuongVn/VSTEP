@@ -1,20 +1,20 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
   Animated,
   Easing,
-  ScrollView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+import { BouncyScrollView } from "@/components/BouncyScrollView";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { HapticTouchable } from "@/components/HapticTouchable";
 import { useCreateGoal, useProgress, useUpdateGoal } from "@/hooks/use-progress";
-import { useThemeColors, spacing, radius, fontSize } from "@/theme";
+import { useThemeColors, spacing, radius, fontSize, fontFamily } from "@/theme";
 import type { VstepBand } from "@/types/api";
 
 const TOTAL_STEPS = 4;
@@ -106,6 +106,70 @@ function BandCard({ band, score, description, selected, badge, onPress }: BandCa
       </View>
       <Text style={[styles.bandScore, { color: c.mutedForeground }]}>{score}</Text>
       <Text style={[styles.bandDesc, { color: c.mutedForeground }]}>{description}</Text>
+    </HapticTouchable>
+  );
+}
+
+// ─── Cooldown Button ─────────────────────────────────────────────────────────
+
+const COOLDOWN_MS = 2000;
+
+function CooldownButton({
+  label,
+  icon,
+  onPress,
+  step,
+  full,
+}: {
+  label: string;
+  icon?: keyof typeof Ionicons.glyphMap;
+  onPress: () => void;
+  step: number;
+  full?: boolean;
+}) {
+  const c = useThemeColors();
+  const fillAnim = useRef(new Animated.Value(0)).current;
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    setReady(false);
+    fillAnim.setValue(0);
+    const anim = Animated.timing(fillAnim, {
+      toValue: 1,
+      duration: COOLDOWN_MS,
+      easing: Easing.linear,
+      useNativeDriver: false,
+    });
+    anim.start(({ finished }) => {
+      if (finished) setReady(true);
+    });
+    return () => anim.stop();
+  }, [step, fillAnim]);
+
+  return (
+    <HapticTouchable
+      activeOpacity={0.8}
+      onPress={ready ? onPress : undefined}
+      style={[full ? styles.primaryBtnFull : styles.primaryBtn, { backgroundColor: c.muted, overflow: "hidden" }]}
+    >
+      <Animated.View
+        style={[
+          styles.cooldownFill,
+          {
+            backgroundColor: c.primary,
+            width: fillAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: ["0%", "100%"],
+            }),
+          },
+        ]}
+      />
+      <Text style={[styles.btnTextPrimary, { color: ready ? c.primaryForeground : c.primaryForeground + "90" }]}>
+        {label}
+      </Text>
+      {icon && (
+        <Ionicons name={icon} size={18} color={ready ? c.primaryForeground : c.primaryForeground + "90"} />
+      )}
     </HapticTouchable>
   );
 }
@@ -427,7 +491,7 @@ export default function OnboardingScreen() {
         />
       </View>
 
-      <ScrollView
+      <BouncyScrollView
         style={styles.scrollView}
         contentContainerStyle={[
           styles.scrollContent,
@@ -444,7 +508,7 @@ export default function OnboardingScreen() {
         >
           {renderStepContent()}
         </Animated.View>
-      </ScrollView>
+      </BouncyScrollView>
 
       {/* Bottom buttons */}
       <View
@@ -458,13 +522,7 @@ export default function OnboardingScreen() {
         ]}
       >
         {step === 0 ? (
-          <HapticTouchable
-            activeOpacity={0.8}
-            style={[styles.primaryBtnFull, { backgroundColor: c.primary }]}
-            onPress={goForward}
-          >
-            <Text style={[styles.btnTextPrimary, { color: c.primaryForeground }]}>Bắt đầu</Text>
-          </HapticTouchable>
+          <CooldownButton label="Bắt đầu" onPress={goForward} step={step} full />
         ) : (
           <View style={styles.btnRow}>
             <HapticTouchable
@@ -501,23 +559,7 @@ export default function OnboardingScreen() {
                 )}
               </HapticTouchable>
             ) : (
-              <HapticTouchable
-                activeOpacity={0.8}
-                style={[
-                  styles.primaryBtn,
-                  {
-                    backgroundColor: c.primary,
-                    opacity: canContinue ? 1 : 0.5,
-                  },
-                ]}
-                onPress={goForward}
-                disabled={!canContinue}
-              >
-                <Text style={[styles.btnTextPrimary, { color: c.primaryForeground }]}>
-                  Tiếp tục
-                </Text>
-                <Ionicons name="chevron-forward" size={18} color={c.primaryForeground} />
-              </HapticTouchable>
+              <CooldownButton label="Tiếp tục" icon="chevron-forward" onPress={goForward} step={step} />
             )}
           </View>
         )}
@@ -761,5 +803,12 @@ const styles = StyleSheet.create({
   btnTextOutline: {
     fontSize: fontSize.base,
     fontWeight: "600",
+  },
+  cooldownFill: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    bottom: 0,
+    borderRadius: radius.lg,
   },
 });

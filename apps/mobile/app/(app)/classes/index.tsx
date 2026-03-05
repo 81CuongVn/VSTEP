@@ -1,11 +1,11 @@
 import { useState } from "react";
 import {
-  FlatList,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
+import { BouncyFlatList } from "@/components/BouncyScrollView";
 import { ScreenWrapper } from "@/components/ScreenWrapper";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -66,7 +66,7 @@ export default function ClassesScreen() {
 
   return (
     <ScreenWrapper>
-      <FlatList
+      <BouncyFlatList
         data={classes}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
