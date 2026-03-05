@@ -16,6 +16,7 @@ import {
 import type { IconSvgElement } from "@hugeicons/react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { createFileRoute, Link } from "@tanstack/react-router"
+import { type MotionValue, motion, useScroll, useTransform } from "motion/react"
 import { useEffect, useRef, useState } from "react"
 import { Logo } from "@/components/common/Logo"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -156,18 +157,27 @@ const BANDS = [
 		label: "Trung cấp",
 		desc: "Giao tiếp trong công việc và đời sống hàng ngày. Hiểu được ý chính khi nghe và đọc.",
 		skills: ["Nghe hiểu hội thoại", "Viết thư cơ bản", "Đọc hiểu văn bản ngắn"],
+		gradient: "from-sky-400 to-blue-500",
+		border: "border-l-sky-400",
+		tag: "bg-sky-500/10 text-sky-600",
 	},
 	{
 		level: "B2",
 		label: "Trung cấp cao",
 		desc: "Tự tin trong môi trường học thuật và chuyên môn. Tranh luận được quan điểm.",
 		skills: ["Nghe bài giảng dài", "Viết luận có cấu trúc", "Nói trôi chảy"],
+		gradient: "from-blue-500 to-indigo-500",
+		border: "border-l-blue-500",
+		tag: "bg-blue-500/10 text-blue-600",
 	},
 	{
 		level: "C1",
 		label: "Nâng cao",
 		desc: "Sử dụng tiếng Anh linh hoạt, chính xác trong mọi tình huống phức tạp.",
 		skills: ["Nghe mọi ngữ cảnh", "Viết học thuật", "Thuyết trình chuyên sâu"],
+		gradient: "from-indigo-500 to-violet-600",
+		border: "border-l-indigo-500",
+		tag: "bg-indigo-500/10 text-indigo-600",
 	},
 ]
 
@@ -439,9 +449,9 @@ function Hero() {
 				<div className="absolute bottom-20 left-[10%] size-4 rounded-full bg-white/15" />
 			</div>
 
-			<div className="relative mx-auto flex max-w-4xl flex-col items-center px-6 pt-28 pb-32 text-center">
+			<div className="relative mx-auto flex max-w-4xl flex-col items-center px-5 pt-20 pb-16 text-center sm:px-6 sm:pt-28 sm:pb-32">
 				<AnimSection>
-					<h1 className="text-5xl font-bold leading-[1.15] tracking-tight text-white md:text-6xl lg:text-7xl">
+					<h1 className="text-3xl font-bold leading-[1.15] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
 						Nền tảng Luyện thi
 						<br />
 						<span className="text-amber-300">VSTEP</span> thông minh
@@ -449,17 +459,17 @@ function Hero() {
 				</AnimSection>
 
 				<AnimSection delay={100}>
-					<p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-white/75">
+					<p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-white/75 sm:mt-6 sm:text-lg">
 						AI chấm Writing &amp; Speaking theo rubric chuẩn Bộ GD&amp;ĐT — lộ trình cá nhân hoá từ
 						B1 đến C1, hoàn toàn miễn phí.
 					</p>
 				</AnimSection>
 
 				<AnimSection delay={200}>
-					<div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+					<div className="mt-6 flex w-full flex-col items-center gap-3 sm:mt-10 sm:w-auto sm:flex-row sm:gap-4">
 						<Button
 							size="lg"
-							className="rounded-full bg-white px-10 text-base font-bold text-[oklch(0.35_0.18_258)] shadow-lg shadow-black/20 hover:bg-white/90"
+								className="w-full rounded-full bg-white px-10 text-base font-bold text-[oklch(0.35_0.18_258)] shadow-lg shadow-black/20 hover:bg-white/90 sm:w-auto"
 							asChild
 						>
 							<Link to="/register">BẮT ĐẦU NGAY</Link>
@@ -467,7 +477,7 @@ function Hero() {
 						<Button
 							variant="ghost"
 							size="lg"
-							className="rounded-full border border-white/30 bg-transparent px-10 text-base font-bold text-white hover:bg-white/10 hover:text-white"
+								className="w-full rounded-full border border-white/30 bg-transparent px-10 text-base font-bold text-white hover:bg-white/10 hover:text-white sm:w-auto"
 							asChild
 						>
 							<a href="#how-it-works">XEM CÁCH HOẠT ĐỘNG</a>
@@ -512,8 +522,14 @@ function SkillsSection() {
 /* ── how it works ── */
 
 function HowItWorksSection() {
+	const containerRef = useRef<HTMLDivElement>(null)
+	const { scrollYProgress } = useScroll({
+		target: containerRef,
+		offset: ["start start", "end end"],
+	})
+
 	return (
-		<section id="how-it-works" className="py-20">
+		<section id="how-it-works" className="py-12 sm:py-20">
 			<div className="mx-auto max-w-5xl px-6">
 				<AnimSection>
 					<Heading
@@ -523,60 +539,93 @@ function HowItWorksSection() {
 				</AnimSection>
 			</div>
 
-			{/* Sticky card stack */}
-			<div className="mx-auto mt-12 max-w-3xl px-6">
-				{STEPS.map((step, i) => (
-					<div key={step.num} className="sticky top-20 pb-6" style={{ zIndex: i + 1 }}>
-						<div
-							className={cn(
-								"relative min-h-[560px] overflow-hidden rounded-3xl bg-gradient-to-b from-[#001656] from-[7%] to-[#0172FA] p-8 shadow-2xl shadow-black/20 lg:min-h-[620px] lg:p-10",
-							)}
-						>
-							{/* Accent gradient overlay */}
-							<div
-								className={cn(
-									"pointer-events-none absolute inset-0 bg-gradient-to-br opacity-60",
-									step.accent,
-								)}
+			{/* Scroll runway — height drives the album-stack scroll distance */}
+			<div
+				ref={containerRef}
+				className="mx-auto mt-8 max-w-[1800px] px-4 sm:mt-12 sm:px-6 md:px-10 lg:px-16 2xl:px-24 min-[2200px]:max-w-[1400px] h-[200vh] sm:h-[300vh]"
+			>
+				<div className="sticky top-16 sm:top-20">
+					<div className="relative">
+						{STEPS.map((step, i) => (
+							<StepCard
+								key={step.num}
+								step={step}
+								index={i}
+								total={STEPS.length}
+								scrollProgress={scrollYProgress}
 							/>
-
-							{/* Large watermark step number */}
-							<p className="relative text-6xl font-bold text-[#0071F9]/25 lg:text-8xl">
-								Bước {step.num}
-							</p>
-
-							{/* Illustration — absolutely centered on right half */}
-							<div className="pointer-events-none absolute inset-y-0 right-8 hidden w-[45%] items-center lg:flex lg:right-10">
-								<div className="flex h-[70%] w-full items-center justify-center rounded-2xl bg-white/[0.06] backdrop-blur-sm">
-									<HugeiconsIcon icon={step.icon} className="size-16 text-white/25" />
-								</div>
-							</div>
-
-							{/* Text content — bottom left */}
-							<div className="absolute bottom-8 left-8 max-w-[35%] lg:bottom-10 lg:left-10">
-								<div className="space-y-3">
-									<h3 className="text-xl font-bold text-white lg:text-2xl">{step.title}</h3>
-									<p className="leading-relaxed text-white/65">{step.desc}</p>
-								</div>
-							</div>
-
-							{/* Mobile illustration fallback */}
-							<div className="mt-6 flex min-h-[240px] items-center justify-center rounded-2xl bg-white/[0.06] backdrop-blur-sm lg:hidden">
-								<HugeiconsIcon icon={step.icon} className="size-16 text-white/25" />
-							</div>
-						</div>
+						))}
 					</div>
-				))}
+				</div>
 			</div>
 		</section>
+	)
+}
+
+function StepCard({
+	step,
+	index,
+	total,
+	scrollProgress,
+}: {
+	step: (typeof STEPS)[number]
+	index: number
+	total: number
+	scrollProgress: MotionValue<number>
+}) {
+	const isLast = index === total - 1
+	const segStart = index / total
+	const segEnd = (index + 0.7) / total
+	const y = useTransform(scrollProgress, [segStart, segEnd], ["0%", "-120%"])
+
+	return (
+		<motion.div
+			className={cn(
+				index === 0 ? "relative" : "absolute inset-0",
+				"flex flex-col overflow-hidden rounded-2xl bg-gradient-to-b from-[#001656] from-[7%] to-[#0172FA] p-5 sm:min-h-[calc(100vh-120px)] sm:p-8 lg:rounded-3xl lg:p-10 2xl:rounded-[32px] 2xl:p-14",
+			)}
+			style={{ y: isLast ? undefined : y, zIndex: total - index }}
+		>
+			{/* Accent gradient overlay */}
+			<div
+				className={cn("pointer-events-none absolute inset-0 bg-gradient-to-br opacity-60", step.accent)}
+			/>
+
+			{/* Large watermark step number */}
+			<p className="relative text-4xl font-bold text-[#0071F9]/25 sm:text-6xl lg:text-8xl">
+				Bước {step.num}
+			</p>
+
+			{/* Illustration — absolutely centered on right half */}
+			<div className="pointer-events-none absolute inset-y-0 right-8 hidden w-[45%] items-center lg:flex lg:right-10">
+				<div className="flex h-[70%] w-full items-center justify-center rounded-2xl bg-white/[0.06] backdrop-blur-sm">
+					<HugeiconsIcon icon={step.icon} className="size-16 text-white/25" />
+				</div>
+			</div>
+
+			{/* Text content — flows naturally on mobile, pinned bottom-left on lg */}
+			<div className="relative mt-4 lg:absolute lg:bottom-10 lg:left-10 lg:mt-0 lg:max-w-[45%] 2xl:bottom-14 2xl:left-14">
+				<div className="space-y-2 sm:space-y-3">
+					<h3 className="text-lg font-bold text-white sm:text-xl lg:text-2xl">{step.title}</h3>
+					<p className="text-sm leading-relaxed text-white/65 sm:text-base">{step.desc}</p>
+				</div>
+			</div>
+
+			{/* Mobile illustration fallback */}
+			<div className="mt-4 flex min-h-[160px] items-center justify-center rounded-2xl bg-white/[0.06] backdrop-blur-sm sm:mt-6 sm:min-h-0 sm:flex-1 lg:hidden">
+				<HugeiconsIcon icon={step.icon} className="size-16 text-white/25" />
+			</div>
+		</motion.div>
 	)
 }
 
 /* ── roadmap ── */
 
 function RoadmapSection() {
+	const offsets = ["lg:ml-[10%]", "lg:ml-[24%]", "lg:ml-[38%]"] as const
+
 	return (
-		<section className="bg-muted/20">
+		<section className="overflow-hidden bg-muted/20">
 			<div className="mx-auto max-w-5xl px-6 py-20">
 				<AnimSection>
 					<Heading
@@ -584,37 +633,46 @@ function RoadmapSection() {
 						sub="Từ B1 đến C1 — mỗi cấp độ là một bước tiến cụ thể"
 					/>
 				</AnimSection>
-				<div className="mt-12 grid gap-6 lg:grid-cols-3">
+
+				<div className="mt-16 flex flex-col gap-6">
 					{BANDS.map((b, i) => (
-						<AnimSection key={b.level} delay={i * 150}>
-							<div className="relative flex flex-col gap-4 rounded-2xl bg-muted/30 p-6">
-								{/* Step indicator */}
-								<div className="flex items-center gap-3">
-									<div className="flex size-12 items-center justify-center rounded-xl bg-primary/10">
-										<span className="text-lg font-bold text-primary">{b.level}</span>
-									</div>
-									<div>
-										<p className="font-bold">{b.label}</p>
-										<p className="text-xs text-muted-foreground">Cấp độ {i + 1}/3</p>
-									</div>
-									{i < BANDS.length - 1 && (
-										<span className="ml-auto hidden text-xl text-muted-foreground/50 lg:block">
-											→
-										</span>
+						<AnimSection key={b.level} delay={i * 200}>
+							<div className={cn("max-w-lg", offsets[i])}>
+								<div
+									className={cn(
+										"rounded-2xl border-l-4 bg-card p-6",
+										b.border,
 									)}
-								</div>
-								{/* Description */}
-								<p className="text-sm leading-relaxed text-muted-foreground">{b.desc}</p>
-								{/* Skills */}
-								<div className="flex flex-wrap gap-2">
-									{b.skills.map((s) => (
-										<span
-											key={s}
-											className="rounded-full bg-primary/8 px-3 py-1 text-xs font-medium text-primary"
+								>
+									<div className="flex items-start gap-4">
+										<div
+											className={cn(
+												"flex size-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br text-lg font-bold text-white",
+												b.gradient,
+											)}
 										>
-											{s}
-										</span>
-									))}
+											{b.level}
+										</div>
+										<div className="min-w-0 flex-1">
+											<p className="text-lg font-bold">{b.label}</p>
+											<p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+												{b.desc}
+											</p>
+											<div className="mt-3 flex flex-wrap gap-2">
+												{b.skills.map((s) => (
+													<span
+														key={s}
+														className={cn(
+															"rounded-full px-3 py-1 text-xs font-medium",
+															b.tag,
+														)}
+													>
+														{s}
+													</span>
+												))}
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</AnimSection>
