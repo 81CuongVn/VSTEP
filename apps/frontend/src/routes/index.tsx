@@ -1,12 +1,10 @@
 import {
 	AnalyticsUpIcon,
-	AssignmentsIcon,
 	Book02Icon,
 	CheckmarkCircle01Icon,
 	DocumentValidationIcon,
 	Fire02Icon,
 	HeadphonesIcon,
-	Home01Icon,
 	Logout01Icon,
 	Mic01Icon,
 	PencilEdit02Icon,
@@ -300,10 +298,9 @@ function Header() {
 const DAYS_OF_WEEK = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"]
 
 const NAV_ITEMS = [
-	{ label: "Trang chủ", icon: Home01Icon, href: "/dashboard" as const },
-	{ label: "Bài thi", icon: DocumentValidationIcon, href: "/exams" as const },
+	{ label: "Luyện tập", icon: Book02Icon, href: "/practice" as const },
+	{ label: "Thi thử", icon: DocumentValidationIcon, href: "/exams" as const },
 	{ label: "Tiến độ", icon: AnalyticsUpIcon, href: "/progress" as const },
-	{ label: "Bài nộp", icon: AssignmentsIcon, href: "/submissions" as const },
 ]
 
 function AuthenticatedHeader() {
@@ -469,7 +466,7 @@ function Hero() {
 					<div className="mt-6 flex w-full flex-col items-center gap-3 sm:mt-10 sm:w-auto sm:flex-row sm:gap-4">
 						<Button
 							size="lg"
-								className="w-full rounded-full bg-white px-10 text-base font-bold text-[oklch(0.35_0.18_258)] shadow-lg shadow-black/20 hover:bg-white/90 sm:w-auto"
+							className="w-full rounded-full bg-white px-10 text-base font-bold text-[oklch(0.35_0.18_258)] shadow-lg shadow-black/20 hover:bg-white/90 sm:w-auto"
 							asChild
 						>
 							<Link to="/register">BẮT ĐẦU NGAY</Link>
@@ -477,7 +474,7 @@ function Hero() {
 						<Button
 							variant="ghost"
 							size="lg"
-								className="w-full rounded-full border border-white/30 bg-transparent px-10 text-base font-bold text-white hover:bg-white/10 hover:text-white sm:w-auto"
+							className="w-full rounded-full border border-white/30 bg-transparent px-10 text-base font-bold text-white hover:bg-white/10 hover:text-white sm:w-auto"
 							asChild
 						>
 							<a href="#how-it-works">XEM CÁCH HOẠT ĐỘNG</a>
@@ -588,7 +585,10 @@ function StepCard({
 		>
 			{/* Accent gradient overlay */}
 			<div
-				className={cn("pointer-events-none absolute inset-0 bg-gradient-to-br opacity-60", step.accent)}
+				className={cn(
+					"pointer-events-none absolute inset-0 bg-gradient-to-br opacity-60",
+					step.accent,
+				)}
 			/>
 
 			{/* Large watermark step number */}
@@ -638,12 +638,7 @@ function RoadmapSection() {
 					{BANDS.map((b, i) => (
 						<AnimSection key={b.level} delay={i * 200}>
 							<div className={cn("max-w-lg", offsets[i])}>
-								<div
-									className={cn(
-										"rounded-2xl border-l-4 bg-card p-6",
-										b.border,
-									)}
-								>
+								<div className={cn("rounded-2xl border-l-4 bg-card p-6", b.border)}>
 									<div className="flex items-start gap-4">
 										<div
 											className={cn(
@@ -655,17 +650,12 @@ function RoadmapSection() {
 										</div>
 										<div className="min-w-0 flex-1">
 											<p className="text-lg font-bold">{b.label}</p>
-											<p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-												{b.desc}
-											</p>
+											<p className="mt-1 text-sm leading-relaxed text-muted-foreground">{b.desc}</p>
 											<div className="mt-3 flex flex-wrap gap-2">
 												{b.skills.map((s) => (
 													<span
 														key={s}
-														className={cn(
-															"rounded-full px-3 py-1 text-xs font-medium",
-															b.tag,
-														)}
+														className={cn("rounded-full px-3 py-1 text-xs font-medium", b.tag)}
 													>
 														{s}
 													</span>

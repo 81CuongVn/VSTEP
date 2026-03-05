@@ -66,6 +66,7 @@ function ExamDetailPage() {
 		<div className="mx-auto max-w-2xl space-y-6">
 			<Link
 				to="/exams"
+				search={{ skill: undefined }}
 				className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
 			>
 				<HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />

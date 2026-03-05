@@ -1,10 +1,9 @@
 import {
 	AnalyticsUpIcon,
-	AssignmentsIcon,
+	Book02Icon,
 	CheckmarkCircle01Icon,
 	DocumentValidationIcon,
 	Fire02Icon,
-	Home01Icon,
 	Logout01Icon,
 	Menu01Icon,
 	UserCircleIcon,
@@ -74,10 +73,9 @@ export function LearnerLayout() {
 					</Link>
 					<nav className="hidden items-center gap-1 md:flex">
 						{[
-							{ label: "Trang chủ", icon: Home01Icon, href: "/dashboard" as const },
-							{ label: "Bài thi", icon: DocumentValidationIcon, href: "/exams" as const },
+							{ label: "Luyện tập", icon: Book02Icon, href: "/practice" as const },
+							{ label: "Thi thử", icon: DocumentValidationIcon, href: "/exams" as const },
 							{ label: "Tiến độ", icon: AnalyticsUpIcon, href: "/progress" as const },
-							{ label: "Bài nộp", icon: AssignmentsIcon, href: "/submissions" as const },
 						].map((item) => (
 							<Link
 								key={item.label}
