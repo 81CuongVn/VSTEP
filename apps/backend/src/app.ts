@@ -11,6 +11,7 @@ import { onboarding } from "@/modules/onboarding";
 import { progress } from "@/modules/progress";
 import { questions } from "@/modules/questions";
 import { submissions } from "@/modules/submissions";
+import { uploads } from "@/modules/uploads";
 import { users } from "@/modules/users";
 import { vocabulary } from "@/modules/vocabulary";
 import { errorPlugin } from "@/plugins/error";
@@ -54,6 +55,10 @@ const api = new Elysia({ prefix: "/api" })
             name: "Vocabulary",
             description: "Vocabulary topics, words, and learning progress",
           },
+          {
+            name: "Uploads",
+            description: "File upload endpoints (audio, etc.)",
+          },
         ],
         components: {
           securitySchemes: {
@@ -76,7 +81,8 @@ const api = new Elysia({ prefix: "/api" })
   .use(exams)
   .use(classes)
   .use(onboarding)
-  .use(vocabulary);
+  .use(vocabulary)
+  .use(uploads);
 
 /** Root app — health check outside /api, everything else inside */
 export const app = new Elysia()

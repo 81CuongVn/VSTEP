@@ -1,4 +1,4 @@
-import { KnowledgePointCategory } from "@db/enums";
+import { KnowledgePointCategory, Skill } from "@db/enums";
 import { t } from "elysia";
 
 // ---------------------------------------------------------------------------
@@ -33,6 +33,17 @@ export const KnowledgePointListQuery = t.Object({
   limit: t.Optional(t.Number({ minimum: 1, maximum: 100, default: 50 })),
   category: t.Optional(KnowledgePointCategory),
   search: t.Optional(t.String({ maxLength: 255 })),
+});
+
+export const TopicListQuery = t.Object({
+  skill: t.Optional(Skill),
+});
+export type TopicListQuery = typeof TopicListQuery.static;
+
+export const TopicItem = t.Object({
+  id: t.String({ format: "uuid" }),
+  name: t.String(),
+  questionCount: t.Number(),
 });
 
 export type KnowledgePointCreateBody = typeof KnowledgePointCreateBody.static;

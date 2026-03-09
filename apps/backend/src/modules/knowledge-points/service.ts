@@ -1,11 +1,16 @@
 import { assertExists, escapeLike } from "@common/utils";
 import { db, paginate, takeFirst, takeFirstOrThrow } from "@db/index";
-import { knowledgePoints } from "@db/schema/knowledge-points";
-import { and, desc, eq, sql } from "drizzle-orm";
+import {
+  knowledgePoints,
+  questionKnowledgePoints,
+} from "@db/schema/knowledge-points";
+import { questions } from "@db/schema/questions";
+import { and, count, desc, eq, sql } from "drizzle-orm";
 import type {
   KnowledgePointCreateBody,
   KnowledgePointListQuery,
   KnowledgePointUpdateBody,
+  TopicListQuery,
 } from "./schema";
 
 // ---------------------------------------------------------------------------
@@ -93,4 +98,29 @@ export async function remove(id: string) {
     .where(eq(knowledgePoints.id, id))
     .returning({ id: knowledgePoints.id })
     .then(takeFirstOrThrow);
+}
+
+export async function listTopics(query: TopicListQuery) {
+  const rows = await db
+    .select({
+      id: knowledgePoints.id,
+      name: knowledgePoints.name,
+      questionCount: count(questionKnowledgePoints.questionId),
+    })
+    .from(knowledgePoints)
+    .leftJoin(
+      questionKnowledgePoints,
+      eq(knowledgePoints.id, questionKnowledgePoints.knowledgePointId),
+    )
+    .leftJoin(questions, eq(questionKnowledgePoints.questionId, questions.id))
+    .where(
+      and(
+        eq(knowledgePoints.category, "topic"),
+        query.skill ? eq(questions.skill, query.skill) : undefined,
+      ),
+    )
+    .groupBy(knowledgePoints.id, knowledgePoints.name)
+    .orderBy(knowledgePoints.name);
+
+  return { data: rows };
 }

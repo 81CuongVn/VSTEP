@@ -44,6 +44,35 @@ const KNOWLEDGE_POINTS: NewKnowledgePoint[] = [
   { category: "strategy", name: "Note-taking while Listening" },
   { category: "strategy", name: "Essay Structure and Organization" },
   { category: "strategy", name: "Paraphrasing and Summarizing" },
+
+  // Topics — Listening (6)
+  { category: "topic", name: "Đời sống hàng ngày" },
+  { category: "topic", name: "Du lịch & Khách sạn" },
+  { category: "topic", name: "Giáo dục & Học tập" },
+  { category: "topic", name: "Khoa học & Công nghệ" },
+  { category: "topic", name: "Văn hóa & Xã hội" },
+  { category: "topic", name: "Sức khỏe" },
+
+  // Topics — Reading (7)
+  { category: "topic", name: "Sức khỏe & Khoa học" },
+  { category: "topic", name: "Công nghệ & Xã hội" },
+  { category: "topic", name: "Giáo dục & Ngôn ngữ" },
+  { category: "topic", name: "Thiên nhiên & Môi trường" },
+  { category: "topic", name: "Lịch sử & Văn hóa" },
+  { category: "topic", name: "Khoa học & Địa chất" },
+  { category: "topic", name: "Du lịch & Tình nguyện" },
+
+  // Topics — Writing (4)
+  { category: "topic", name: "Thư cá nhân" },
+  { category: "topic", name: "Bài luận xã hội" },
+  { category: "topic", name: "Bài luận quan điểm" },
+  { category: "topic", name: "Thư trang trọng" },
+
+  // Topics — Speaking (4)
+  { category: "topic", name: "Lối sống & Du lịch" },
+  { category: "topic", name: "Giáo dục & Nghề nghiệp" },
+  { category: "topic", name: "Văn hóa & Lễ hội" },
+  { category: "topic", name: "Tài chính & Cuộc sống" },
 ];
 
 export interface SeededKnowledgePoints {
@@ -69,17 +98,40 @@ export async function seedKnowledgePoints(
   logResult("Knowledge points", inserted.length);
 
   // 2. Link questions to knowledge points
-  // Assign 2-4 knowledge points per question based on skill
+  // Assign 2-4 knowledge points + 1 topic per question based on skill
   const byCategory = (cat: string) =>
     inserted.filter((kp) => kp.category === cat);
   const grammar = byCategory("grammar");
   const vocabulary = byCategory("vocabulary");
   const strategy = byCategory("strategy");
+  const allTopics = byCategory("topic");
+
+  const topicsBySkill: Record<string, typeof allTopics> = {
+    listening: allTopics.filter((kp) =>
+      TOPIC_SKILL_MAP.listening.includes(kp.name),
+    ),
+    reading: allTopics.filter((kp) =>
+      TOPIC_SKILL_MAP.reading.includes(kp.name),
+    ),
+    writing: allTopics.filter((kp) =>
+      TOPIC_SKILL_MAP.writing.includes(kp.name),
+    ),
+    speaking: allTopics.filter((kp) =>
+      TOPIC_SKILL_MAP.speaking.includes(kp.name),
+    ),
+  };
 
   const links: Array<{ questionId: string; knowledgePointId: string }> = [];
 
   for (const q of questions) {
-    const assigned = pickForQuestion(q.skill, grammar, vocabulary, strategy);
+    const topics = topicsBySkill[q.skill] ?? [];
+    const assigned = pickForQuestion(
+      q.skill,
+      grammar,
+      vocabulary,
+      strategy,
+      topics,
+    );
     for (const kp of assigned) {
       links.push({ questionId: q.id, knowledgePointId: kp.id });
     }
@@ -94,6 +146,38 @@ export async function seedKnowledgePoints(
   return { all: inserted };
 }
 
+const TOPIC_SKILL_MAP: Record<string, string[]> = {
+  listening: [
+    "Đời sống hàng ngày",
+    "Du lịch & Khách sạn",
+    "Giáo dục & Học tập",
+    "Khoa học & Công nghệ",
+    "Văn hóa & Xã hội",
+    "Sức khỏe",
+  ],
+  reading: [
+    "Sức khỏe & Khoa học",
+    "Công nghệ & Xã hội",
+    "Giáo dục & Ngôn ngữ",
+    "Thiên nhiên & Môi trường",
+    "Lịch sử & Văn hóa",
+    "Khoa học & Địa chất",
+    "Du lịch & Tình nguyện",
+  ],
+  writing: [
+    "Thư cá nhân",
+    "Bài luận xã hội",
+    "Bài luận quan điểm",
+    "Thư trang trọng",
+  ],
+  speaking: [
+    "Lối sống & Du lịch",
+    "Giáo dục & Nghề nghiệp",
+    "Văn hóa & Lễ hội",
+    "Tài chính & Cuộc sống",
+  ],
+};
+
 /**
  * Pick relevant knowledge points for a question based on its skill.
  * Deterministic distribution using index-based selection.
@@ -103,43 +187,57 @@ function pickForQuestion(
   grammar: SeededKnowledgePoints["all"],
   vocabulary: SeededKnowledgePoints["all"],
   strategy: SeededKnowledgePoints["all"],
+  topics: SeededKnowledgePoints["all"],
 ): SeededKnowledgePoints["all"] {
   // Use a simple counter per skill to rotate through knowledge points
   const idx = counters[skill] ?? 0;
   counters[skill] = idx + 1;
 
+  const result: SeededKnowledgePoints["all"] = [];
+
   switch (skill) {
     case "reading":
       // Reading tests vocabulary, grammar, and reading strategies
-      return [
+      result.push(
         vocabulary[idx % vocabulary.length],
         grammar[idx % grammar.length],
         strategy[idx % strategy.length],
-      ];
+      );
+      break;
     case "listening":
       // Listening focuses on vocabulary, listening strategies
-      return [
+      result.push(
         vocabulary[idx % vocabulary.length],
-        strategy[(idx + 4) % strategy.length], // offset to pick listening strategies
-      ];
+        strategy[(idx + 4) % strategy.length],
+      );
+      break;
     case "writing":
       // Writing tests grammar, vocabulary, and essay strategies
-      return [
+      result.push(
         grammar[idx % grammar.length],
         grammar[(idx + 3) % grammar.length],
         vocabulary[idx % vocabulary.length],
-        strategy[(idx + 6) % strategy.length], // offset to pick writing strategies
-      ];
+        strategy[(idx + 6) % strategy.length],
+      );
+      break;
     case "speaking":
       // Speaking tests vocabulary, grammar, and paraphrasing
-      return [
+      result.push(
         vocabulary[idx % vocabulary.length],
         grammar[(idx + 1) % grammar.length],
-        strategy[(idx + 7) % strategy.length], // Paraphrasing
-      ];
+        strategy[(idx + 7) % strategy.length],
+      );
+      break;
     default:
-      return [vocabulary[idx % vocabulary.length]];
+      result.push(vocabulary[idx % vocabulary.length]);
   }
+
+  // Assign 1 topic KP per question (round-robin within skill's topics)
+  if (topics.length > 0) {
+    result.push(topics[idx % topics.length]);
+  }
+
+  return result;
 }
 
 const counters: Record<string, number> = {};

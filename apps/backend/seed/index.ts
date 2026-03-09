@@ -10,6 +10,7 @@ import { seedExamSessions } from "./seeders/06-exam-sessions";
 import { seedProgress } from "./seeders/07-progress";
 import { seedKnowledgePoints } from "./seeders/08-knowledge-points";
 import { seedVocabulary } from "./seeders/09-vocabulary";
+import { seedPracticeExams } from "./seeders/10-practice-exams";
 
 const tableNames = Object.values(table)
   .map((t) => getTableName(t))
@@ -41,6 +42,7 @@ async function main(): Promise<void> {
     await seedProgress(tx, users, submissions, knowledgePoints, sessions);
     await seedClasses(tx, users);
     await seedVocabulary(tx);
+    await seedPracticeExams(tx, users.admin.id, questions);
     return users;
   });
 
