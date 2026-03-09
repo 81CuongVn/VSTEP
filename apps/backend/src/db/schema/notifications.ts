@@ -21,6 +21,7 @@ export const notificationTypeEnum = pgEnum("notification_type", [
   "feedback_received",
   "class_invite",
   "goal_achieved",
+  "system",
 ]);
 
 // ---------------------------------------------------------------------------

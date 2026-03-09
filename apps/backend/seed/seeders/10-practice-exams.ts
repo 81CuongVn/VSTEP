@@ -43,9 +43,7 @@ export async function seedPracticeExams(
     // Each practice exam = 1 question per part (like a real exam)
     // Number of exams = min questions across parts
     const parts = [...byPart.keys()].sort();
-    const examCount = Math.min(
-      ...parts.map((p) => byPart.get(p)?.length ?? 0),
-    );
+    const examCount = Math.min(...parts.map((p) => byPart.get(p)?.length ?? 0));
 
     for (let i = 0; i < examCount; i++) {
       const blueprint: ExamBlueprint = {

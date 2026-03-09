@@ -7,6 +7,7 @@ import { classes } from "@/modules/classes";
 import { exams } from "@/modules/exams";
 import { health } from "@/modules/health";
 import { knowledgePoints } from "@/modules/knowledge-points";
+import { devicesModule, notificationsModule } from "@/modules/notifications";
 import { onboarding } from "@/modules/onboarding";
 import { progress } from "@/modules/progress";
 import { questions } from "@/modules/questions";
@@ -59,6 +60,11 @@ const api = new Elysia({ prefix: "/api" })
             name: "Uploads",
             description: "File upload endpoints (audio, etc.)",
           },
+          {
+            name: "Notifications",
+            description:
+              "Notifications and device token management for push notifications",
+          },
         ],
         components: {
           securitySchemes: {
@@ -82,7 +88,9 @@ const api = new Elysia({ prefix: "/api" })
   .use(classes)
   .use(onboarding)
   .use(vocabulary)
-  .use(uploads);
+  .use(uploads)
+  .use(notificationsModule)
+  .use(devicesModule);
 
 /** Root app — health check outside /api, everything else inside */
 export const app = new Elysia()
