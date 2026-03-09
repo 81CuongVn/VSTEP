@@ -1,4 +1,4 @@
-import { QuestionLevel, Skill } from "@db/enums";
+import { ExamSkill, ExamType, QuestionLevel, Skill } from "@db/enums";
 import { examSessions, exams } from "@db/schema";
 import { SubmissionAnswer } from "@db/types/answers";
 import { ExamBlueprint } from "@db/types/exam-blueprint";
@@ -24,6 +24,17 @@ export type Exam = typeof Exam.static;
 
 export const ExamSession = SessionRow;
 export type ExamSession = typeof ExamSession.static;
+
+export const SessionExamEmbed = t.Object({
+  title: t.String(),
+  level: QuestionLevel,
+  type: ExamType,
+});
+
+export const ExamSessionWithExam = t.Object({
+  ...ExamSession.properties,
+  exam: t.Nullable(SessionExamEmbed),
+});
 
 const InsertExam = createInsertSchema(exams, {
   level: QuestionLevel,
@@ -98,6 +109,8 @@ export const ExamListQuery = t.Object({
   limit: t.Optional(t.Number({ minimum: 1, maximum: 100, default: 20 })),
   level: t.Optional(QuestionLevel),
   isActive: t.Optional(t.Boolean()),
+  type: t.Optional(ExamType),
+  skill: t.Optional(ExamSkill),
 });
 
 export type ExamCreateBody = typeof ExamCreateBody.static;

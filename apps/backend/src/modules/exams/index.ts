@@ -16,6 +16,7 @@ import {
   ExamListQuery,
   ExamSession,
   ExamSessionDetail,
+  ExamSessionWithExam,
   ExamUpdateBody,
   SessionListQuery,
   SessionParams,
@@ -116,7 +117,7 @@ export const exams = new Elysia({
     query: SessionListQuery,
     response: {
       200: t.Object({
-        data: t.Array(ExamSession),
+        data: t.Array(ExamSessionWithExam),
         meta: PaginationMeta,
       }),
       ...AuthErrors,

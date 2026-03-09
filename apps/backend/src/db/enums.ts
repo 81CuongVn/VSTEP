@@ -4,6 +4,8 @@
  */
 
 import {
+  examSkillEnum,
+  examTypeEnum,
   knowledgePointCategoryEnum,
   placementConfidenceEnum,
   placementSourceEnum,
@@ -37,3 +39,9 @@ export const PlacementConfidence = t.UnionEnum(
   placementConfidenceEnum.enumValues,
   { default: undefined },
 );
+export const ExamType = t.UnionEnum(examTypeEnum.enumValues, {
+  default: undefined,
+});
+export const ExamSkill = t.UnionEnum(examSkillEnum.enumValues, {
+  default: undefined,
+});

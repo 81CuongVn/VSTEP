@@ -60,6 +60,8 @@ export async function find(id: string, actor: Actor) {
 export async function list(query: ExamListQuery, actor: Actor) {
   const where = and(
     query.level ? eq(table.exams.level, query.level) : undefined,
+    query.type ? eq(table.exams.type, query.type) : undefined,
+    query.skill ? eq(table.exams.skill, query.skill) : undefined,
     query.isActive !== undefined
       ? eq(table.exams.isActive, query.isActive)
       : undefined,

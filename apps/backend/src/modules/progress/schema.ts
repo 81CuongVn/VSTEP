@@ -84,4 +84,6 @@ export const ActivityResponse = t.Object({
   streak: t.Integer(),
   total: t.Integer(),
   activeDays: t.Array(t.String({ format: "date" })),
+  totalExercises: t.Integer(),
+  totalStudyTimeMinutes: t.Integer(),
 });

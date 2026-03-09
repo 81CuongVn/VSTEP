@@ -1,5 +1,5 @@
 import { db, table } from "@db/index";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 
 export async function activity(userId: string, days: number) {
   const rows = await db
@@ -47,5 +47,36 @@ export async function activity(userId: string, days: number) {
 
   const activeDays = rows.filter((r) => r.date >= cutoffStr).map((r) => r.date);
 
-  return { streak, total: rows.length, activeDays };
+  const [exerciseRow, studyTimeRow] = await Promise.all([
+    db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(table.submissions)
+      .where(
+        and(
+          eq(table.submissions.userId, userId),
+          eq(table.submissions.status, "completed"),
+        ),
+      )
+      .then((r) => r[0]),
+    db
+      .select({
+        minutes: sql<number>`coalesce(sum(extract(epoch from (${table.examSessions.completedAt} - ${table.examSessions.startedAt})) / 60), 0)::int`,
+      })
+      .from(table.examSessions)
+      .where(
+        and(
+          eq(table.examSessions.userId, userId),
+          inArray(table.examSessions.status, ["submitted", "completed"]),
+        ),
+      )
+      .then((r) => r[0]),
+  ]);
+
+  return {
+    streak,
+    total: rows.length,
+    activeDays,
+    totalExercises: exerciseRow?.count ?? 0,
+    totalStudyTimeMinutes: studyTimeRow?.minutes ?? 0,
+  };
 }

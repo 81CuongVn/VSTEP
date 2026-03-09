@@ -221,8 +221,16 @@ export async function listSessions(userId: string, query: SessionListQuery) {
   );
   return paginate(
     db
-      .select(SESSION_COLUMNS)
+      .select({
+        ...SESSION_COLUMNS,
+        exam: {
+          title: table.exams.title,
+          level: table.exams.level,
+          type: table.exams.type,
+        },
+      })
       .from(table.examSessions)
+      .leftJoin(table.exams, eq(table.examSessions.examId, table.exams.id))
       .where(where)
       .orderBy(desc(table.examSessions.startedAt))
       .$dynamic(),
