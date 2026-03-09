@@ -40,7 +40,7 @@ Single PostgreSQL 17 database. All tables use UUID PKs, `created_at`/`updated_at
 
 | Table | Purpose |
 |-------|---------|
-| `user_progress` | Per-user per-skill: current_level, scaffold_level, window_avg, trend |
+| `user_progress` | Per-user per-skill: current_level, target_level, scaffold_level, streak_count, streak_direction, attempt_count |
 | `user_skill_scores` | Score history: submission_id, skill, score, band |
 | `user_goals` | Learning goals: target_band, deadline, daily_study_time |
 | `user_placements` | Placement test results: skill levels, source (self_assess/placement/skipped) |
@@ -92,8 +92,15 @@ Single PostgreSQL 17 database. All tables use UUID PKs, `created_at`/`updated_at
 
 | Index | Table | Column(s) | Purpose |
 |-------|-------|-----------|---------|
-| `submissions_user_idx` | submissions | user_id | User's submissions |
+| `submissions_user_id_idx` | submissions | user_id | User's submissions |
+| `submissions_skill_idx` | submissions | skill | Skill filter |
+| `submissions_question_id_idx` | submissions | question_id | Question lookup |
 | `submissions_status_idx` | submissions | status | Queue queries |
+| `submissions_user_status_idx` | submissions | (user_id, status) | User + status filter |
+| `submissions_review_queue_idx` | submissions | status WHERE status = 'review_pending' | Partial index for review queue |
+| `submissions_user_history_idx` | submissions | (user_id, created_at) | User submission history |
+| `user_progress_user_skill_idx` | user_progress | (user_id, skill) | Unique per-user per-skill |
+| `user_skill_scores_user_skill_idx` | user_skill_scores | (user_id, skill, created_at) | Score history lookup |
 | `vocabulary_words_topic_idx` | vocabulary_words | topic_id | Words by topic |
 | `notifications_user_idx` | notifications | (user_id, created_at) | User timeline |
 | `notifications_unread_idx` | notifications | user_id WHERE read_at IS NULL | Unread count |
@@ -105,8 +112,7 @@ Single PostgreSQL 17 database. All tables use UUID PKs, `created_at`/`updated_at
 |-------------|------|---------|
 | `grading:tasks` | Stream | Grading task queue (XADD/XREADGROUP) |
 | `grading:results` | Stream | Grading results (worker → backend) |
-| `lock:review:{submissionId}` | String (TTL 15min) | Review claim lock |
-| `grading:sse:{submissionId}` | Pub/Sub channel | SSE broadcast |
+| `stt:{sha256}` | String (TTL 24h) | STT transcription cache |
 
 ---
 

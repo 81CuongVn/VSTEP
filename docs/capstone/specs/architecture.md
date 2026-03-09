@@ -6,9 +6,9 @@
 Client (Web/Mobile) → Backend API (Bun + Elysia) → PostgreSQL
                                                   → Redis (queue + cache)
                                                   → MinIO (S3 object storage)
-                    → Grading Worker (Python)      → PostgreSQL (shared-DB)
-                                                  → Redis Streams (XREADGROUP consumer)
-                                                  → LLM + STT via LiteLLM (provider-agnostic)
+                    → Grading Worker (Python)      → Redis Streams (XREADGROUP consumer)
+                                                  → LLM (Cloudflare Workers AI + OpenAI-compatible)
+                                                  → STT (Cloudflare Workers AI)
 ```
 
 Worker kết quả push ngược về Redis stream `grading:results`, backend đọc và ghi PostgreSQL. Worker không truy cập DB trực tiếp.
@@ -24,9 +24,9 @@ Worker kết quả push ngược về Redis stream `grading:results`, backend đ
 | **Database** | PostgreSQL 17 | Single shared database, JSONB |
 | **Queue** | Redis 7.2+ (Streams) | XADD/XREADGROUP task queue, distributed locks, pub/sub |
 | **Storage** | MinIO (S3-compatible) | Audio files (Speaking), uploads |
-| **Grading** | Python + FastAPI + LiteLLM | AI grading microservice |
-| **LLM** | LiteLLM (provider-agnostic) | Default: Groq Llama 3.3 70B, fallback: Cloudflare Llama 3.3 70B |
-| **STT** | LiteLLM (provider-agnostic) | Default: Groq Whisper V3 Turbo, fallback: Cloudflare Deepgram Nova 3 |
+| **Grading** | Python + FastAPI + httpx + Cloudflare SDK | AI grading microservice |
+| **LLM** | Cloudflare Workers AI + OpenAI-compatible | Primary: configurable (default GPT-4o), Fallback: Cloudflare Llama 3.3 70B |
+| **STT** | Cloudflare Workers AI | Default: Deepgram Nova 3, cached in Redis (24h TTL) |
 | **Frontend** | React 19 + Vite 7 + TanStack Router | SPA |
 | **Mobile** | React Native | Android-first |
 | **Linting** | Biome | Format + lint |
@@ -41,7 +41,7 @@ Worker kết quả push ngược về Redis stream `grading:results`, backend đ
 | Submission states | 5-state: pending → processing → completed/review_pending/failed | Worker handles retry internally |
 | Score type | `numeric(3,1)` → 0.0–10.0, step 0.5 | Exact decimal for academic scores |
 | Password hashing | Argon2id via `Bun.password` | Built-in, more secure than bcrypt |
-| SSE | Elysia built-in + Redis pub/sub | Real-time grading notifications |
+| SSE | Planned (not yet implemented) | Real-time grading notifications |
 
 ## Deployment
 

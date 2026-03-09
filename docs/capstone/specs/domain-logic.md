@@ -30,7 +30,7 @@ pending → failed
 
 ```
 Backend: XADD "grading:tasks" { submissionId, questionId, skill, answer, dispatchedAt }
-Worker:  XREADGROUP "grading:tasks" → grade via LiteLLM → XADD "grading:results" { submissionId, score, ... }
+Worker:  XREADGROUP "grading:tasks" → grade via LLM → XADD "grading:results" { submissionId, score, ... }
 Backend: consumes "grading:results" → UPDATE submissions/submission_details in PostgreSQL
 ```
 
@@ -42,35 +42,35 @@ Worker failure: max 3 retries with exponential backoff. After exhaustion → fai
 ### AI Grading (Writing)
 
 1. Worker receives task from Redis Streams (XREADGROUP)
-2. Call LLM via LiteLLM (provider-agnostic: default Groq Llama 3.3 70B, fallback Cloudflare)
-3. Parse structured response: criteria scores (Task Achievement, Coherence, Lexical Resource, Grammar)
-4. Calculate overall score (weighted average)
-5. Determine confidence: high (≥85%) / medium (70-84%) / low (<70%)
+2. Call LLM (primary: configurable OpenAI-compatible, fallback: Cloudflare Workers AI)
+3. Parse structured response: criteria scores (`taskFulfillment`, `organization`, `vocabulary`, `grammar`)
+4. Calculate overall score (arithmetic mean → snap to nearest 0.5)
+5. LLM self-reports confidence: `high` / `medium` / `low`
 6. XADD result to `grading:results` stream
 
 ### AI Grading (Speaking)
 
 1. Worker receives task from Redis Streams
-2. Download audio → Transcribe via LiteLLM STT (default Groq Whisper V3 Turbo, fallback Cloudflare Deepgram Nova 3)
-3. STT results cached in Redis
-4. Grade transcript via LiteLLM LLM with Speaking rubric
-5. Parse criteria scores (Pronunciation, Fluency, Lexical, Grammar, Interaction)
+2. Download audio → Transcribe via Cloudflare Workers AI (default: Deepgram Nova 3)
+3. STT results cached in Redis (key: `stt:{sha256}`, TTL: 24h)
+4. Grade transcript via LLM (same primary/fallback as Writing)
+5. Parse criteria scores (`fluencyOrganization`, `pronunciation`, `vocabulary`, `grammar`)
 6. XADD result to `grading:results` stream
 
 ### Confidence Routing
 
 | Confidence | Action |
 |-----------|--------|
-| High (≥85%) | → `completed` |
-| Medium (70-84%) | → `review_pending` (priority: medium) |
-| Low (<70%) | → `review_pending` (priority: high) |
+| `high` | → `completed` |
+| `medium` | → `review_pending` (priority: medium) |
+| `low` | → `review_pending` (priority: high) |
 
-### Human Review Merge Rules
+### Human Review
 
 When instructor submits review:
-- `scoreDiff = abs(ai.score - human.score)`
-- If `scoreDiff ≤ 0.5`: `final = ai × 0.4 + human × 0.6`, gradingMode = `hybrid`
-- Else: `final = human`, gradingMode = `human`, auditFlag = true
+- Final score = human score (snapped to 0.5), `gradingMode = "human"`
+- `auditFlag = true` when `abs(ai.score - human.score) > 0.5`
+- No weighted/hybrid merge — human review is authoritative
 
 ## 3. Progress Tracking
 
@@ -106,57 +106,20 @@ Per skill, last 10 completed submissions:
 
 ## 4. Adaptive Scaffolding
 
-### Stages
+### Levels
 
-| Stage | Level | Support |
-|-------|-------|---------|
-| 1 | Template | Full template + guided prompts |
-| 2 | Keywords | Keywords + partial hints |
-| 3 | Free | No support |
+Integer scaffold level (1–5) stored in `user_progress.scaffold_level`.
 
-### Progression Rules (Writing, scorePct = score × 10)
+### Progression Rules
 
-| Current | Level Up | Level Down |
-|---------|----------|------------|
-| Stage 1 | avg3 ≥ 80 → Stage 2 | — |
-| Stage 2 | avg3 ≥ 75 → Stage 3 | avg3 < 60 (2 consecutive) → Stage 1 |
-| Stage 3 | — | avg3 < 65 (2 consecutive) → Stage 2 |
+- Level up: `avg > 8.0` AND streak direction `up` AND streak count ≥ 2 → `min(current + 1, 5)`
+- Level down: `avg < 5.0` AND streak direction `down` AND streak count ≥ 2 → `max(current - 1, 1)`
+- Otherwise: unchanged
+- Minimum 3 recent scores required for evaluation; else keep current level
 
-### Initial Assignment
+## 5. Real-time Notifications
 
-| Placement Level | Starting Stage |
-|----------------|---------------|
-| A2 or below | Stage 1 |
-| B1 | Stage 2 |
-| B2–C1 | Stage 3 |
-
-## 5. SSE (Real-time Notifications)
-
-### Endpoint
-
-```
-GET /api/sse/submissions/:id?token=<jwt>
-```
-
-Auth via query param (EventSource doesn't support custom headers).
-
-### Events
-
-| Event | When |
-|-------|------|
-| `grading.progress` | Grading in progress (step, percent) |
-| `grading.completed` | Final result ready (score, band) |
-| `grading.review_pending` | Needs human review |
-| `grading.failed` | Grading failed |
-| `ping` | Heartbeat every 30s |
-
-### Implementation
-
-- Elysia built-in SSE + async generator
-- Redis pub/sub channel per submission for cross-process broadcast
-- Heartbeat: 30s ping
-- Max lifetime: 30 min
-- Auto-close on terminal state (completed/failed) + 5s grace
+> **Note:** SSE (Server-Sent Events) for real-time grading status is planned but not yet implemented. Currently, clients poll submission status via `GET /api/submissions/:id`.
 
 ## 6. Exam Session Flow
 
