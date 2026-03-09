@@ -418,11 +418,14 @@ function TestPracticeTab({
 				</div>
 
 				{sessionList.length > 0 ? (
-					<div className="space-y-6">
-						{Object.entries(groupedSessions).map(([date, dateSessions]) => (
-							<div key={date} className="relative pl-6">
-								<div className="absolute left-0 top-1 size-3 rounded-full bg-primary" />
-								<div className="absolute bottom-0 left-[5px] top-4 w-0.5 bg-border" />
+					<div className="relative pl-6">
+						{/* Continuous dashed line from first dot to last dot */}
+						<div className="absolute left-[5px] top-1 bottom-1 border-l-2 border-dashed border-border" />
+
+						{Object.entries(groupedSessions).map(([date, dateSessions], groupIdx) => (
+							<div key={date} className={cn("relative", groupIdx > 0 && "mt-6")}>
+								{/* Blue dot */}
+								<div className="absolute -left-6 top-0.5 z-10 size-3 rounded-full bg-primary ring-4 ring-card" />
 								<p className="mb-3 text-sm font-semibold text-foreground">{date}</p>
 								<div className="space-y-3">
 									{dateSessions.map((session) => {
