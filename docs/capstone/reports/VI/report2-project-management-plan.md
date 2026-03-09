@@ -1,17 +1,3 @@
-# Báo Cáo Đồ Án Capstone
-
-## Report 2 — Kế Hoạch Quản Lý Dự Án
-
-**Tên dự án**: Hệ Thống Luyện Thi VSTEP Thích Ứng Với Đánh Giá Toàn Diện Kỹ Năng Và Hỗ Trợ Học Tập Cá Nhân Hóa
-
-**Mã dự án**: SP26SE145 · Nhóm: GSP26SE63
-
-**Thời gian**: 01/01/2026 – 30/04/2026
-
-— Hà Nội, tháng 03/2026 —
-
----
-
 # I. Lịch Sử Thay Đổi
 
 \*A — Thêm mới · M — Chỉnh sửa · D — Xóa
