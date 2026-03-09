@@ -403,76 +403,7 @@ LI-04: Mobile App development targets Android only in the initial phase, with iO
 
 [^14]: VietNamNet. (2025). *Vietnam's edtech market surges with AI-driven, locally adapted platforms*. Retrieved from https://vietnamnet.vn/en/vietnam-s-edtech-market-surges-with-ai-driven-locally-adapted-platforms-2424532.html
 
-## Appendix A: Feature Tree Diagram
-
-```mermaid
-graph LR
-    ROOT["VSTEP Adaptive<br/>Preparation System"]
-
-    ROOT --> P1["Phase 1<br/>MVP"]
-    ROOT --> P2["Phase 2<br/>Enhancement"]
-
-    P1 --> FE01["FE-01<br/>Placement Test"]
-    FE01 --> FE01a["4-Skill Assessment"]
-    FE01 --> FE01b["Spider Chart Init"]
-    FE01 --> FE01c["Path Recommendation"]
-
-    P1 --> PM["Practice Mode"]
-    PM --> FE02["FE-02<br/>Listening"]
-    FE02 --> FE02a["Adaptive Scaffolding"]
-    FE02 --> FE02b["Dictation / MCQ"]
-    PM --> FE03["FE-03<br/>Reading"]
-    FE03 --> FE03a["T/F/NG / MCQ"]
-    FE03 --> FE03b["Matching / Gap Fill"]
-    PM --> FE04["FE-04<br/>Writing + AI"]
-    FE04 --> FE04a["GPT-5.4 + Llama 3.3"]
-    FE04 --> FE04b["SLA 20 min"]
-    PM --> FE05["FE-05<br/>Speaking + AI"]
-    FE05 --> FE05a["Deepgram Nova 3 STT"]
-    FE05 --> FE05b["SLA 60 min"]
-
-    P1 --> FE06["FE-06<br/>Mock Test"]
-    FE06 --> FE06a["4-Skill Simulation"]
-    FE06 --> FE06b["VSTEP Format & Timing"]
-
-    P1 --> FE07["FE-07<br/>Human Grading"]
-    FE07 --> FE07a["Instructor Scoring"]
-    FE07 --> FE07b["AI Score Override"]
-
-    P1 --> FE08["FE-08<br/>Progress Tracking"]
-    FE08 --> FE08a["Spider Chart"]
-    FE08 --> FE08b["Sliding Window"]
-
-    P1 --> FE09["FE-09<br/>Goal Setting"]
-    FE09 --> FE09a["Target B1/B2/C1"]
-    FE09 --> FE09b["Achievement Prediction"]
-
-    P2 --> FE10["FE-10<br/>Content Mgmt"]
-    FE10 --> FE10a["Question Bank CRUD"]
-    FE10 --> FE10b["Import/Export"]
-
-    P2 --> FE11["FE-11<br/>User Mgmt"]
-    FE11 --> FE11a["Bulk Create"]
-    FE11 --> FE11b["Role Assignment"]
-
-    P2 --> FE12["FE-12<br/>Analytics"]
-    FE12 --> FE12a["Stats & Reports"]
-    FE12 --> FE12b["Report Export"]
-
-    P2 --> FE13["FE-13<br/>Notifications"]
-    FE13 --> FE13a["Push / Email"]
-    FE13 --> FE13b["In-App"]
-
-    P2 --> FE14["FE-14<br/>Online Payment"]
-    FE14 --> FE14a["VNPay / MoMo / ZaloPay"]
-    FE14 --> FE14b["Exam Purchase"]
-
-    P2 --> FE15["FE-15<br/>Advanced Admin"]
-    FE15 --> FE15a["Activity History"]
-    FE15 --> FE15b["Auto Assignment"]
-```
-
-## Appendix B: Use Case Diagram
+## Appendix A: Use Case Diagram
 
 (Diagram to be added in Report 2 - SRS)
 
