@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     llm_timeout: int = 60
     llm_retries: int = 3
 
-    stt_model: str = "cloudflare/@cf/openai/whisper"
+    stt_model: str = "cloudflare/@cf/deepgram/nova-3"
     stt_api_base: str | None = None
     stt_api_key: str | None = None
 

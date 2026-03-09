@@ -38,7 +38,15 @@ async def transcribe(audio_url: str, redis: Redis) -> str:
         )
         response.raise_for_status()
         data = response.json()
-        transcript = data.get("result", {}).get("text", "")
+        result = data.get("result", {})
+        # Deepgram Nova format
+        if "results" in result:
+            transcript = (
+                result["results"]["channels"][0]["alternatives"][0]["transcript"]
+            )
+        else:
+            # Whisper format
+            transcript = result.get("text", "")
 
     await redis.setex(key, CACHE_TTL, transcript)
     logger.info("transcribed", audio_url=audio_url, length=len(transcript))
