@@ -343,3 +343,83 @@ D — Thực hiện · R — Review · S — Hỗ trợ · I — Được thông
 | Quản lý dự án | GitHub Issues, GitHub Projects |
 | Truyền thông | Discord (hàng ngày), Google Meet (sprint ceremonies) |
 | Tài liệu API | OpenAPI (tự sinh từ Elysia route schemas) |
+
+
+---
+
+## 7. Đóng Góp & Theo Dõi Nỗ Lực Nhóm (Tuần 1–8)
+
+### 7.1 Vai Trò & Trách Nhiệm Thành Viên
+
+| Thành viên | MSSV | Vai trò | Trách nhiệm chính |
+|-------------|------|---------|---------------------|
+| Hoàng Văn Anh Nghĩa | SE172605 | Trưởng nhóm, Lập trình viên Backend & AI | Kiến trúc backend, tất cả các module backend, dịch vụ chấm điểm AI, thiết kế CSDL, đặc tả kỹ thuật, quản lý dự án, tài liệu |
+| Nguyễn Minh Khôi | SE172625 | Lập trình viên Mobile | Ứng dụng React Native, tích hợp API, ghi âm (Speaking) |
+| Nguyễn Nhật Phát | SE172607 | Lập trình viên Frontend | Giao diện web (xác thực, luyện tập, thi thử, bài nộp), tích hợp API |
+| Nguyễn Trần Tấn Phát | SE173198 | Lập trình viên Frontend | Giao diện web (dashboard tiến độ, từ vựng, kết quả thi, components), đồng bộ type |
+
+### 7.2 Tổng Hợp Nỗ Lực (Tuần 1–8)
+
+| Thành viên | Phát triển (giờ) | Tài liệu (giờ) | Tổng (giờ) | Đóng góp (%) | Trạng thái |
+|-------------|-------------------:|---------------------:|-------------:|-----------------:|------------|
+| Hoàng Văn Anh Nghĩa | 96 | 36 | 132 | 30% | Hoạt động (Tuần 1–8) |
+| Nguyễn Minh Khôi | 82 | 12 | 94 | 22% | Hoạt động (Tuần 1–8) |
+| Nguyễn Nhật Phát | 84 | 14 | 98 | 24% | Hoạt động (Tuần 1–8) |
+| Nguyễn Trần Tấn Phát | 80 | 16 | 96 | 24% | Hoạt động (Tuần 1–8) |
+| **Tổng** | **342** | **78** | **420** | **100%** | |
+
+*Số giờ ước tính dựa trên báo cáo sprint hàng tuần và nhật ký hoạt động git.*
+
+### 7.3 Chi Tiết Công Việc
+
+| Tuần | Thành viên | Công việc | Phân loại | Giờ | Hoàn thành |
+|------|-------------|-----------|-----------|-----:|------------|
+| 1–2 | Nghĩa | Lập kế hoạch dự án, WBS, đặc tả kỹ thuật (20 file) | Tài liệu | 18 | Hoàn thành |
+| 1–2 | Nghĩa | Thiết kế schema CSDL (Drizzle ORM + migrations) | Phát triển | 8 | Hoàn thành |
+| 1–2 | Nghĩa | Backend Phase 1: Module xác thực (JWT, RBAC, refresh rotation) | Phát triển | 10 | Hoàn thành |
+| 1–2 | Khôi | Cài đặt dự án React Native, cấu trúc navigation | Phát triển | 14 | Hoàn thành |
+| 1–2 | Khôi | Nghiên cứu & prototype ghi âm | Phát triển | 6 | Hoàn thành |
+| 1–2 | Phát NN | Cài đặt dự án Frontend (React 19 + Vite 7 + TanStack Router) | Phát triển | 12 | Hoàn thành |
+| 1–2 | Phát NN | Hệ thống layout, route guards, API client | Phát triển | 8 | Hoàn thành |
+| 1–2 | Phát NTT | Cài đặt thư viện UI (shadcn/ui + Tailwind) | Phát triển | 14 | Hoàn thành |
+| 1–2 | Phát NTT | Bản thảo Report 1–2 | Tài liệu | 6 | Hoàn thành |
+| 3–4 | Nghĩa | Backend Phase 2–3: Câu hỏi, Bài nộp, Chấm tự động | Phát triển | 16 | Hoàn thành |
+| 3–4 | Nghĩa | Dịch vụ chấm điểm: Pipeline Writing (LLM), Speaking (STT + LLM) | Phát triển | 12 | Hoàn thành |
+| 3–4 | Nghĩa | Backend Phase 4: Theo dõi tiến độ, sliding window | Phát triển | 8 | Hoàn thành |
+| 3–4 | Khôi | Mobile: Màn hình xác thực, dashboard, giao diện luyện tập | Phát triển | 16 | Hoàn thành |
+| 3–4 | Khôi | Mobile: Tích hợp API, quản lý token | Phát triển | 6 | Hoàn thành |
+| 3–4 | Phát NN | Frontend: Trang xác thực (đăng nhập, đăng ký, quên mật khẩu) | Phát triển | 10 | Hoàn thành |
+| 3–4 | Phát NN | Frontend: Chế độ luyện tập (4 kỹ năng), luồng bài tập | Phát triển | 14 | Hoàn thành |
+| 3–4 | Phát NTT | Frontend: Dashboard tiến độ (Spider Chart), danh sách bài thi | Phát triển | 16 | Hoàn thành |
+| 3–4 | Phát NTT | Frontend: Trang kết quả, hiển thị điểm | Phát triển | 6 | Hoàn thành |
+| 5–6 | Nghĩa | Backend Phase 5–9: Bài thi, phiên thi, mục tiêu, lớp học, quy trình review | Phát triển | 14 | Hoàn thành |
+| 5–6 | Nghĩa | Backend: Module từ vựng, thông báo, uploads (S3/MinIO) | Phát triển | 10 | Hoàn thành |
+| 5–6 | Nghĩa | Report 1–4 (phiên bản ENG + VI) | Tài liệu | 10 | Hoàn thành |
+| 5–6 | Khôi | Mobile: Phiên thi, ghi âm Speaking, push notifications | Phát triển | 18 | Hoàn thành |
+| 5–6 | Khôi | Báo cáo phần kiến trúc mobile | Tài liệu | 6 | Hoàn thành |
+| 5–6 | Phát NN | Frontend: Giao diện thi thử (có giới hạn thời gian), lịch sử bài nộp | Phát triển | 18 | Hoàn thành |
+| 5–6 | Phát NN | Frontend: Chi tiết bài nộp, hiển thị phản hồi | Phát triển | 6 | Hoàn thành |
+| 5–6 | Phát NTT | Frontend: Trang từ vựng, lịch sử tiến độ (heatmap) | Phát triển | 16 | Hoàn thành |
+| 5–6 | Phát NTT | Báo cáo mô tả màn hình, ảnh chụp UI | Tài liệu | 6 | Hoàn thành |
+| 7–8 | Nghĩa | Backend: Knowledge points, phiên luyện tập, lộ trình học | Phát triển | 10 | Hoàn thành |
+| 7–8 | Nghĩa | Kiểm thử tích hợp, seed data pipeline, cài đặt Docker | Phát triển | 8 | Hoàn thành |
+| 7–8 | Nghĩa | Cập nhật báo cáo, biểu đồ ERD, biểu đồ hoạt động | Tài liệu | 8 | Hoàn thành |
+| 7–8 | Khôi | Mobile: Cài đặt offline, kiểm tra thiết bị, hoàn thiện nền tảng | Phát triển | 16 | Hoàn thành |
+| 7–8 | Khôi | Báo cáo phần triển khai, kiểm thử | Tài liệu | 6 | Hoàn thành |
+| 7–8 | Phát NN | Frontend: Trang quản trị (người dùng, câu hỏi, bài thi, bài nộp) | Phát triển | 16 | Hoàn thành |
+| 7–8 | Phát NN | Báo cáo luồng màn hình, test cases | Tài liệu | 14 | Hoàn thành |
+| 7–8 | Phát NTT | Frontend: Chi tiết câu trả lời Reading, biểu đồ, hoàn thiện UI | Phát triển | 14 | Hoàn thành |
+| 7–8 | Phát NTT | Báo cáo bảng công nghệ, tài liệu component | Tài liệu | 4 | Hoàn thành |
+
+*Số giờ ước tính dựa trên tốc độ sprint và độ phức tạp công việc. Mỗi sprint = 2 tuần.*
+
+### 7.4 Sản Phẩm Chính Theo Thành Viên
+
+| Thành viên | Sản phẩm chính | Số dòng code (ước tính) |
+|-------------|-----------------|------------------------:|
+| Nghĩa | Backend (tất cả 12 module), Dịch vụ chấm điểm (Python), Schema CSDL (24 bảng), 20 file đặc tả, 8 báo cáo (ENG+VI), seed data, cấu hình Docker | ~18.500 |
+| Khôi | Ứng dụng mobile (React Native Android), ghi âm, push notifications, offline caching, phiên thi | ~14.200 |
+| Phát NN | Giao diện xác thực, chế độ luyện tập (4 kỹ năng), thi thử, trang quản trị (4 CRUD), lịch sử bài nộp, API client | ~12.800 |
+| Phát NTT | Dashboard tiến độ (Spider Chart + Heatmap), giao diện từ vựng, biểu đồ, kết quả thi, thư viện UI component | ~11.600 |
+
+*Số dòng code = insertions − deletions từ lịch sử git (từ 01/01/2026). Bao gồm code, cấu hình và tài liệu.*
