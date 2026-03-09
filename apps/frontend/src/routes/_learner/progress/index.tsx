@@ -412,7 +412,7 @@ function TestPracticeTab({
 						<h3 className="text-lg font-semibold">Lịch sử Test Practice</h3>
 						<p className="text-sm text-muted-foreground">Dựa trên 30 ngày qua</p>
 					</div>
-					<Link to="/exams" className="text-sm font-medium text-primary hover:underline">
+					<Link to="/progress/history" className="text-sm font-medium text-primary hover:underline">
 						Xem tất cả →
 					</Link>
 				</div>

@@ -77,6 +77,16 @@ interface ExamSession {
 	updatedAt: string
 }
 
+interface SessionExamEmbed {
+	title: string
+	level: QuestionLevel
+	type: ExamType
+}
+
+interface ExamSessionWithExam extends ExamSession {
+	exam: SessionExamEmbed | null
+}
+
 // Session detail (from GET /api/exams/sessions/:id — includes questions + answers)
 interface SessionQuestion {
 	id: string
@@ -382,6 +392,8 @@ export type {
 	ExamAnswer,
 	ExamBlueprint,
 	ExamSession,
+	ExamSessionWithExam,
+	SessionExamEmbed,
 	ExamSessionDetail,
 	Goal,
 	GradingMode,
