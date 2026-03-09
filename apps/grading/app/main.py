@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app import worker
+from app.ai_routes import ai_router
 from app.health import health_router
 from app.logger import logger
 
@@ -18,3 +19,4 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="VSTEP Grading Service", lifespan=lifespan)
 app.include_router(health_router)
+app.include_router(ai_router)

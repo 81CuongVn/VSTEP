@@ -14,8 +14,10 @@ import {
   KnowledgePointCreateBody,
   KnowledgePointListQuery,
   KnowledgePointUpdateBody,
+  TopicItem,
+  TopicListQuery,
 } from "./schema";
-import { create, find, list, remove, update } from "./service";
+import { create, find, list, listTopics, remove, update } from "./service";
 
 export const knowledgePoints = new Elysia({
   name: "module:knowledge-points",
@@ -23,6 +25,21 @@ export const knowledgePoints = new Elysia({
   detail: { tags: ["Knowledge Points"] },
 })
   .use(authPlugin)
+
+  .get("/topics", ({ query }) => listTopics(query), {
+    auth: true,
+    query: TopicListQuery,
+    response: {
+      200: t.Object({ data: t.Array(TopicItem) }),
+      ...AuthErrors,
+    },
+    detail: {
+      summary: "List topics",
+      description:
+        "Return topic knowledge points with question count. Optionally filter by skill.",
+      security: [{ bearerAuth: [] }],
+    },
+  })
 
   .get("/", ({ query }) => list(query), {
     auth: true,

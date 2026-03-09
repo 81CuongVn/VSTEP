@@ -2,16 +2,21 @@ import { env } from "@common/env";
 import { cors } from "@elysiajs/cors";
 import { openapi } from "@elysiajs/openapi";
 import { Elysia } from "elysia";
+import { ai } from "@/modules/ai";
 import { auth } from "@/modules/auth";
 import { classes } from "@/modules/classes";
 import { exams } from "@/modules/exams";
 import { health } from "@/modules/health";
 import { knowledgePoints } from "@/modules/knowledge-points";
+import { devicesModule, notificationsModule } from "@/modules/notifications";
 import { onboarding } from "@/modules/onboarding";
+import { practice } from "@/modules/practice";
 import { progress } from "@/modules/progress";
 import { questions } from "@/modules/questions";
 import { submissions } from "@/modules/submissions";
+import { uploads } from "@/modules/uploads";
 import { users } from "@/modules/users";
+import { vocabulary } from "@/modules/vocabulary";
 import { errorPlugin } from "@/plugins/error";
 
 /** API sub-app — all feature modules mounted under /api */
@@ -49,6 +54,27 @@ const api = new Elysia({ prefix: "/api" })
             description:
               "Learner onboarding: placement test, self-assessment, or skip",
           },
+          {
+            name: "Practice",
+            description: "Adaptive practice question selection",
+          },
+          {
+            name: "Vocabulary",
+            description: "Vocabulary topics, words, and learning progress",
+          },
+          {
+            name: "Uploads",
+            description: "File upload endpoints (audio, etc.)",
+          },
+          {
+            name: "Notifications",
+            description:
+              "Notifications and device token management for push notifications",
+          },
+          {
+            name: "AI",
+            description: "AI-powered language analysis (paraphrase, explain)",
+          },
         ],
         components: {
           securitySchemes: {
@@ -70,7 +96,13 @@ const api = new Elysia({ prefix: "/api" })
   .use(progress)
   .use(exams)
   .use(classes)
-  .use(onboarding);
+  .use(onboarding)
+  .use(vocabulary)
+  .use(uploads)
+  .use(practice)
+  .use(notificationsModule)
+  .use(devicesModule)
+  .use(ai);
 
 /** Root app — health check outside /api, everything else inside */
 export const app = new Elysia()

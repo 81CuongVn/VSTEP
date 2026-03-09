@@ -1,8 +1,8 @@
 import hashlib
-import io
+
 import httpx
-from litellm import atranscription
 from redis.asyncio import Redis
+
 from app.config import settings
 from app.logger import logger
 
@@ -24,13 +24,29 @@ async def transcribe(audio_url: str, redis: Redis) -> str:
     if cached:
         return cached.decode()
 
-    # litellm expects file-like object opened in binary mode
-    response = await atranscription(
-        model=settings.stt_model,
-        file=io.BytesIO(audio),
-        language="en",
-    )
-    transcript = response.text or ""
+    model = settings.stt_model.removeprefix("cloudflare/")
+    url = f"{settings.stt_api_base}/run/{model}"
+
+    async with httpx.AsyncClient(timeout=120) as client:
+        response = await client.post(
+            url,
+            headers={
+                "Authorization": f"Bearer {settings.stt_api_key}",
+                "Content-Type": "application/octet-stream",
+            },
+            content=audio,
+        )
+        response.raise_for_status()
+        data = response.json()
+        result = data.get("result", {})
+        # Deepgram Nova format
+        if "results" in result:
+            transcript = (
+                result["results"]["channels"][0]["alternatives"][0]["transcript"]
+            )
+        else:
+            # Whisper format
+            transcript = result.get("text", "")
 
     await redis.setex(key, CACHE_TTL, transcript)
     logger.info("transcribed", audio_url=audio_url, length=len(transcript))
