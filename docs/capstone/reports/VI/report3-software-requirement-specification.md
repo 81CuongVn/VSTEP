@@ -1142,7 +1142,6 @@ flowchart TB
     WaitAI["Wait for AI result<br/>(poll submission status)"]
 
     ViewAIResult["View AI feedback<br/>Criteria scores,<br/>grammar errors"]
-    ViewAIResult["View AI feedback<br/>Criteria scores,<br/>grammar errors"]
 
     UpdateProgress["Progress updated<br/>Sliding window recalc<br/>Scaffold level check"]
 
