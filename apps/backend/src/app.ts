@@ -12,6 +12,7 @@ import { progress } from "@/modules/progress";
 import { questions } from "@/modules/questions";
 import { submissions } from "@/modules/submissions";
 import { users } from "@/modules/users";
+import { vocabulary } from "@/modules/vocabulary";
 import { errorPlugin } from "@/plugins/error";
 
 /** API sub-app — all feature modules mounted under /api */
@@ -49,6 +50,10 @@ const api = new Elysia({ prefix: "/api" })
             description:
               "Learner onboarding: placement test, self-assessment, or skip",
           },
+          {
+            name: "Vocabulary",
+            description: "Vocabulary topics, words, and learning progress",
+          },
         ],
         components: {
           securitySchemes: {
@@ -70,7 +75,8 @@ const api = new Elysia({ prefix: "/api" })
   .use(progress)
   .use(exams)
   .use(classes)
-  .use(onboarding);
+  .use(onboarding)
+  .use(vocabulary);
 
 /** Root app — health check outside /api, everything else inside */
 export const app = new Elysia()
