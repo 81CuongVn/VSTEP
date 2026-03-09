@@ -1,51 +1,49 @@
-# Capstone Project Report
+# Báo Cáo Đồ Án Capstone
 
-## Report 4 — Software Design Document
+## Report 4 — Tài Liệu Thiết Kế Phần Mềm
 
-**Project**: An Adaptive VSTEP Preparation System with Comprehensive Skill Assessment and Personalized Learning Support
+**Tên dự án**: Hệ Thống Luyện Thi VSTEP Thích Ứng Với Đánh Giá Toàn Diện Kỹ Năng Và Hỗ Trợ Học Tập Cá Nhân Hóa
 
-**Project Code**: SP26SE145 · Group: GSP26SE63
+**Mã dự án**: SP26SE145 · Nhóm: GSP26SE63
 
-**Duration**: 01/01/2026 – 30/04/2026
-
-— Hanoi, March 2026 —
+— Hà Nội, tháng 03/2026 —
 
 ---
 
-# I. Record of Changes
+# I. Lịch Sử Thay Đổi
 
-*A — Added · M — Modified · D — Deleted
+*A — Thêm mới · M — Chỉnh sửa · D — Xóa
 
-| Date | A/M/D | In Charge | Change Description |
+| Ngày | A/M/D | Người phụ trách | Mô tả thay đổi |
 |------|-------|-----------|-------------------|
-| 02/03/2026 | A | Nghĩa (Leader) | Initial SDD — architecture design, component diagrams, sequence diagrams, database design, interface design |
+| 02/03/2026 | A | Nghĩa (Trưởng nhóm) | SDD ban đầu — thiết kế kiến trúc, biểu đồ thành phần, biểu đồ tuần tự, thiết kế cơ sở dữ liệu, thiết kế giao diện |
 
 ---
 
-# II. Software Design Document
+# II. Tài Liệu Thiết Kế Phần Mềm
 
-## 1. Architecture Design
+## 1. Thiết Kế Kiến Trúc
 
-### 1.1 Architecture Overview
+### 1.1 Tổng Quan Kiến Trúc
 
-The Adaptive VSTEP Preparation System follows a **modular monorepo** architecture with three independently deployable applications sharing a single Git repository:
+Hệ thống Luyện thi VSTEP Thích ứng tuân theo kiến trúc **monorepo dạng module** với ba ứng dụng triển khai độc lập dùng chung một Git repository:
 
-| Application | Runtime | Role |
+| Ứng dụng | Runtime | Vai trò |
 |-------------|---------|------|
-| **Backend** (Main API) | Bun + Elysia | REST API server handling all client requests, authentication, business logic, and auto-grading for objective skills |
-| **Grading** (AI Worker) | Python + FastAPI | Async worker consuming Redis queue tasks for AI-powered Writing/Speaking grading via LLM and STT |
-| **Frontend** (Web SPA) | React 19 + Vite 7 | Single-page application serving the learner, instructor, and admin interfaces |
+| **Backend** (API chính) | Bun + Elysia | Máy chủ REST API xử lý tất cả yêu cầu từ client, xác thực, logic nghiệp vụ, và chấm điểm tự động cho các kỹ năng trắc nghiệm |
+| **Grading** (Worker AI) | Python + FastAPI | Worker bất đồng bộ tiêu thụ tác vụ từ hàng đợi Redis cho việc chấm Writing/Speaking bằng AI thông qua LLM và STT |
+| **Frontend** (Web SPA) | React 19 + Vite 7 | Ứng dụng trang đơn phục vụ giao diện cho người học, giảng viên và quản trị viên |
 
-**Key architectural decisions:**
+**Các quyết định kiến trúc chính:**
 
-- **Shared-DB pattern**: Both Backend and Grading Worker connect to the same PostgreSQL database. The worker writes grading results directly — no callback queue or outbox pattern needed.
-- **Redis Queue**: Redis list with `LPUSH`/`BRPOP` replaces heavyweight message brokers. Simpler, fewer moving parts.
-- **SSE Real-time**: Server-Sent Events for unidirectional grading status updates to clients.
-- **JWT Auth**: Access/refresh token pair with rotation and reuse detection.
-- **Parse, Don't Validate**: All inputs validated at API boundaries via Zod/TypeBox schemas. Internal code assumes valid data.
-- **Throw, Don't Return**: All apps use typed error hierarchies. Errors are thrown, never returned as values.
+- **Mô hình Shared-DB**: Cả Backend và Grading Worker kết nối tới cùng một cơ sở dữ liệu PostgreSQL. Worker ghi kết quả chấm điểm trực tiếp — không cần callback queue hay outbox pattern.
+- **Redis Queue**: Redis list với `LPUSH`/`BRPOP` thay thế các message broker nặng nề. Đơn giản hơn, ít thành phần di chuyển hơn.
+- **SSE Thời gian thực**: Server-Sent Events cho cập nhật trạng thái chấm điểm một chiều tới client.
+- **JWT Auth**: Cặp access/refresh token với rotation và phát hiện tái sử dụng.
+- **Parse, Don't Validate**: Tất cả đầu vào được xác thực tại biên API qua Zod/TypeBox schema. Code nội bộ mặc định dữ liệu hợp lệ.
+- **Throw, Don't Return**: Tất cả ứng dụng sử dụng hệ thống phân cấp lỗi có kiểu. Lỗi được throw, không bao giờ trả về dưới dạng giá trị.
 
-### 1.2 System Architecture Diagram
+### 1.2 Biểu Đồ Kiến Trúc Hệ Thống
 
 ```mermaid
 flowchart TB
@@ -121,7 +119,7 @@ flowchart TB
     class GroqLLM,GroqSTT external
 ```
 
-### 1.3 Deployment Diagram
+### 1.3 Biểu Đồ Triển Khai
 
 ```mermaid
 flowchart TB
@@ -167,34 +165,34 @@ flowchart TB
     class Groq external
 ```
 
-### 1.4 Technology Stack
+### 1.4 Công Nghệ Sử Dụng
 
-| Layer | Technology | Version | Purpose |
+| Tầng | Công nghệ | Phiên bản | Mục đích |
 |-------|-----------|---------|---------|
-| Runtime (Backend) | Bun | latest | High-performance JavaScript/TypeScript runtime |
-| Framework (Backend) | Elysia | 1.x | Type-safe REST API framework with OpenAPI generation |
-| ORM | Drizzle ORM | latest | Type-safe SQL query builder with migration support |
-| Schema Validation | Zod / TypeBox | latest | Input validation at API boundaries |
-| JWT | Jose | latest | JWT signing, verification, and token management |
-| Database | PostgreSQL | 17 | Primary relational data store with JSONB support |
-| Cache / Queue | Redis | 7.2+ | Task queue (LPUSH/BRPOP), distributed locks, caching |
-| Frontend | React | 19 | UI component library |
-| Build Tool | Vite | 7 | Frontend build, dev server, HMR |
-| Frontend Language | TypeScript | 5.x | Type-safe frontend development |
-| Grading Runtime | Python | 3.11+ | AI grading microservice runtime |
-| Grading Framework | FastAPI | latest | Health check and admin API for grading service |
-| LLM Provider | Groq (Llama 3.3 70B) | — | Writing/Speaking AI grading via LLM |
-| STT Provider | Groq (Whisper Large V3 Turbo) | — | Speech-to-Text transcription for Speaking |
-| Linting | Biome | latest | Code formatting and linting enforcement |
-| Testing (Backend) | bun:test | — | Unit and integration testing |
-| Testing (Grading) | pytest | — | Grading service unit tests |
-| Containerization | Docker Compose | — | Local development PostgreSQL + Redis + MinIO |
+| Runtime (Backend) | Bun | latest | Runtime JavaScript/TypeScript hiệu năng cao |
+| Framework (Backend) | Elysia | 1.x | Framework REST API an toàn kiểu với tự động sinh OpenAPI |
+| ORM | Drizzle ORM | latest | Trình xây dựng truy vấn SQL an toàn kiểu với hỗ trợ migration |
+| Xác thực Schema | Zod / TypeBox | latest | Xác thực đầu vào tại biên API |
+| JWT | Jose | latest | Ký, xác minh JWT và quản lý token |
+| Cơ sở dữ liệu | PostgreSQL | 17 | Kho dữ liệu quan hệ chính với hỗ trợ JSONB |
+| Cache / Hàng đợi | Redis | 7.2+ | Hàng đợi tác vụ (LPUSH/BRPOP), khóa phân tán, caching |
+| Frontend | React | 19 | Thư viện thành phần UI |
+| Công cụ build | Vite | 7 | Build frontend, dev server, HMR |
+| Ngôn ngữ Frontend | TypeScript | 5.x | Phát triển frontend an toàn kiểu |
+| Runtime chấm điểm | Python | 3.11+ | Runtime dịch vụ chấm điểm AI |
+| Framework chấm điểm | FastAPI | latest | Health check và API quản trị cho dịch vụ chấm điểm |
+| Nhà cung cấp LLM | Groq (Llama 3.3 70B) | — | Chấm điểm Writing/Speaking bằng AI qua LLM |
+| Nhà cung cấp STT | Groq (Whisper Large V3 Turbo) | — | Chuyển đổi giọng nói thành văn bản cho Speaking |
+| Linting | Biome | latest | Định dạng code và thực thi lint |
+| Kiểm thử (Backend) | bun:test | — | Kiểm thử đơn vị và tích hợp |
+| Kiểm thử (Grading) | pytest | — | Kiểm thử đơn vị dịch vụ chấm điểm |
+| Container hóa | Docker Compose | — | PostgreSQL + Redis + MinIO cho phát triển cục bộ |
 
 ---
 
-## 2. Component Design
+## 2. Thiết Kế Thành Phần
 
-### 2.1 Backend Component Diagram
+### 2.1 Biểu Đồ Thành Phần Backend
 
 ```mermaid
 flowchart TB
@@ -274,7 +272,7 @@ flowchart TB
     class PG,RedisExt ext
 ```
 
-### 2.2 Grading Service Component Diagram
+### 2.2 Biểu Đồ Thành Phần Dịch Vụ Chấm Điểm
 
 ```mermaid
 flowchart TB
@@ -339,7 +337,7 @@ flowchart TB
     class RedisQ,PGDB,GroqAPI ext
 ```
 
-### 2.3 Frontend Component Structure (Planned)
+### 2.3 Cấu Trúc Thành Phần Frontend (Dự kiến)
 
 ```mermaid
 flowchart TB
@@ -398,9 +396,9 @@ flowchart TB
 
 ---
 
-## 3. Detailed Design
+## 3. Thiết Kế Chi Tiết
 
-### 3.1 Package Diagram
+### 3.1 Biểu Đồ Gói (Package Diagram)
 
 ```mermaid
 flowchart TB
@@ -456,7 +454,7 @@ flowchart TB
     class Specs,Reports doc
 ```
 
-### 3.2 Sequence Diagram — User Authentication (Login)
+### 3.2 Biểu Đồ Tuần Tự — Xác Thực Người Dùng (Đăng Nhập)
 
 ```mermaid
 sequenceDiagram
@@ -494,7 +492,7 @@ sequenceDiagram
     B-->>C: 200 {accessToken, refreshToken, user}
 ```
 
-### 3.3 Sequence Diagram — Submit Writing Practice (AI Grading)
+### 3.3 Biểu Đồ Tuần Tự — Nộp Bài Luyện Tập Writing (Chấm Điểm AI)
 
 ```mermaid
 sequenceDiagram
@@ -539,7 +537,7 @@ sequenceDiagram
     W->>DB: UPSERT user_progress<br/>(sliding window recalc)
 ```
 
-### 3.4 Sequence Diagram — Exam Session Flow
+### 3.4 Biểu Đồ Tuần Tự — Luồng Phiên Thi
 
 ```mermaid
 sequenceDiagram
@@ -586,7 +584,7 @@ sequenceDiagram
     B-->>C: {status: submitted,<br/>listeningScore, readingScore,<br/>writingStatus: pending,<br/>speakingStatus: pending}
 ```
 
-### 3.5 Sequence Diagram — Instructor Review Workflow
+### 3.5 Biểu Đồ Tuần Tự — Quy Trình Đánh Giá Của Giảng Viên
 
 ```mermaid
 sequenceDiagram
@@ -625,7 +623,7 @@ sequenceDiagram
     B-->>I: Updated submission with final scores
 ```
 
-### 3.6 Sequence Diagram — Token Refresh with Replay Detection
+### 3.6 Biểu Đồ Tuần Tự — Làm Mới Token Với Phát Hiện Phát Lại
 
 ```mermaid
 sequenceDiagram
@@ -657,7 +655,7 @@ sequenceDiagram
     B-->>C: 200 {accessToken, refreshToken}
 ```
 
-### 3.7 Sequence Diagram — Progress Tracking (Sliding Window)
+### 3.7 Biểu Đồ Tuần Tự — Theo Dõi Tiến Trình (Cửa Sổ Trượt)
 
 ```mermaid
 sequenceDiagram
@@ -703,7 +701,7 @@ sequenceDiagram
     B->>DB: UPSERT user_progress<br/>ON CONFLICT (user_id, skill)<br/>SET averageScore, trend,<br/>scaffoldLevel, attemptCount
 ```
 
-### 3.8 State Machine — Submission Lifecycle
+### 3.8 Máy Trạng Thái — Vòng Đời Bài Nộp
 
 ```mermaid
 stateDiagram-v2
@@ -742,7 +740,7 @@ stateDiagram-v2
     }
 ```
 
-### 3.9 State Machine — Exam Session Lifecycle
+### 3.9 Máy Trạng Thái — Vòng Đời Phiên Thi
 
 ```mermaid
 stateDiagram-v2
@@ -774,9 +772,9 @@ stateDiagram-v2
 
 ---
 
-## 4. Database Design
+## 4. Thiết Kế Cơ Sở Dữ Liệu
 
-### 4.1 Physical Entity-Relationship Diagram
+### 4.1 ERD Vật Lý (Biểu Đồ Thực Thể - Quan Hệ)
 
 ```mermaid
 erDiagram
@@ -1067,39 +1065,39 @@ erDiagram
     }
 ```
 
-### 4.2 Index Strategy
+### 4.2 Chiến Lược Đánh Chỉ Mục
 
-| Index Name | Table | Column(s) | Type | Purpose |
+| Tên chỉ mục | Bảng | Cột | Loại | Mục đích |
 |-----------|-------|-----------|------|---------|
-| `users_email_unique` | users | email | Unique | O(1) login lookup by email |
-| `users_role_idx` | users | role | B-Tree | Filter users by role (admin listing) |
-| `refresh_tokens_hash_idx` | refresh_tokens | token_hash | B-Tree | O(1) token verification on refresh |
-| `refresh_tokens_jti_unique` | refresh_tokens | jti | Unique | Ensure JWT ID uniqueness |
-| `refresh_tokens_active_idx` | refresh_tokens | user_id | Partial (revoked_at IS NULL) | Count active devices for FIFO pruning |
-| `submissions_user_status_idx` | submissions | (user_id, status) | Composite | User submission history with status filter |
-| `submissions_review_queue_idx` | submissions | status | Partial (status = 'review_pending') | Fast review queue retrieval |
-| `submissions_user_history_idx` | submissions | (user_id, created_at) | Composite | Chronological submission history |
-| `exam_sessions_user_status_idx` | exam_sessions | (user_id, status) | Composite | User exam history filtering |
-| `exams_active_idx` | exams | level | Partial (is_active = true) | Active exam listing by level |
-| `user_progress_user_skill_idx` | user_progress | (user_id, skill) | Unique | One progress row per user per skill |
-| `user_skill_scores_user_skill_idx` | user_skill_scores | (user_id, skill, created_at) | Composite | Sliding window query (last 10 scores) |
-| `class_members_class_user_idx` | class_members | (class_id, user_id) | Unique | Prevent duplicate enrollment |
-| `exam_answers_session_question_idx` | exam_answers | (session_id, question_id) | Unique | One answer per question per session |
-| `feedback_class_to_idx` | instructor_feedback | (class_id, to_user_id) | Composite | Feedback lookup for learner in class |
-| `vocabulary_words_topic_idx` | vocabulary_words | topic_id | B-Tree | Fast word lookup by topic |
-| `notifications_user_idx` | notifications | (user_id, created_at) | Composite | User notification timeline |
-| `notifications_unread_idx` | notifications | user_id | Partial (read_at IS NULL) | Fast unread notification count |
-| `device_tokens_user_idx` | device_tokens | user_id | B-Tree | Device lookup for push notifications |
+| `users_email_unique` | users | email | Unique | Tra cứu đăng nhập O(1) theo email |
+| `users_role_idx` | users | role | B-Tree | Lọc người dùng theo vai trò (danh sách admin) |
+| `refresh_tokens_hash_idx` | refresh_tokens | token_hash | B-Tree | Xác minh token O(1) khi refresh |
+| `refresh_tokens_jti_unique` | refresh_tokens | jti | Unique | Đảm bảo tính duy nhất của JWT ID |
+| `refresh_tokens_active_idx` | refresh_tokens | user_id | Partial (revoked_at IS NULL) | Đếm thiết bị hoạt động cho FIFO pruning |
+| `submissions_user_status_idx` | submissions | (user_id, status) | Composite | Lịch sử bài nộp của người dùng với bộ lọc trạng thái |
+| `submissions_review_queue_idx` | submissions | status | Partial (status = 'review_pending') | Truy xuất nhanh hàng đợi đánh giá |
+| `submissions_user_history_idx` | submissions | (user_id, created_at) | Composite | Lịch sử bài nộp theo thứ tự thời gian |
+| `exam_sessions_user_status_idx` | exam_sessions | (user_id, status) | Composite | Lọc lịch sử thi của người dùng |
+| `exams_active_idx` | exams | level | Partial (is_active = true) | Danh sách đề thi đang hoạt động theo cấp độ |
+| `user_progress_user_skill_idx` | user_progress | (user_id, skill) | Unique | Một dòng tiến trình cho mỗi người dùng mỗi kỹ năng |
+| `user_skill_scores_user_skill_idx` | user_skill_scores | (user_id, skill, created_at) | Composite | Truy vấn cửa sổ trượt (10 điểm gần nhất) |
+| `class_members_class_user_idx` | class_members | (class_id, user_id) | Unique | Ngăn đăng ký trùng lặp |
+| `exam_answers_session_question_idx` | exam_answers | (session_id, question_id) | Unique | Một câu trả lời cho mỗi câu hỏi mỗi phiên thi |
+| `feedback_class_to_idx` | instructor_feedback | (class_id, to_user_id) | Composite | Tra cứu phản hồi cho người học trong lớp |
+| `vocabulary_words_topic_idx` | vocabulary_words | topic_id | B-Tree | Tra cứu nhanh từ vựng theo chủ đề |
+| `notifications_user_idx` | notifications | (user_id, created_at) | Composite | Dòng thời gian thông báo của người dùng |
+| `notifications_unread_idx` | notifications | user_id | Partial (read_at IS NULL) | Đếm nhanh thông báo chưa đọc |
+| `device_tokens_user_idx` | device_tokens | user_id | B-Tree | Tra cứu thiết bị cho thông báo đẩy |
 
-### 4.3 JSONB Schema Design
+### 4.3 Thiết Kế Schema JSONB
 
-The system uses PostgreSQL JSONB columns for flexible, schema-variant data. All JSONB payloads are validated at the application boundary via TypeBox/Zod schemas.
+Hệ thống sử dụng các cột JSONB của PostgreSQL cho dữ liệu linh hoạt, đa dạng schema. Tất cả payload JSONB được xác thực tại biên ứng dụng qua TypeBox/Zod schema.
 
-#### 4.3.1 Question Content (`questions.content`)
+#### 4.3.1 Nội Dung Câu Hỏi (`questions.content`)
 
-Discriminated union on question `skill` and `part`. Supports 10 content types:
+Union phân biệt theo `skill` và `part` của câu hỏi. Hỗ trợ 10 loại nội dung:
 
-| Skill | Content Type | Content Structure |
+| Kỹ năng | Loại nội dung | Cấu trúc nội dung |
 |-------|-----------|-------------------|
 | Listening | `ListeningContent` | `{ audioUrl, transcript?, items: [{ stem, options: [A,B,C,D] }] }` |
 | Listening | `ListeningDictationContent` | `{ audioUrl, transcript, transcriptWithGaps, items: [{ correctText }] }` |
@@ -1108,29 +1106,29 @@ Discriminated union on question `skill` and `part`. Supports 10 content types:
 | Reading | `ReadingMatchingContent` | `{ title?, paragraphs: [{ label, text }], headings: [] }` |
 | Reading | `ReadingGapFillContent` | `{ title?, textWithGaps, items: [{ options: [A,B,C,D] }] }` |
 | Writing | `WritingContent` | `{ prompt, taskType: "letter" \| "essay", instructions?, minWords, requiredPoints? }` |
-| Speaking | `SpeakingPart1Content` | `{ topics: [{ name, questions: [3] }] }` (2 topics, social interaction) |
+| Speaking | `SpeakingPart1Content` | `{ topics: [{ name, questions: [3] }] }` (2 chủ đề, tương tác xã hội) |
 | Speaking | `SpeakingPart2Content` | `{ situation, options: [3], preparationSeconds, speakingSeconds }` |
 | Speaking | `SpeakingPart3Content` | `{ centralIdea, suggestions: [3], followUpQuestion, preparationSeconds, speakingSeconds }` |
 
-#### 4.3.2 Submission Answer (`submission_details.answer`)
+#### 4.3.2 Câu Trả Lời Bài Nộp (`submission_details.answer`)
 
-| Type | Structure | Used For |
+| Loại | Cấu trúc | Sử dụng cho |
 |------|-----------|----------|
 | `ObjectiveAnswer` | `{ answers: Record<string, string> }` | Listening, Reading |
 | `WritingAnswer` | `{ text }` | Writing |
 | `SpeakingAnswer` | `{ audioUrl, durationSeconds, transcript? }` | Speaking |
 
-#### 4.3.3 Grading Result (`submission_details.result`)
+#### 4.3.3 Kết Quả Chấm Điểm (`submission_details.result`)
 
-Discriminated union on `type` field:
+Union phân biệt theo trường `type`:
 
-| Type | Key Fields | Used When |
+| Loại | Trường chính | Sử dụng khi |
 |------|-----------|-----------|
-| `AutoResult` | `{ type: "auto", correctCount, totalCount, score, band, gradedAt }` | L/R auto-grading |
-| `AIResult` | `{ type: "ai", overallScore, band, criteriaScores, feedback, grammarErrors?, confidence, gradedAt }` | W/S AI grading |
-| `HumanResult` | `{ type: "human", overallScore, band, criteriaScores?, feedback?, reviewerId, reviewedAt, reviewComment? }` | Instructor review |
+| `AutoResult` | `{ type: "auto", correctCount, totalCount, score, band, gradedAt }` | Chấm tự động L/R |
+| `AIResult` | `{ type: "ai", overallScore, band, criteriaScores, feedback, grammarErrors?, confidence, gradedAt }` | Chấm AI cho W/S |
+| `HumanResult` | `{ type: "human", overallScore, band, criteriaScores?, feedback?, reviewerId, reviewedAt, reviewComment? }` | Đánh giá của giảng viên |
 
-#### 4.3.4 Exam Blueprint (`exams.blueprint`)
+#### 4.3.4 Kế Hoạch Đề Thi (`exams.blueprint`)
 
 ```
 ExamBlueprint = {
@@ -1142,9 +1140,9 @@ ExamBlueprint = {
 }
 ```
 
-### 4.4 Enum Definitions
+### 4.4 Định Nghĩa Enum
 
-| Enum Name | Values | Used In |
+| Tên Enum | Giá trị | Sử dụng trong |
 |----------|--------|---------|
 | `user_role` | `learner`, `instructor`, `admin` | `users.role` |
 | `skill` | `listening`, `reading`, `writing`, `speaking` | `questions`, `submissions`, `user_progress`, `user_skill_scores`, `exam_submissions`, `instructor_feedback` |
@@ -1165,139 +1163,139 @@ ExamBlueprint = {
 
 ---
 
-## 5. Interface Design
+## 5. Thiết Kế Giao Diện
 
-### 5.1 API Architecture
+### 5.1 Kiến Trúc API
 
-| Aspect | Specification |
+| Khía cạnh | Đặc tả |
 |--------|---------------|
-| Base URL | `/api` prefix for all feature endpoints; `/health` at root level |
-| Auth | JWT Bearer token in `Authorization` header. Access token (short-lived) + Refresh token (long-lived, rotated). |
-| Pagination | Offset-based: `page` (min 1), `limit` (1–100, default 20) |
-| List Response | `{ data: [...], meta: { page, limit, total, totalPages } }` |
-| Error Response | `{ error: { code, message, requestId, details? } }` |
-| Request ID | `X-Request-Id` header on all responses (generated or echoed) |
-| Idempotency | `Idempotency-Key` header on `POST` endpoints with side effects |
-| Timestamps | ISO 8601 UTC format (e.g., `2026-03-02T12:00:00.000Z`) |
-| Content Type | `application/json` (UTF-8) |
-| OpenAPI | Auto-generated spec at `GET /openapi.json` |
+| URL gốc | Tiền tố `/api` cho tất cả endpoint chức năng; `/health` ở cấp root |
+| Xác thực | JWT Bearer token trong header `Authorization`. Access token (ngắn hạn) + Refresh token (dài hạn, có rotation). |
+| Phân trang | Dựa trên offset: `page` (tối thiểu 1), `limit` (1–100, mặc định 20) |
+| Phản hồi danh sách | `{ data: [...], meta: { page, limit, total, totalPages } }` |
+| Phản hồi lỗi | `{ error: { code, message, requestId, details? } }` |
+| Request ID | Header `X-Request-Id` trên tất cả phản hồi (tự sinh hoặc echo lại) |
+| Tính idempotent | Header `Idempotency-Key` trên các endpoint `POST` có tác dụng phụ |
+| Dấu thời gian | Định dạng ISO 8601 UTC (ví dụ: `2026-03-02T12:00:00.000Z`) |
+| Loại nội dung | `application/json` (UTF-8) |
+| OpenAPI | Spec tự sinh tại `GET /openapi.json` |
 
-### 5.2 API Endpoint Catalog
+### 5.2 Danh Mục Endpoint API
 
 #### 5.2.1 Health
 
-| Method | Path | Auth | Description |
+| Phương thức | Đường dẫn | Xác thực | Mô tả |
 |--------|------|------|-------------|
-| GET | `/health` | No | Health check — probes PostgreSQL and Redis connectivity |
+| GET | `/health` | Không | Kiểm tra sức khỏe — thăm dò kết nối PostgreSQL và Redis |
 
 #### 5.2.2 Auth
 
-| Method | Path | Auth | Description |
+| Phương thức | Đường dẫn | Xác thực | Mô tả |
 |--------|------|------|-------------|
-| POST | `/api/auth/register` | No | Register new user (email, password, fullName). Role defaults to `learner`. |
-| POST | `/api/auth/login` | No | Authenticate with email + password. Returns JWT pair + user profile. |
-| POST | `/api/auth/refresh` | No | Rotate refresh token. Replay detection triggers full revocation. |
-| POST | `/api/auth/logout` | Yes | Revoke current refresh token. |
-| GET | `/api/auth/me` | Yes | Return current user profile from access token claims. |
+| POST | `/api/auth/register` | Không | Đăng ký người dùng mới (email, password, fullName). Vai trò mặc định là `learner`. |
+| POST | `/api/auth/login` | Không | Xác thực bằng email + mật khẩu. Trả về cặp JWT + hồ sơ người dùng. |
+| POST | `/api/auth/refresh` | Không | Rotation refresh token. Phát hiện phát lại sẽ thu hồi toàn bộ. |
+| POST | `/api/auth/logout` | Có | Thu hồi refresh token hiện tại. |
+| GET | `/api/auth/me` | Có | Trả về hồ sơ người dùng hiện tại từ claims của access token. |
 
 #### 5.2.3 Users
 
-| Method | Path | Auth | Description |
+| Phương thức | Đường dẫn | Xác thực | Mô tả |
 |--------|------|------|-------------|
-| GET | `/api/users` | Admin | Paginated user list with filters (role, search). |
-| GET | `/api/users/:id` | Admin | Get user by ID. |
-| PUT | `/api/users/:id/role` | Admin | Change user role (learner/instructor/admin). |
+| GET | `/api/users` | Admin | Danh sách người dùng phân trang với bộ lọc (vai trò, tìm kiếm). |
+| GET | `/api/users/:id` | Admin | Lấy thông tin người dùng theo ID. |
+| PUT | `/api/users/:id/role` | Admin | Thay đổi vai trò người dùng (learner/instructor/admin). |
 
 #### 5.2.4 Questions
 
-| Method | Path | Auth | Description |
+| Phương thức | Đường dẫn | Xác thực | Mô tả |
 |--------|------|------|-------------|
-| GET | `/api/questions` | Learner+ | List questions with filters (skill, level, format, is_active). |
-| GET | `/api/questions/:id` | Learner+ | Get question detail (content, answer_key for instructors). |
-| POST | `/api/questions` | Instructor+ | Create question (skill, part, content JSONB, answer_key). |
-| PUT | `/api/questions/:id` | Instructor+ | Update question content. |
-| DELETE | `/api/questions/:id` | Admin | Soft delete — set `is_active = false`. |
+| GET | `/api/questions` | Learner+ | Danh sách câu hỏi với bộ lọc (kỹ năng, cấp độ, định dạng, is_active). |
+| GET | `/api/questions/:id` | Learner+ | Chi tiết câu hỏi (nội dung, answer_key cho giảng viên). |
+| POST | `/api/questions` | Instructor+ | Tạo câu hỏi (skill, part, content JSONB, answer_key). |
+| PUT | `/api/questions/:id` | Instructor+ | Cập nhật nội dung câu hỏi. |
+| DELETE | `/api/questions/:id` | Admin | Xóa mềm — đặt `is_active = false`. |
 
 #### 5.2.5 Submissions
 
-| Method | Path | Auth | Description |
+| Phương thức | Đường dẫn | Xác thực | Mô tả |
 |--------|------|------|-------------|
-| POST | `/api/submissions` | Learner+ | Create submission. L/R auto-graded inline; W/S dispatched to Redis. |
-| GET | `/api/submissions` | Learner+ | List own submissions (Admin sees all). Filters: skill, status. |
-| GET | `/api/submissions/:id` | Learner+ | Get submission detail with answer, result, feedback. |
-| POST | `/api/submissions/:id/auto-grade` | System | Trigger auto-grading for objective submissions (L/R). |
-| GET | `/api/submissions/queue` | Instructor+ | Review queue — `review_pending` sorted by priority then FIFO. |
-| POST | `/api/submissions/:id/claim` | Instructor+ | Claim submission for exclusive review (Redis lock, 15 min TTL). |
-| POST | `/api/submissions/:id/release` | Instructor+ | Release claimed submission back to queue. |
-| PUT | `/api/submissions/:id/review` | Instructor+ | Submit instructor review (score, band, criteria, feedback). |
+| POST | `/api/submissions` | Learner+ | Tạo bài nộp. L/R chấm tự động ngay; W/S đẩy vào Redis. |
+| GET | `/api/submissions` | Learner+ | Danh sách bài nộp của mình (Admin xem tất cả). Bộ lọc: kỹ năng, trạng thái. |
+| GET | `/api/submissions/:id` | Learner+ | Chi tiết bài nộp với câu trả lời, kết quả, phản hồi. |
+| POST | `/api/submissions/:id/auto-grade` | System | Kích hoạt chấm tự động cho bài nộp trắc nghiệm (L/R). |
+| GET | `/api/submissions/queue` | Instructor+ | Hàng đợi đánh giá — `review_pending` sắp xếp theo ưu tiên rồi FIFO. |
+| POST | `/api/submissions/:id/claim` | Instructor+ | Nhận bài nộp để đánh giá độc quyền (khóa Redis, TTL 15 phút). |
+| POST | `/api/submissions/:id/release` | Instructor+ | Trả bài nộp đã nhận về hàng đợi. |
+| PUT | `/api/submissions/:id/review` | Instructor+ | Nộp đánh giá của giảng viên (điểm, band, tiêu chí, phản hồi). |
 
 #### 5.2.6 Exams
 
-| Method | Path | Auth | Description |
+| Phương thức | Đường dẫn | Xác thực | Mô tả |
 |--------|------|------|-------------|
-| GET | `/api/exams` | Learner+ | List active exams with optional level filter. |
-| GET | `/api/exams/:id` | Learner+ | Get exam detail (blueprint preview, section info). |
-| POST | `/api/exams` | Instructor+ | Create exam with level and blueprint. |
-| POST | `/api/exams/:id/start` | Learner+ | Start timed exam session. |
-| POST | `/api/sessions/:id/answer` | Learner+ | Upsert exam answers (auto-save every 30s). |
-| POST | `/api/sessions/:id/submit` | Learner+ | Submit exam — grade L/R, dispatch W/S. |
-| GET | `/api/sessions/:id` | Learner+ | Get exam session result (scores, status). |
+| GET | `/api/exams` | Learner+ | Danh sách đề thi đang hoạt động với bộ lọc cấp độ tùy chọn. |
+| GET | `/api/exams/:id` | Learner+ | Chi tiết đề thi (xem trước blueprint, thông tin phần thi). |
+| POST | `/api/exams` | Instructor+ | Tạo đề thi với cấp độ và blueprint. |
+| POST | `/api/exams/:id/start` | Learner+ | Bắt đầu phiên thi có giới hạn thời gian. |
+| POST | `/api/sessions/:id/answer` | Learner+ | Upsert câu trả lời thi (tự động lưu mỗi 30 giây). |
+| POST | `/api/sessions/:id/submit` | Learner+ | Nộp bài thi — chấm L/R, đẩy W/S vào hàng đợi. |
+| GET | `/api/sessions/:id` | Learner+ | Lấy kết quả phiên thi (điểm, trạng thái). |
 
 #### 5.2.7 Progress
 
-| Method | Path | Auth | Description |
+| Phương thức | Đường dẫn | Xác thực | Mô tả |
 |--------|------|------|-------------|
-| GET | `/api/progress` | Learner+ | Progress overview — all 4 skills summary. |
-| GET | `/api/progress/:skill` | Learner+ | Skill detail — last 10 scores, trend, ETA. |
-| GET | `/api/progress/spider-chart` | Learner+ | Spider chart data — per-skill current + trend. |
-| GET | `/api/progress/goals` | Learner+ | Get user's learning goals. |
-| POST | `/api/progress/goals` | Learner+ | Create goal (target band, deadline, daily study time). |
-| PUT | `/api/progress/goals/:id` | Learner+ | Update goal parameters. |
+| GET | `/api/progress` | Learner+ | Tổng quan tiến trình — tóm tắt cả 4 kỹ năng. |
+| GET | `/api/progress/:skill` | Learner+ | Chi tiết kỹ năng — 10 điểm gần nhất, xu hướng, ETA. |
+| GET | `/api/progress/spider-chart` | Learner+ | Dữ liệu biểu đồ radar — hiện tại + xu hướng theo từng kỹ năng. |
+| GET | `/api/progress/goals` | Learner+ | Lấy mục tiêu học tập của người dùng. |
+| POST | `/api/progress/goals` | Learner+ | Tạo mục tiêu (band mục tiêu, thời hạn, thời gian học hàng ngày). |
+| PUT | `/api/progress/goals/:id` | Learner+ | Cập nhật tham số mục tiêu. |
 
 #### 5.2.8 Classes
 
-| Method | Path | Auth | Description |
+| Phương thức | Đường dẫn | Xác thực | Mô tả |
 |--------|------|------|-------------|
-| GET | `/api/classes` | Learner+ | List own classes (enrolled + owned). |
-| POST | `/api/classes` | Instructor+ | Create class with auto-generated invite code. |
-| POST | `/api/classes/join` | Learner+ | Join class by invite code. |
-| POST | `/api/classes/:id/leave` | Learner+ | Leave a class. |
-| GET | `/api/classes/:id` | Instructor+ | Class dashboard — member stats, averages. |
-| GET | `/api/classes/:id/members` | Instructor+ | List class members with progress. |
-| POST | `/api/classes/:id/feedback` | Instructor+ | Post feedback to a learner. |
-| GET | `/api/classes/:id/feedback` | Learner+ | View feedback received in a class. |
-| POST | `/api/classes/:id/rotate-code` | Instructor+ | Rotate invite code. |
-| DELETE | `/api/classes/:id/members/:userId` | Instructor+ | Remove member from class. |
+| GET | `/api/classes` | Learner+ | Danh sách lớp của mình (đã tham gia + sở hữu). |
+| POST | `/api/classes` | Instructor+ | Tạo lớp học với mã mời tự động sinh. |
+| POST | `/api/classes/join` | Learner+ | Tham gia lớp bằng mã mời. |
+| POST | `/api/classes/:id/leave` | Learner+ | Rời khỏi lớp học. |
+| GET | `/api/classes/:id` | Instructor+ | Bảng điều khiển lớp — thống kê thành viên, trung bình. |
+| GET | `/api/classes/:id/members` | Instructor+ | Danh sách thành viên lớp với tiến trình. |
+| POST | `/api/classes/:id/feedback` | Instructor+ | Gửi phản hồi cho người học. |
+| GET | `/api/classes/:id/feedback` | Learner+ | Xem phản hồi nhận được trong lớp. |
+| POST | `/api/classes/:id/rotate-code` | Instructor+ | Đổi mã mời. |
+| DELETE | `/api/classes/:id/members/:userId` | Instructor+ | Xóa thành viên khỏi lớp. |
 
 #### 5.2.9 Knowledge Points
 
-| Method | Path | Auth | Description |
+| Phương thức | Đường dẫn | Xác thực | Mô tả |
 |--------|------|------|-------------|
-| GET | `/api/knowledge-points` | Learner+ | List knowledge points with optional category filter. |
-| POST | `/api/knowledge-points` | Admin | Create knowledge point. |
-| PUT | `/api/knowledge-points/:id` | Admin | Update knowledge point. |
-| DELETE | `/api/knowledge-points/:id` | Admin | Delete knowledge point. |
+| GET | `/api/knowledge-points` | Learner+ | Danh sách điểm kiến thức với bộ lọc danh mục tùy chọn. |
+| POST | `/api/knowledge-points` | Admin | Tạo điểm kiến thức. |
+| PUT | `/api/knowledge-points/:id` | Admin | Cập nhật điểm kiến thức. |
+| DELETE | `/api/knowledge-points/:id` | Admin | Xóa điểm kiến thức. |
 
 ---
 
-## 6. Design Patterns and Principles
+## 6. Mẫu Thiết Kế Và Nguyên Tắc
 
-### 6.1 Patterns Used
+### 6.1 Các Mẫu Được Sử Dụng
 
-| Pattern | Where Applied | Description |
+| Mẫu | Áp dụng tại | Mô tả |
 |---------|--------------|-------------|
-| **Repository Pattern** | `db/index.ts`, module `service.ts` | Data access abstracted through Drizzle ORM queries. Modules call `db.query.*` or `db.select().from()` — never raw SQL. |
-| **State Machine** | `common/state-machine.ts`, `submissions/shared.ts` | Submission lifecycle enforced via explicit state transition map. Invalid transitions throw `ConflictError`. |
-| **Discriminated Union** | `db/types/grading.ts`, `db/types/answers.ts` | JSONB payloads use a `type` field to distinguish variants (AutoResult vs AIResult vs HumanResult). TypeBox schemas validate at boundary. |
-| **Plugin Architecture** | `plugins/error.ts`, `plugins/auth.ts` | Cross-cutting concerns (error handling, auth middleware) implemented as Elysia plugins mounted on the app. |
-| **Producer-Consumer Queue** | `grading-dispatch.ts` (producer), `worker.py` (consumer) | Decouples submission creation from AI grading. Redis list as durable queue with DLQ for poison messages. |
-| **Sliding Window** | `progress/trends.ts`, `progress/service.ts` | Progress metrics computed over the N=10 most recent scores per skill. Bounded query, predictable performance. |
-| **Prepare-then-Dispatch** | `grading-dispatch.ts` | Database state updated inside transaction (`prepare`), Redis push happens after commit (`dispatch`). Prevents orphaned queue messages. |
-| **Guard-Compute-Write** | All module `service.ts` files | Function structure: validate preconditions (guard) → compute result → persist to DB (write). No interleaving of reads and writes. |
-| **Shared-DB** | Backend + Grading Worker | Both services connect to same PostgreSQL. Eliminates need for callback queues or eventual consistency patterns. |
-| **Partial Index** | Database schema | PostgreSQL partial indexes (e.g., `WHERE status = 'review_pending'`, `WHERE is_active = true`) optimize hot query paths. |
+| **Repository Pattern** | `db/index.ts`, module `service.ts` | Truy cập dữ liệu được trừu tượng hóa thông qua truy vấn Drizzle ORM. Các module gọi `db.query.*` hoặc `db.select().from()` — không bao giờ dùng raw SQL. |
+| **State Machine** | `common/state-machine.ts`, `submissions/shared.ts` | Vòng đời bài nộp được thực thi qua bản đồ chuyển trạng thái tường minh. Chuyển trạng thái không hợp lệ sẽ throw `ConflictError`. |
+| **Discriminated Union** | `db/types/grading.ts`, `db/types/answers.ts` | Các payload JSONB sử dụng trường `type` để phân biệt biến thể (AutoResult vs AIResult vs HumanResult). TypeBox schema xác thực tại biên. |
+| **Plugin Architecture** | `plugins/error.ts`, `plugins/auth.ts` | Các mối quan tâm xuyên suốt (xử lý lỗi, middleware xác thực) được triển khai dưới dạng plugin Elysia gắn vào ứng dụng. |
+| **Producer-Consumer Queue** | `grading-dispatch.ts` (producer), `worker.py` (consumer) | Tách rời việc tạo bài nộp khỏi chấm điểm AI. Redis list làm hàng đợi bền vững với DLQ cho tin nhắn lỗi. |
+| **Sliding Window** | `progress/trends.ts`, `progress/service.ts` | Chỉ số tiến trình được tính trên N=10 điểm gần nhất mỗi kỹ năng. Truy vấn có giới hạn, hiệu năng dự đoán được. |
+| **Prepare-then-Dispatch** | `grading-dispatch.ts` | Trạng thái cơ sở dữ liệu được cập nhật trong transaction (`prepare`), đẩy Redis xảy ra sau commit (`dispatch`). Ngăn tin nhắn mồ côi trong hàng đợi. |
+| **Guard-Compute-Write** | Tất cả file `service.ts` của module | Cấu trúc hàm: xác thực điều kiện tiên quyết (guard) → tính toán kết quả → lưu vào DB (write). Không xen kẽ đọc và ghi. |
+| **Shared-DB** | Backend + Grading Worker | Cả hai dịch vụ kết nối tới cùng PostgreSQL. Loại bỏ nhu cầu callback queue hoặc mẫu eventual consistency. |
+| **Partial Index** | Schema cơ sở dữ liệu | Chỉ mục partial của PostgreSQL (ví dụ: `WHERE status = 'review_pending'`, `WHERE is_active = true`) tối ưu hóa đường truy vấn nóng. |
 
-### 6.2 Error Handling Strategy
+### 6.2 Chiến Lược Xử Lý Lỗi
 
 ```mermaid
 flowchart TB
@@ -1342,97 +1340,97 @@ flowchart TB
     class AppError,BadReq,NotFound,Conflict,Unauth,ErrorPlugin,Response error
 ```
 
-### 6.3 Security Design
+### 6.3 Thiết Kế Bảo Mật
 
-| Concern | Implementation |
+| Mối quan tâm | Triển khai |
 |---------|---------------|
-| **Password Storage** | Argon2id via `Bun.password.hash()` — no plaintext storage |
-| **Token Storage** | Refresh tokens stored as SHA-256 hash — never plaintext in DB |
-| **Token Lifecycle** | Short-lived access token + long-lived refresh token with rotation. Reuse detection triggers full revocation. |
-| **Device Limit** | Max 3 active refresh tokens per user. FIFO — oldest revoked when 4th created. |
-| **RBAC** | Three roles: `learner`, `instructor` (inherits learner), `admin` (inherits all). Enforced on every endpoint via auth plugin. |
-| **Row-Level Access** | Non-admin users can only access their own submissions, progress, and exam sessions. Enforced in service layer via `assertAccess`. |
-| **Input Validation** | All inputs validated at API boundary via TypeBox schemas. Internal code assumes valid data. |
-| **No Secrets in Code** | Environment variables via `.env` files (git-ignored). Validated at startup via `t3-oss/env-core`. |
-| **Request Correlation** | `X-Request-Id` header on all responses for audit trail. |
-| **Distributed Locks** | Review claim uses Redis `SET ... EX 900` (15 min TTL) to prevent concurrent review of same submission. |
+| **Lưu trữ mật khẩu** | Argon2id qua `Bun.password.hash()` — không lưu trữ dạng plaintext |
+| **Lưu trữ token** | Refresh token lưu dưới dạng SHA-256 hash — không bao giờ lưu plaintext trong DB |
+| **Vòng đời token** | Access token ngắn hạn + refresh token dài hạn với rotation. Phát hiện tái sử dụng sẽ thu hồi toàn bộ. |
+| **Giới hạn thiết bị** | Tối đa 3 refresh token hoạt động mỗi người dùng. FIFO — token cũ nhất bị thu hồi khi tạo token thứ 4. |
+| **RBAC** | Ba vai trò: `learner`, `instructor` (kế thừa learner), `admin` (kế thừa tất cả). Thực thi trên mọi endpoint qua auth plugin. |
+| **Kiểm soát truy cập cấp hàng** | Người dùng không phải admin chỉ có thể truy cập bài nộp, tiến trình và phiên thi của chính mình. Thực thi trong tầng service qua `assertAccess`. |
+| **Xác thực đầu vào** | Tất cả đầu vào được xác thực tại biên API qua TypeBox schema. Code nội bộ mặc định dữ liệu hợp lệ. |
+| **Không lưu bí mật trong code** | Biến môi trường qua file `.env` (git-ignored). Xác thực khi khởi động qua `t3-oss/env-core`. |
+| **Tương quan yêu cầu** | Header `X-Request-Id` trên tất cả phản hồi cho chuỗi kiểm toán. |
+| **Khóa phân tán** | Nhận bài đánh giá sử dụng Redis `SET ... EX 900` (TTL 15 phút) để ngăn đánh giá đồng thời cùng một bài nộp. |
 
 ---
 
-## 8. Product & Technology Summary
+## 8. Tổng Hợp Sản Phẩm & Công Nghệ
 
-### 8.1 Third-Party Services
+### 8.1 Dịch Vụ Bên Thứ Ba
 
-| Service | Provider | Purpose | Integration |
+| Dịch vụ | Nhà cung cấp | Mục đích | Tích hợp |
 |---------|----------|---------|-------------|
-| LLM Grading | Groq (Llama 3.3 70B) | AI-powered Writing/Speaking assessment against VSTEP rubric | HTTPS REST via LiteLLM |
-| Speech-to-Text | Groq (Whisper Large V3 Turbo) | Audio transcription for Speaking submissions | HTTPS REST via LiteLLM |
-| Object Storage | MinIO (S3-compatible) | Audio file storage (Speaking recordings), user avatars | S3 API via Bun S3Client |
-| Authentication | Self-hosted (JWT) | Access/refresh token pair with rotation, reuse detection | Jose library (HS256) |
-| Password Hashing | Bun built-in | Argon2id password hashing | Bun.password API |
+| Chấm điểm LLM | Groq (Llama 3.3 70B) | Đánh giá Writing/Speaking bằng AI theo rubric VSTEP | HTTPS REST qua LiteLLM |
+| Chuyển giọng nói thành văn bản | Groq (Whisper Large V3 Turbo) | Phiên âm audio cho bài nộp Speaking | HTTPS REST qua LiteLLM |
+| Lưu trữ đối tượng | MinIO (tương thích S3) | Lưu trữ file audio (bản ghi Speaking), avatar người dùng | S3 API qua Bun S3Client |
+| Xác thực | Tự triển khai (JWT) | Cặp access/refresh token với rotation, phát hiện tái sử dụng | Thư viện Jose (HS256) |
+| Băm mật khẩu | Bun tích hợp sẵn | Băm mật khẩu Argon2id | Bun.password API |
 
-### 8.2 Development Technology Stack
+### 8.2 Công Nghệ Phát Triển
 
-| Layer | Technology | Version | Language | Purpose |
+| Tầng | Công nghệ | Phiên bản | Ngôn ngữ | Mục đích |
 |-------|-----------|---------|----------|---------|
-| **Frontend** | React | 19 | TypeScript | UI component library (SPA) |
-| | Vite | 7 | — | Build tool, dev server, HMR |
-| | TanStack Router | latest | TypeScript | File-based routing with type safety |
-| | TanStack Query | latest | TypeScript | Server state management, caching |
-| | Tailwind CSS | 4 | — | Utility-first CSS framework |
-| | shadcn/ui | — | TypeScript | UI component primitives |
-| | Recharts | latest | TypeScript | Charts (Spider Chart, Activity Heatmap) |
-| **Backend** | Bun | latest | TypeScript | High-performance JS/TS runtime |
-| | Elysia | 1.x | TypeScript | Type-safe REST API framework with OpenAPI |
-| | Drizzle ORM | latest | TypeScript | Type-safe SQL query builder with migrations |
-| | Jose | latest | TypeScript | JWT signing and verification |
-| | TypeBox / Zod | latest | TypeScript | Schema validation at API boundaries |
-| **Mobile** | React Native | latest | TypeScript | Cross-platform mobile (Android-first) |
-| **AI/Grading** | Python | 3.11+ | Python | Grading microservice runtime |
-| | FastAPI | latest | Python | Health check and admin API |
-| | LiteLLM | latest | Python | Unified LLM/STT provider interface |
-| | Redis (BRPOP) | — | — | Task queue consumer |
-| **Database** | PostgreSQL | 17 | SQL | Primary relational data store (JSONB) |
-| | Redis | 7.2+ | — | Queue, cache, distributed locks |
-| **Linting** | Biome | latest | — | Code formatting and lint enforcement |
-| **Testing** | bun:test | — | TypeScript | Backend unit + integration tests |
-| | pytest | — | Python | Grading service tests |
+| **Frontend** | React | 19 | TypeScript | Thư viện thành phần UI (SPA) |
+| | Vite | 7 | — | Công cụ build, dev server, HMR |
+| | TanStack Router | latest | TypeScript | Routing dựa trên file với an toàn kiểu |
+| | TanStack Query | latest | TypeScript | Quản lý trạng thái server, caching |
+| | Tailwind CSS | 4 | — | Framework CSS tiện ích |
+| | shadcn/ui | — | TypeScript | Thành phần UI cơ bản |
+| | Recharts | latest | TypeScript | Biểu đồ (Spider Chart, Activity Heatmap) |
+| **Backend** | Bun | latest | TypeScript | Runtime JS/TS hiệu năng cao |
+| | Elysia | 1.x | TypeScript | Framework REST API an toàn kiểu với OpenAPI |
+| | Drizzle ORM | latest | TypeScript | Trình xây dựng truy vấn SQL an toàn kiểu với migration |
+| | Jose | latest | TypeScript | Ký và xác minh JWT |
+| | TypeBox / Zod | latest | TypeScript | Xác thực schema tại biên API |
+| **Mobile** | React Native | latest | TypeScript | Đa nền tảng di động (ưu tiên Android) |
+| **AI/Chấm điểm** | Python | 3.11+ | Python | Runtime dịch vụ chấm điểm |
+| | FastAPI | latest | Python | Health check và API quản trị |
+| | LiteLLM | latest | Python | Giao diện nhà cung cấp LLM/STT thống nhất |
+| | Redis (BRPOP) | — | — | Consumer hàng đợi tác vụ |
+| **Cơ sở dữ liệu** | PostgreSQL | 17 | SQL | Kho dữ liệu quan hệ chính (JSONB) |
+| | Redis | 7.2+ | — | Hàng đợi, cache, khóa phân tán |
+| **Linting** | Biome | latest | — | Định dạng code và thực thi lint |
+| **Kiểm thử** | bun:test | — | TypeScript | Kiểm thử đơn vị + tích hợp Backend |
+| | pytest | — | Python | Kiểm thử dịch vụ chấm điểm |
 
-### 8.3 Source Code Management & DevOps
+### 8.3 Quản Lý Mã Nguồn & DevOps
 
-| Tool | Purpose | Details |
+| Công cụ | Mục đích | Chi tiết |
 |------|---------|---------|
-| GitHub | Source code hosting | Single monorepo (`VSTEP/`) containing all 3 apps |
-| Git | Version control | Feature branches, PR-based review, conventional commits |
-| GitHub Issues | Task tracking | Sprint backlog, bug tracking |
-| GitHub Projects | Project management | Kanban board for sprint planning |
-| Docker / Docker Compose | Containerization | Local dev: PostgreSQL, Redis, MinIO. Production: all services |
-| Biome CI | Code quality gate | `bun run check` on all PRs (lint + format) |
+| GitHub | Lưu trữ mã nguồn | Monorepo đơn (`VSTEP/`) chứa cả 3 ứng dụng |
+| Git | Quản lý phiên bản | Feature branch, review qua PR, conventional commits |
+| GitHub Issues | Theo dõi tác vụ | Sprint backlog, theo dõi lỗi |
+| GitHub Projects | Quản lý dự án | Bảng Kanban cho lập kế hoạch sprint |
+| Docker / Docker Compose | Container hóa | Phát triển cục bộ: PostgreSQL, Redis, MinIO. Production: tất cả dịch vụ |
+| Biome CI | Cổng chất lượng code | `bun run check` trên tất cả PR (lint + format) |
 
-### 8.4 Deployment Environments
+### 8.4 Môi Trường Triển Khai
 
-| Environment | Purpose | Infrastructure | URL |
+| Môi trường | Mục đích | Hạ tầng | URL |
 |-------------|---------|---------------|-----|
-| **Local Development** | Individual developer setup | Docker Compose (PostgreSQL, Redis, MinIO) + Bun dev server + Vite dev server | `localhost:3001` (API), `localhost:5173` (Web) |
-| **Docker Compose (Full)** | Integration testing, demo | All services containerized: Backend, Grading, PostgreSQL, Redis, MinIO | `localhost:4000` (API), `localhost:8000` (Grading) |
-| **Production** | Live deployment (planned) | Cloud VM or container orchestration (to be determined post-capstone) | TBD |
+| **Phát triển cục bộ** | Thiết lập cho từng lập trình viên | Docker Compose (PostgreSQL, Redis, MinIO) + Bun dev server + Vite dev server | `localhost:3001` (API), `localhost:5173` (Web) |
+| **Docker Compose (Đầy đủ)** | Kiểm thử tích hợp, demo | Tất cả dịch vụ container hóa: Backend, Grading, PostgreSQL, Redis, MinIO | `localhost:4000` (API), `localhost:8000` (Grading) |
+| **Production** | Triển khai chính thức (dự kiến) | VM đám mây hoặc container orchestration (sẽ xác định sau capstone) | TBD |
 
-*Note: Production deployment infrastructure will be finalized based on scaling requirements after the capstone pilot phase.*
+*Ghi chú: Hạ tầng triển khai production sẽ được hoàn thiện dựa trên yêu cầu mở rộng sau giai đoạn pilot capstone.*
 
 ---
 
-## 9. References
+## 9. Tài Liệu Tham Khảo
 
-| # | Document | Description |
+| # | Tài liệu | Mô tả |
 |---|----------|-------------|
-| 1 | Report 1 — Project Introduction | Project background, existing systems, business opportunity, vision |
-| 2 | Report 2 — Project Management Plan | WBS, estimation, risk register, responsibility matrix |
-| 3 | Report 3 — Software Requirement Specification | Functional and non-functional requirements, use cases, ERD, activity diagrams |
-| 4 | `apps/backend/src/` | Backend source code — Bun + Elysia + Drizzle ORM |
-| 5 | `apps/grading/app/` | Grading service source code — Python + FastAPI + Redis worker |
-| 6 | `apps/backend/drizzle/` | Database migrations (Drizzle Kit) |
-| 7 | `docs/specs/` | Technical specifications (20 files covering domain, contracts, data, platform, ops) |
+| 1 | Report 1 — Giới Thiệu Dự Án | Bối cảnh dự án, hệ thống hiện có, cơ hội kinh doanh, tầm nhìn |
+| 2 | Report 2 — Kế Hoạch Quản Lý Dự Án | WBS, ước lượng, sổ rủi ro, ma trận trách nhiệm |
+| 3 | Report 3 — Đặc Tả Yêu Cầu Phần Mềm | Yêu cầu chức năng và phi chức năng, use case, ERD, biểu đồ hoạt động |
+| 4 | `apps/backend/src/` | Mã nguồn Backend — Bun + Elysia + Drizzle ORM |
+| 5 | `apps/grading/app/` | Mã nguồn dịch vụ chấm điểm — Python + FastAPI + Redis worker |
+| 6 | `apps/backend/drizzle/` | Database migration (Drizzle Kit) |
+| 7 | `docs/specs/` | Đặc tả kỹ thuật (20 file bao gồm domain, contracts, data, platform, ops) |
 
 ---
 
-*Document version: 1.0 — Last updated: SP26SE145*
+*Phiên bản tài liệu: 1.0 — Cập nhật lần cuối: SP26SE145*

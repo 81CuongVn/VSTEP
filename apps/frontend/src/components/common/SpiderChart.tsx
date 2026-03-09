@@ -50,10 +50,9 @@ export function SpiderChart({ skills, className }: SpiderChartProps) {
 			<svg
 				viewBox={`0 0 ${SIZE} ${SIZE}`}
 				className="h-full w-full"
-				aria-label="Biểu đồ kỹ năng"
+				aria-label="Bi\u1ec3u \u0111\u1ed3 k\u1ef9 n\u0103ng"
 				role="img"
 			>
-				{/* Grid levels */}
 				{[1, 2, 3, 4, 5].map((level) => (
 					<path
 						key={`grid-${level}`}
@@ -65,7 +64,6 @@ export function SpiderChart({ skills, className }: SpiderChartProps) {
 					/>
 				))}
 
-				{/* Axis lines */}
 				{skills.map((s, i) => {
 					const { x, y } = polarToXY(i * angleStep, RADIUS)
 					return (
@@ -82,7 +80,6 @@ export function SpiderChart({ skills, className }: SpiderChartProps) {
 					)
 				})}
 
-				{/* Data fill */}
 				<path
 					d={dataPath}
 					className="fill-primary/12 stroke-primary"
@@ -90,7 +87,6 @@ export function SpiderChart({ skills, className }: SpiderChartProps) {
 					strokeLinejoin="round"
 				/>
 
-				{/* Data points */}
 				{skills.map((s, i) => {
 					const r = (s.value / 10) * RADIUS
 					const { x, y } = polarToXY(i * angleStep, r)
@@ -107,7 +103,6 @@ export function SpiderChart({ skills, className }: SpiderChartProps) {
 				})}
 			</svg>
 
-			{/* Labels positioned outside */}
 			{skills.map((s, i) => {
 				const labelR = RADIUS + 32
 				const { x, y } = polarToXY(i * angleStep, labelR)

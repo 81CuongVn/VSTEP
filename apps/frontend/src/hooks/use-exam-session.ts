@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { api } from "@/lib/api"
 import type {
 	ExamSession,
+	ExamSessionWithExam,
 	ExamSessionDetail,
 	PaginatedResponse,
 	SubmissionAnswer,
@@ -46,7 +47,7 @@ function useExamSessions(params: UseExamSessionsParams = {}) {
 
 	return useQuery({
 		queryKey: ["exam-sessions", { page, limit, status }],
-		queryFn: () => api.get<PaginatedResponse<ExamSession>>(`/api/exams/sessions?${search}`),
+		queryFn: () => api.get<PaginatedResponse<ExamSessionWithExam>>(`/api/exams/sessions?${search}`),
 	})
 }
 
