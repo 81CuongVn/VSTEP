@@ -25,11 +25,16 @@ async def transcribe(audio_url: str, redis: Redis) -> str:
         return cached.decode()
 
     # litellm expects file-like object opened in binary mode
-    response = await atranscription(
-        model=settings.stt_model,
-        file=io.BytesIO(audio),
-        language="en",
-    )
+    kwargs: dict = {
+        "model": settings.stt_model,
+        "file": io.BytesIO(audio),
+        "language": "en",
+    }
+    if settings.stt_api_base:
+        kwargs["api_base"] = settings.stt_api_base
+    if settings.stt_api_key:
+        kwargs["api_key"] = settings.stt_api_key
+    response = await atranscription(**kwargs)
     transcript = response.text or ""
 
     await redis.setex(key, CACHE_TTL, transcript)

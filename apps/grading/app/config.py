@@ -12,7 +12,9 @@ class Settings(BaseSettings):
     llm_timeout: int = 60
     llm_retries: int = 3
 
-    stt_model: str = "groq/whisper-large-v3-turbo"
+    stt_model: str = "cloudflare/@cf/openai/whisper-large-v3-turbo"
+    stt_api_base: str | None = None
+    stt_api_key: str | None = None
 
     redis_url: str = "redis://localhost:6379"
 

@@ -29,6 +29,7 @@ export const env = createEnv({
     S3_BUCKET: z.string(),
     S3_ACCESS_KEY: z.string(),
     S3_SECRET_KEY: z.string(),
+    GRADING_SERVICE_URL: z.url().default("http://localhost:8000"),
   },
   runtimeEnv: Bun.env,
   skipValidation: !!Bun.env.CI,

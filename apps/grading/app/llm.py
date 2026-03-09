@@ -4,6 +4,7 @@ from app.config import settings
 
 litellm.set_verbose = False
 litellm.suppress_debug_info = True
+litellm.drop_params = True
 
 
 def models() -> list[dict]:

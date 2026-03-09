@@ -2,6 +2,7 @@ import { env } from "@common/env";
 import { cors } from "@elysiajs/cors";
 import { openapi } from "@elysiajs/openapi";
 import { Elysia } from "elysia";
+import { ai } from "@/modules/ai";
 import { auth } from "@/modules/auth";
 import { classes } from "@/modules/classes";
 import { exams } from "@/modules/exams";
@@ -70,6 +71,10 @@ const api = new Elysia({ prefix: "/api" })
             description:
               "Notifications and device token management for push notifications",
           },
+          {
+            name: "AI",
+            description: "AI-powered language analysis (paraphrase, explain)",
+          },
         ],
         components: {
           securitySchemes: {
@@ -96,7 +101,8 @@ const api = new Elysia({ prefix: "/api" })
   .use(uploads)
   .use(practice)
   .use(notificationsModule)
-  .use(devicesModule);
+  .use(devicesModule)
+  .use(ai);
 
 /** Root app — health check outside /api, everything else inside */
 export const app = new Elysia()
