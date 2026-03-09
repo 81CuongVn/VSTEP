@@ -74,7 +74,7 @@ function OnboardingPage() {
 			deadline?: string
 			dailyStudyTimeMinutes?: number
 		}) => api.post("/api/onboarding/self-assess", body),
-		onSuccess: () => navigate({ to: "/practice" }),
+		onSuccess: () => navigate({ to: "/progress" }),
 	})
 
 	function handleSelectLevel(band: string) {
