@@ -124,6 +124,14 @@ function PracticePage() {
 		[updateAnswer],
 	)
 
+	// Speaking handler
+	const handleSpeakingUpdate = useCallback(
+		(questionId: string, audioUrl: string, durationSeconds: number) => {
+			updateAnswer(questionId, { audioUrl, durationSeconds } as SubmissionAnswer)
+		},
+		[updateAnswer],
+	)
+
 	// Navigation
 	const confirmNextSkill = useCallback(() => {
 		setConfirmingNextSkill(false)
@@ -235,7 +243,11 @@ function PracticePage() {
 					onUpdateWriting={handleWritingUpdate}
 				/>
 			) : currentSkill === "speaking" ? (
-				<SpeakingExamPanel questions={currentQuestions} />
+				<SpeakingExamPanel
+					questions={currentQuestions}
+					answers={answers}
+					onUpdateSpeaking={handleSpeakingUpdate}
+				/>
 			) : (
 				<div className="flex flex-1 items-center justify-center">
 					<p className="text-muted-foreground">Chọn một phần thi để bắt đầu.</p>
