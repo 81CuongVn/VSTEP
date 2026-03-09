@@ -35,6 +35,7 @@ import { Route as LearnerProgressIndexRouteImport } from './routes/_learner/prog
 import { Route as LearnerPracticeIndexRouteImport } from './routes/_learner/practice/index'
 import { Route as LearnerExamsIndexRouteImport } from './routes/_learner/exams/index'
 import { Route as LearnerSubmissionsIdRouteImport } from './routes/_learner/submissions/$id'
+import { Route as LearnerProgressHistoryRouteImport } from './routes/_learner/progress/history'
 import { Route as LearnerProgressSkillRouteImport } from './routes/_learner/progress/$skill'
 import { Route as LearnerPracticeWritingRouteImport } from './routes/_learner/practice/writing'
 import { Route as LearnerPracticeSpeakingRouteImport } from './routes/_learner/practice/speaking'
@@ -171,6 +172,11 @@ const LearnerSubmissionsIdRoute = LearnerSubmissionsIdRouteImport.update({
   path: '/submissions/$id',
   getParentRoute: () => LearnerRoute,
 } as any)
+const LearnerProgressHistoryRoute = LearnerProgressHistoryRouteImport.update({
+  id: '/progress/history',
+  path: '/progress/history',
+  getParentRoute: () => LearnerRoute,
+} as any)
 const LearnerProgressSkillRoute = LearnerProgressSkillRouteImport.update({
   id: '/progress/$skill',
   path: '/progress/$skill',
@@ -246,6 +252,7 @@ export interface FileRoutesByFullPath {
   '/practice/speaking': typeof LearnerPracticeSpeakingRoute
   '/practice/writing': typeof LearnerPracticeWritingRoute
   '/progress/$skill': typeof LearnerProgressSkillRoute
+  '/progress/history': typeof LearnerProgressHistoryRoute
   '/submissions/$id': typeof LearnerSubmissionsIdRoute
   '/exams/': typeof LearnerExamsIndexRoute
   '/practice/': typeof LearnerPracticeIndexRoute
@@ -278,6 +285,7 @@ export interface FileRoutesByTo {
   '/practice/speaking': typeof LearnerPracticeSpeakingRoute
   '/practice/writing': typeof LearnerPracticeWritingRoute
   '/progress/$skill': typeof LearnerProgressSkillRoute
+  '/progress/history': typeof LearnerProgressHistoryRoute
   '/submissions/$id': typeof LearnerSubmissionsIdRoute
   '/exams': typeof LearnerExamsIndexRoute
   '/practice': typeof LearnerPracticeIndexRoute
@@ -316,6 +324,7 @@ export interface FileRoutesById {
   '/_learner/practice/speaking': typeof LearnerPracticeSpeakingRoute
   '/_learner/practice/writing': typeof LearnerPracticeWritingRoute
   '/_learner/progress/$skill': typeof LearnerProgressSkillRoute
+  '/_learner/progress/history': typeof LearnerProgressHistoryRoute
   '/_learner/submissions/$id': typeof LearnerSubmissionsIdRoute
   '/_learner/exams/': typeof LearnerExamsIndexRoute
   '/_learner/practice/': typeof LearnerPracticeIndexRoute
@@ -351,6 +360,7 @@ export interface FileRouteTypes {
     | '/practice/speaking'
     | '/practice/writing'
     | '/progress/$skill'
+    | '/progress/history'
     | '/submissions/$id'
     | '/exams/'
     | '/practice/'
@@ -383,6 +393,7 @@ export interface FileRouteTypes {
     | '/practice/speaking'
     | '/practice/writing'
     | '/progress/$skill'
+    | '/progress/history'
     | '/submissions/$id'
     | '/exams'
     | '/practice'
@@ -420,6 +431,7 @@ export interface FileRouteTypes {
     | '/_learner/practice/speaking'
     | '/_learner/practice/writing'
     | '/_learner/progress/$skill'
+    | '/_learner/progress/history'
     | '/_learner/submissions/$id'
     | '/_learner/exams/'
     | '/_learner/practice/'
@@ -622,6 +634,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnerSubmissionsIdRouteImport
       parentRoute: typeof LearnerRoute
     }
+    '/_learner/progress/history': {
+      id: '/_learner/progress/history'
+      path: '/progress/history'
+      fullPath: '/progress/history'
+      preLoaderRoute: typeof LearnerProgressHistoryRouteImport
+      parentRoute: typeof LearnerRoute
+    }
     '/_learner/progress/$skill': {
       id: '/_learner/progress/$skill'
       path: '/progress/$skill'
@@ -740,6 +759,7 @@ interface LearnerRouteChildren {
   LearnerPracticeSpeakingRoute: typeof LearnerPracticeSpeakingRoute
   LearnerPracticeWritingRoute: typeof LearnerPracticeWritingRoute
   LearnerProgressSkillRoute: typeof LearnerProgressSkillRoute
+  LearnerProgressHistoryRoute: typeof LearnerProgressHistoryRoute
   LearnerSubmissionsIdRoute: typeof LearnerSubmissionsIdRoute
   LearnerExamsIndexRoute: typeof LearnerExamsIndexRoute
   LearnerPracticeIndexRoute: typeof LearnerPracticeIndexRoute
@@ -758,6 +778,7 @@ const LearnerRouteChildren: LearnerRouteChildren = {
   LearnerPracticeSpeakingRoute: LearnerPracticeSpeakingRoute,
   LearnerPracticeWritingRoute: LearnerPracticeWritingRoute,
   LearnerProgressSkillRoute: LearnerProgressSkillRoute,
+  LearnerProgressHistoryRoute: LearnerProgressHistoryRoute,
   LearnerSubmissionsIdRoute: LearnerSubmissionsIdRoute,
   LearnerExamsIndexRoute: LearnerExamsIndexRoute,
   LearnerPracticeIndexRoute: LearnerPracticeIndexRoute,
