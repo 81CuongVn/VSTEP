@@ -133,6 +133,8 @@ interface ActivityResponse {
 	streak: number
 	total: number
 	activeDays: string[]
+	totalExercises: number
+	totalStudyTimeMinutes: number
 }
 
 type Trend = "improving" | "stable" | "declining" | "inconsistent" | "insufficient_data"
