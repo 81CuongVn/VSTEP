@@ -21,7 +21,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#4F5BD5"
       },
-      "package": "com.vstep.mobile"
+      "package": "com.vstep.mobile",
+      "softwareKeyboardLayoutMode": "pan"
     },
     "plugins": ["expo-router", "expo-secure-store", "expo-system-ui"],
     "experiments": {

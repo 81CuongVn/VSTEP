@@ -53,12 +53,12 @@ export function StickyHeader({ scrollY, subtitle }: StickyHeaderProps) {
       <View style={styles.headerInner}>
         <View style={[styles.avatar, { backgroundColor: c.primary }]}>
           <Text style={styles.avatarText}>
-            {(user?.displayName ?? "?").charAt(0).toUpperCase()}
+            {(user?.fullName ?? "?").charAt(0).toUpperCase()}
           </Text>
         </View>
         <View style={styles.textWrap}>
           <Text style={[styles.headerTitle, { color: c.foreground }]} numberOfLines={1}>
-            Xin chào, {user?.displayName ?? "bạn"}
+            Xin chào, {user?.fullName ?? "bạn"}
           </Text>
           {subtitle ? (
             <Text style={[styles.headerSub, { color: c.mutedForeground }]} numberOfLines={1}>

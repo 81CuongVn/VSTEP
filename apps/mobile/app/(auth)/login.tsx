@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
+  ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
   Platform,
@@ -26,18 +27,38 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
+
+  const validate = useCallback(() => {
+    const e: typeof errors = {};
+    const trimmed = email.trim();
+    if (!trimmed) {
+      e.email = "Vui lòng nhập email";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      e.email = "Email không hợp lệ";
+    }
+    if (!password) {
+      e.password = "Vui lòng nhập mật khẩu";
+    }
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  }, [email, password]);
 
   async function handleLogin() {
-    if (!email || !password) return;
-    setError("");
+    if (!validate()) return;
+    setErrors({});
     setLoading(true);
     try {
-      const res = await loginApi(email, password);
+      const res = await loginApi(email.trim(), password);
       await signIn(res.accessToken, res.refreshToken, res.user);
       router.replace("/");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Đăng nhập thất bại");
+      const message = err instanceof Error ? err.message : "Đăng nhập thất bại";
+      if (message.toLowerCase().includes("invalid email or password")) {
+        setErrors({ general: "Email hoặc mật khẩu không đúng" });
+      } else {
+        setErrors({ general: message });
+      }
     } finally {
       setLoading(false);
     }
@@ -46,7 +67,7 @@ export default function LoginScreen() {
   return (
     <KeyboardAvoidingView
       style={[styles.flex, { backgroundColor: c.background }]}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <BouncyScrollView
         contentContainerStyle={styles.scroll}
@@ -66,15 +87,16 @@ export default function LoginScreen() {
           <View style={styles.field}>
             <Text style={[styles.label, { color: c.foreground }]}>Email</Text>
             <TextInput
-              style={[styles.input, { backgroundColor: c.card, borderColor: c.border, color: c.foreground }]}
+              style={[styles.input, { backgroundColor: c.card, borderColor: errors.email ? c.destructive : c.border, color: c.foreground }]}
               placeholder="you@example.com"
               placeholderTextColor={c.mutedForeground}
               value={email}
-              onChangeText={setEmail}
+              onChangeText={(t) => { setEmail(t); if (errors.email) setErrors((p) => ({ ...p, email: undefined })); }}
               keyboardType="email-address"
               autoCapitalize="none"
               autoComplete="email"
             />
+            {errors.email ? <Text style={[styles.fieldError, { color: c.destructive }]}>{errors.email}</Text> : null}
           </View>
 
           <View style={styles.field}>
@@ -88,11 +110,11 @@ export default function LoginScreen() {
             </View>
             <View style={styles.passwordContainer}>
               <TextInput
-                style={[styles.passwordInput, { backgroundColor: c.card, borderColor: c.border, color: c.foreground }]}
+                style={[styles.passwordInput, { backgroundColor: c.card, borderColor: errors.password ? c.destructive : c.border, color: c.foreground }]}
                 placeholder="••••••••"
                 placeholderTextColor={c.mutedForeground}
                 value={password}
-                onChangeText={setPassword}
+                onChangeText={(t) => { setPassword(t); if (errors.password) setErrors((p) => ({ ...p, password: undefined })); }}
                 secureTextEntry={!showPassword}
               />
               <HapticTouchable
@@ -106,18 +128,23 @@ export default function LoginScreen() {
                 />
               </HapticTouchable>
             </View>
+            {errors.password ? <Text style={[styles.fieldError, { color: c.destructive }]}>{errors.password}</Text> : null}
           </View>
 
-          {error ? <Text style={[styles.error, { color: c.destructive }]}>{error}</Text> : null}
+          {errors.general ? <Text style={[styles.error, { color: c.destructive }]}>{errors.general}</Text> : null}
 
           <HapticTouchable
             style={[styles.button, { backgroundColor: c.primary, opacity: loading ? 0.7 : 1 }]}
             onPress={handleLogin}
             disabled={loading}
           >
-            <Text style={[styles.buttonText, { color: c.primaryForeground }]}>
-              {loading ? "Đang đăng nhập..." : "Đăng nhập"}
-            </Text>
+            {loading ? (
+              <ActivityIndicator color={c.primaryForeground} />
+            ) : (
+              <Text style={[styles.buttonText, { color: c.primaryForeground }]}>
+                Đăng nhập
+              </Text>
+            )}
           </HapticTouchable>
         </View>
 
@@ -169,6 +196,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: "center",
   },
+  fieldError: { fontSize: fontSize.xs, marginTop: 2 },
   error: { fontSize: fontSize.sm },
   button: {
     borderRadius: radius.lg,

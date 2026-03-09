@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
+  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -24,21 +25,45 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState<{ fullName?: string; email?: string; password?: string; general?: string }>({});
+
+  const validate = useCallback(() => {
+    const e: typeof errors = {};
+    if (fullName.trim() && fullName.trim().length > 100) {
+      e.fullName = "Họ và tên tối đa 100 ký tự";
+    }
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail) {
+      e.email = "Vui lòng nhập email";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      e.email = "Email không hợp lệ";
+    }
+    if (!password) {
+      e.password = "Vui lòng nhập mật khẩu";
+    } else if (password.length < 8) {
+      e.password = "Mật khẩu phải có ít nhất 8 ký tự";
+    }
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  }, [fullName, email, password]);
 
   async function handleRegister() {
-    if (!email || !password) return;
-    setError("");
+    if (!validate()) return;
+    setErrors({});
     setLoading(true);
     try {
-      await registerApi(email, password, fullName || undefined);
-      const res = await loginApi(email, password);
+      await registerApi(email.trim(), password, fullName.trim() || undefined);
+      const res = await loginApi(email.trim(), password);
       await signIn(res.accessToken, res.refreshToken, res.user);
       router.replace("/");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Đã xảy ra lỗi");
+      const message = err instanceof Error ? err.message : "Đã xảy ra lỗi";
+      if (message.toLowerCase().includes("email already registered")) {
+        setErrors({ email: "Email này đã được sử dụng" });
+      } else {
+        setErrors({ general: message });
+      }
     } finally {
       setLoading(false);
     }
@@ -47,7 +72,7 @@ export default function RegisterScreen() {
   return (
     <KeyboardAvoidingView
       style={[styles.flex, { backgroundColor: c.background }]}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <BouncyScrollView
         contentContainerStyle={styles.scroll}
@@ -65,38 +90,40 @@ export default function RegisterScreen() {
           <View style={styles.field}>
             <Text style={[styles.label, { color: c.foreground }]}>Họ và tên</Text>
             <TextInput
-              style={[styles.input, { backgroundColor: c.card, borderColor: c.border, color: c.foreground }]}
+              style={[styles.input, { backgroundColor: c.card, borderColor: errors.fullName ? c.destructive : c.border, color: c.foreground }]}
               placeholder="Nguyễn Văn A"
               placeholderTextColor={c.mutedForeground}
               value={fullName}
-              onChangeText={setFullName}
+              onChangeText={(t) => { setFullName(t); if (errors.fullName) setErrors((p) => ({ ...p, fullName: undefined })); }}
               autoComplete="name"
             />
+            {errors.fullName ? <Text style={[styles.fieldError, { color: c.destructive }]}>{errors.fullName}</Text> : null}
           </View>
 
           <View style={styles.field}>
             <Text style={[styles.label, { color: c.foreground }]}>Email</Text>
             <TextInput
-              style={[styles.input, { backgroundColor: c.card, borderColor: c.border, color: c.foreground }]}
+              style={[styles.input, { backgroundColor: c.card, borderColor: errors.email ? c.destructive : c.border, color: c.foreground }]}
               placeholder="you@example.com"
               placeholderTextColor={c.mutedForeground}
               value={email}
-              onChangeText={setEmail}
+              onChangeText={(t) => { setEmail(t); if (errors.email) setErrors((p) => ({ ...p, email: undefined })); }}
               keyboardType="email-address"
               autoCapitalize="none"
               autoComplete="email"
             />
+            {errors.email ? <Text style={[styles.fieldError, { color: c.destructive }]}>{errors.email}</Text> : null}
           </View>
 
           <View style={styles.field}>
             <Text style={[styles.label, { color: c.foreground }]}>Mật khẩu</Text>
-            <View style={[styles.inputRow, { backgroundColor: c.card, borderColor: c.border }]}>
+            <View style={[styles.inputRow, { backgroundColor: c.card, borderColor: errors.password ? c.destructive : c.border }]}>
               <TextInput
                 style={[styles.inputFlex, { color: c.foreground }]}
                 placeholder="Tối thiểu 8 ký tự"
                 placeholderTextColor={c.mutedForeground}
                 value={password}
-                onChangeText={setPassword}
+                onChangeText={(t) => { setPassword(t); if (errors.password) setErrors((p) => ({ ...p, password: undefined })); }}
                 secureTextEntry={!showPassword}
               />
               <HapticTouchable onPress={() => setShowPassword((v) => !v)} style={styles.eyeBtn}>
@@ -107,18 +134,23 @@ export default function RegisterScreen() {
                 />
               </HapticTouchable>
             </View>
+            {errors.password ? <Text style={[styles.fieldError, { color: c.destructive }]}>{errors.password}</Text> : null}
           </View>
 
-          {error ? <Text style={[styles.error, { color: c.destructive }]}>{error}</Text> : null}
+          {errors.general ? <Text style={[styles.error, { color: c.destructive }]}>{errors.general}</Text> : null}
 
           <HapticTouchable
             style={[styles.button, { backgroundColor: c.primary, opacity: loading ? 0.7 : 1 }]}
             onPress={handleRegister}
             disabled={loading}
           >
-            <Text style={[styles.buttonText, { color: c.primaryForeground }]}>
-              {loading ? "Đang xử lý..." : "Tạo tài khoản"}
-            </Text>
+            {loading ? (
+              <ActivityIndicator color={c.primaryForeground} />
+            ) : (
+              <Text style={[styles.buttonText, { color: c.primaryForeground }]}>
+                Tạo tài khoản
+              </Text>
+            )}
           </HapticTouchable>
         </View>
 
@@ -166,6 +198,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.base,
   },
   eyeBtn: { padding: spacing.xs },
+  fieldError: { fontSize: fontSize.xs, marginTop: 2 },
   error: { fontSize: fontSize.sm },
   button: {
     borderRadius: radius.lg,

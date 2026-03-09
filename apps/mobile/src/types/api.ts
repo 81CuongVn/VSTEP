@@ -19,7 +19,7 @@ export interface AuthUser {
   id: string;
   email: string;
   role: string;
-  displayName: string | null;
+  fullName: string | null;
 }
 
 export interface LoginResponse {
@@ -51,7 +51,7 @@ export interface PaginatedResponse<T> {
 export interface User {
   id: string;
   email: string;
-  displayName: string | null;
+  fullName: string | null;
   role: string;
   avatarKey: string | null;
   createdAt: string;
@@ -395,7 +395,7 @@ export interface ClassMember {
   userId: string;
   role: string;
   joinedAt: string;
-  user?: { id: string; displayName: string | null; email: string };
+  user?: { id: string; fullName: string | null; email: string };
 }
 
 export interface ClassDetail extends ClassItem {

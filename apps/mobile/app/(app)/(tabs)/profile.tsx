@@ -32,7 +32,7 @@ export default function ProfileScreen() {
   const u = userData ?? authUser;
   if (!u) return null;
 
-  const initials = (u.displayName ?? u.email)
+  const initials = (u.fullName ?? u.email)
     .split(" ")
     .map((w: string) => w[0])
     .slice(0, 2)
@@ -56,7 +56,7 @@ export default function ProfileScreen() {
         <View style={[styles.avatar, { backgroundColor: c.primary + "18" }]}>
           <Text style={[styles.avatarText, { color: c.primary }]}>{initials}</Text>
         </View>
-        <Text style={[styles.name, { color: c.foreground }]}>{u.displayName ?? "Chưa đặt tên"}</Text>
+        <Text style={[styles.name, { color: c.foreground }]}>{u.fullName ?? "Chưa đặt tên"}</Text>
         <Text style={[styles.email, { color: c.mutedForeground }]}>{u.email}</Text>
       </View>
 
