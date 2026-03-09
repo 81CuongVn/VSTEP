@@ -58,7 +58,7 @@
 
 - Project name (EN): An Adaptive VSTEP Preparation System with Comprehensive Skill Assessment and Personalized Learning Support
 - Project name (VN): Hệ Thống Luyện Thi VSTEP Thích Ứng Với Đánh Giá Toàn Diện Kỹ Năng Và Hỗ Trợ Học Tập Cá Nhân Hóa
-- Project code: SP26SE145
+- Project code: SP26SE146
 - Group name: GSP26SE63
 - Software type: Web Application & Mobile Application
 - Duration: 01/01/2026 – 30/04/2026
@@ -335,7 +335,7 @@ FE-03: Practice Mode - Listening - Listening skill practice with Adaptive Scaffo
 
 FE-04: Practice Mode - Reading - Reading skill practice with VSTEP-format question types: True/False/Not Given, Multiple Choice, Matching Headings, Fill in the Blanks.
 
-FE-05: Practice Mode - Writing + AI Grading - Writing skill practice with fast AI feedback. Using LLM API (Groq Llama 3.3 70B via LiteLLM) to evaluate grammar, vocabulary, coherence, and task achievement according to VSTEP rubric. SLA timeout: 20 minutes.
+FE-05: Practice Mode - Writing + AI Grading - Writing skill practice with fast AI feedback. Using LLM API (GPT-5.4 via OpenAI-compatible proxy, fallback: Llama 3.3 70B via Cloudflare Workers AI) to evaluate grammar, vocabulary, coherence, and task achievement according to VSTEP rubric. SLA timeout: 20 minutes.
 
 FE-06: Practice Mode - Speaking + AI Grading - Speaking skill practice with recording and AI feedback. Integrating Speech-to-Text for transcription, then using LLM to evaluate pronunciation, fluency, and content. SLA timeout: 60 minutes.
 
@@ -436,7 +436,7 @@ flowchart TB
     end
 
     subgraph External ["External Services"]
-        Groq["Groq API<br/>Llama 3.3 70B + Whisper V3"]
+        LLMService["LLM Service<br/>GPT-5.4 (Primary) + Llama 3.3 70B (Fallback)<br/>+ Deepgram Nova 3 (STT)"]
     end
 
     WebApp --> API
@@ -447,7 +447,7 @@ flowchart TB
     API -->|"dispatch tasks"| Redis
     Worker -->|"consume tasks"| Redis
     Worker --> PG
-    Worker --> Groq
+    Worker --> LLMService
 
     classDef client fill:#1565c0,stroke:#0d47a1,color:#fff
     classDef api fill:#2e7d32,stroke:#1b5e20,color:#fff
@@ -459,7 +459,7 @@ flowchart TB
     class API api
     class Worker worker
     class PG,Redis,MinIO data
-    class Groq external
+    class LLMService external
 ```
 
 
