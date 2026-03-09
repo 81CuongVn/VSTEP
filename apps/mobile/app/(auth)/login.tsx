@@ -121,20 +121,14 @@ export default function LoginScreen() {
           </HapticTouchable>
         </View>
 
-        <View style={styles.divider}>
-          <View style={[styles.dividerLine, { backgroundColor: c.border }]} />
-          <Text style={[styles.dividerText, { color: c.mutedForeground }]}>hoặc</Text>
-          <View style={[styles.dividerLine, { backgroundColor: c.border }]} />
+        <View style={styles.footerRow}>
+          <Text style={[styles.footerText, { color: c.mutedForeground }]}>Bạn chưa có tài khoản? </Text>
+          <Link href="/(auth)/register" asChild>
+            <HapticTouchable>
+              <Text style={[styles.footerLink, { color: c.primary }]}>Đăng ký</Text>
+            </HapticTouchable>
+          </Link>
         </View>
-
-        <Link href="/(auth)/register" asChild>
-          <HapticTouchable style={[styles.outlineButton, { borderColor: c.border }]}>
-            <Text style={[styles.outlineButtonText, { color: c.foreground }]}>
-              Đăng ký tài khoản
-            </Text>
-          </HapticTouchable>
-        </Link>
-
         <Text style={[styles.version, { color: c.mutedForeground }]}>Phiên bản 1.0.0</Text>
       </BouncyScrollView>
     </KeyboardAvoidingView>
@@ -183,19 +177,13 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   buttonText: { fontSize: fontSize.base, fontWeight: "600" },
-  divider: {
+  footerRow: {
     flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
-    marginVertical: spacing.xl,
+    marginTop: spacing.xl,
   },
-  dividerLine: { flex: 1, height: 1 },
-  dividerText: { fontSize: fontSize.sm, marginHorizontal: spacing.md },
-  outlineButton: {
-    borderWidth: 1,
-    borderRadius: radius.lg,
-    paddingVertical: spacing.base,
-    alignItems: "center",
-  },
-  outlineButtonText: { fontSize: fontSize.base, fontWeight: "600" },
+  footerText: { fontSize: fontSize.sm },
+  footerLink: { fontSize: fontSize.sm, fontWeight: "600" },
   version: { fontSize: fontSize.xs, textAlign: "center", marginTop: spacing["2xl"] },
 });

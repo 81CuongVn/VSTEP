@@ -12,7 +12,7 @@ import { ErrorScreen } from "@/components/ErrorScreen";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { useProgress, useSpiderChart } from "@/hooks/use-progress";
 import { useThemeColors, useSkillColor, spacing, radius, fontSize, fontFamily } from "@/theme";
-import type { Skill, Trend } from "@/types/api";
+import type { Skill } from "@/types/api";
 
 const SKILLS: { key: Skill; label: string; icon: keyof typeof Ionicons.glyphMap }[] = [
   { key: "listening", label: "Listening", icon: "headset" },
@@ -21,7 +21,7 @@ const SKILLS: { key: Skill; label: string; icon: keyof typeof Ionicons.glyphMap 
   { key: "speaking", label: "Speaking", icon: "mic" },
 ];
 
-const trendDisplay: Record<Trend, { text: string; type: "success" | "muted" | "destructive" | "warning" }> = {
+const trendDisplay: Record<string, { text: string; type: "success" | "muted" | "destructive" | "warning" }> = {
   improving: { text: "↑ Đang tiến bộ", type: "success" },
   stable: { text: "→ Ổn định", type: "muted" },
   declining: { text: "↓ Giảm", type: "destructive" },
@@ -29,7 +29,7 @@ const trendDisplay: Record<Trend, { text: string; type: "success" | "muted" | "d
   insufficient_data: { text: "— Chưa đủ dữ liệu", type: "muted" },
 };
 
-function avgScore(skills: Record<Skill, { current: number; trend: Trend }>): number {
+function avgScore(skills: Record<Skill, { current: number; trend: string }>): number {
   const vals = Object.values(skills).map((s) => s.current);
   if (vals.length === 0) return 0;
   return vals.reduce((a, b) => a + b, 0) / vals.length;
@@ -174,7 +174,7 @@ export default function ProgressScreen() {
                 Band {goal.targetBand}
               </Text>
               <Text style={[styles.halfCardLabel, { color: c.mutedForeground }]}>
-                Hạn: {new Date(goal.deadline).toLocaleDateString("vi-VN")}
+                Hạn: {goal.deadline ? new Date(goal.deadline).toLocaleDateString("vi-VN") : "Chưa đặt"}
               </Text>
             </View>
           )}

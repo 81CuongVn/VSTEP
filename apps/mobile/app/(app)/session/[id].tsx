@@ -17,11 +17,11 @@ import { ErrorScreen } from "@/components/ErrorScreen";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { SkillIcon, SKILL_LABELS } from "@/components/SkillIcon";
 import {
-  useExamDetail,
   useExamSession,
   useSaveAnswers,
   useSubmitExam,
 } from "@/hooks/use-exam-session";
+import { useExamDetail } from "@/hooks/use-exams";
 import { api } from "@/lib/api";
 import { useThemeColors, useSkillColor, spacing, radius, fontSize } from "@/theme";
 import type {
@@ -29,17 +29,20 @@ import type {
   ExamSession,
   Question,
   Skill,
-  SubmissionAnswer,
-  ObjectiveAnswer,
-  WritingAnswer,
-  ListeningContent,
-  ReadingContent,
-  WritingContent,
-  SpeakingPart1Content,
-  SpeakingPart2Content,
-  SpeakingPart3Content,
-  QuestionContent,
 } from "@/types/api";
+
+// Local content/answer types for rendering
+interface QuestionItem { stem: string; options: string[]; }
+interface ListeningContent { audioUrl: string; transcript?: string; items: QuestionItem[]; }
+interface ReadingContent { passage: string; title?: string; items: QuestionItem[]; }
+interface WritingContent { prompt: string; taskType: string; instructions?: string; minWords?: number; requiredPoints?: string[]; }
+interface SpeakingPart1Content { topics: { name: string; questions: string[] }[]; }
+interface SpeakingPart2Content { situation: string; options: string[]; preparationSeconds: number; speakingSeconds: number; }
+interface SpeakingPart3Content { centralIdea: string; suggestions: string[]; followUpQuestion: string; preparationSeconds: number; speakingSeconds: number; }
+type QuestionContent = ListeningContent | ReadingContent | WritingContent | SpeakingPart1Content | SpeakingPart2Content | SpeakingPart3Content;
+interface ObjectiveAnswer { answers: Record<string, string>; }
+interface WritingAnswer { text: string; }
+type SubmissionAnswer = ObjectiveAnswer | WritingAnswer | { audioUrl: string; durationSeconds: number; transcript?: string; };
 
 const SKILL_ORDER: Skill[] = ["listening", "reading", "writing", "speaking"];
 const OPTION_LETTERS = ["A", "B", "C", "D"];
@@ -92,7 +95,7 @@ interface SectionInfo {
 function InProgress({ session, sessionId, exam }: { session: ExamSession; sessionId: string; exam: any }) {
   const c = useThemeColors();
   const bp = exam?.blueprint as ExamBlueprint | undefined;
-  const durationMinutes = bp?.durationMinutes ?? 0;
+  const durationMinutes = exam?.durationMinutes ?? 0;
   const remaining = useTimer(session.startedAt, durationMinutes);
 
   // Build sections from blueprint
@@ -405,7 +408,7 @@ function QuestionRenderer({
   answer: SubmissionAnswer | undefined;
   onAnswer: (ans: SubmissionAnswer) => void;
 }) {
-  const kind = detectContentKind(question.content);
+  const kind = detectContentKind(question.content as QuestionContent);
 
   if (kind === "objective") {
     const objAnswer = (answer && "answers" in answer ? answer : { answers: {} }) as ObjectiveAnswer;

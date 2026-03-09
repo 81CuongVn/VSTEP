@@ -7,9 +7,9 @@ import { LoadingScreen } from "@/components/LoadingScreen";
 import { SKILL_LABELS } from "@/components/SkillIcon";
 import { useSkillDetail } from "@/hooks/use-progress";
 import { useThemeColors, useSkillColor, spacing, radius, fontSize } from "@/theme";
-import type { Skill, StreakDirection, Trend } from "@/types/api";
+import type { Skill } from "@/types/api";
 
-const trendDisplay: Record<Trend, { text: string; type: string }> = {
+const trendDisplay: Record<string, { text: string; type: string }> = {
   improving: { text: "↑ Đang tiến bộ", type: "success" },
   stable: { text: "→ Ổn định", type: "muted" },
   declining: { text: "↓ Giảm", type: "destructive" },
@@ -17,7 +17,7 @@ const trendDisplay: Record<Trend, { text: string; type: string }> = {
   insufficient_data: { text: "— Chưa đủ dữ liệu", type: "muted" },
 };
 
-const streakArrow: Record<StreakDirection, string> = { up: "↑", down: "↓", neutral: "→" };
+const streakArrow: Record<string, string> = { up: "↑", down: "↓", neutral: "→" };
 
 export default function SkillDetailScreen() {
   const { name } = useLocalSearchParams<{ name: string }>();
@@ -42,7 +42,7 @@ export default function SkillDetailScreen() {
       <View style={styles.statsGrid}>
         <StatCard label="Trình độ" value={prog?.currentLevel ?? "—"} colors={c} />
         <StatCard label="Số lần luyện" value={String(prog?.attemptCount ?? 0)} colors={c} />
-        <StatCard label="Chuỗi" value={`${prog?.streakCount ?? 0} ${streakArrow[prog?.streakDirection ?? "neutral"]}`} colors={c} />
+        <StatCard label="Chuỗi" value={`${prog?.streakCount ?? 0}`} colors={c} />
         <StatCard label="Xu hướng" value={trend.text} colors={c} valueColor={trendColor} />
       </View>
 

@@ -7,7 +7,7 @@ import { ErrorScreen } from "@/components/ErrorScreen";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { LearningPath, type LevelNode, type NodeStatus } from "@/components/LearningPath";
 import { SKILL_LABELS } from "@/components/SkillIcon";
-import { useExamDetail, useStartExam } from "@/hooks/use-exam-session";
+import { useExamDetail, useStartExam } from "@/hooks/use-exams";
 import { useThemeColors, useSkillColor, spacing, radius, fontSize } from "@/theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { ExamBlueprint, Skill } from "@/types/api";

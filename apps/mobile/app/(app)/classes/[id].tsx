@@ -10,7 +10,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { SKILL_LABELS } from "@/components/SkillIcon";
 import { useClassDetail, useClassFeedback, useLeaveClass } from "@/hooks/use-classes";
 import { useThemeColors, spacing, radius, fontSize } from "@/theme";
-import type { InstructorFeedback } from "@/types/api";
+import type { ClassFeedback, Skill } from "@/types/api";
 
 export default function ClassDetailScreen() {
   const c = useThemeColors();
@@ -44,17 +44,17 @@ export default function ClassDetailScreen() {
     ]);
   };
 
-  const renderFeedback = ({ item }: { item: InstructorFeedback }) => (
+  const renderFeedback = ({ item }: { item: ClassFeedback }) => (
     <View style={[styles.feedbackCard, { backgroundColor: c.card, borderColor: c.border }]}>
       <View style={styles.feedbackHeader}>
         <Ionicons name="person-circle" size={20} color={c.mutedForeground} />
         <Text style={[styles.feedbackName, { color: c.foreground }]}>
-          {item.fromUser?.fullName ?? item.fromUser?.email ?? "Giảng viên"}
+          {(item as any).fromUser?.fullName ?? (item as any).fromUser?.email ?? "Giảng viên"}
         </Text>
-        {item.skill && (
+        {(item as any).skill && (
           <View style={[styles.skillTag, { backgroundColor: c.primary + "20" }]}>
             <Text style={[styles.skillTagText, { color: c.primary }]}>
-              {SKILL_LABELS[item.skill]}
+              {SKILL_LABELS[(item as any).skill as Skill]}
             </Text>
           </View>
         )}

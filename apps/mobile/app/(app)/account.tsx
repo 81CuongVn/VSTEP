@@ -26,7 +26,7 @@ export default function AccountScreen() {
   return (
     <ScreenWrapper>
       <BouncyScrollView style={styles.scroll} contentContainerStyle={styles.content}>
-        <UpdateInfoSection userId={u.id} fullName={u.fullName ?? ""} email={u.email} colors={c} />
+        <UpdateInfoSection userId={u.id} fullName={(u as any).displayName ?? (u as any).fullName ?? ""} email={u.email} colors={c} />
         <ChangePasswordSection userId={u.id} colors={c} />
       </BouncyScrollView>
     </ScreenWrapper>

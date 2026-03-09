@@ -9,7 +9,7 @@ import { LoadingScreen } from "@/components/LoadingScreen";
 import { GradientBackground } from "@/components/GradientBackground";
 import { StickyHeader, HEADER_H } from "@/components/StickyHeader";
 import { useAuth } from "@/hooks/use-auth";
-import { useProgress } from "@/hooks/use-progress";
+import { useProgress, useActivity } from "@/hooks/use-progress";
 import { useThemeColors, spacing, radius, fontSize, fontFamily } from "@/theme";
 
 type QuickAction = {
@@ -43,6 +43,7 @@ export default function HomeScreen() {
   const router = useRouter();
   const { user } = useAuth();
   const progress = useProgress();
+  const { data: activityData, isLoading: activityLoading } = useActivity(7);
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const fade0 = useFadeIn(0);
@@ -161,23 +162,23 @@ export default function HomeScreen() {
               <Text style={styles.statEmoji}>⏱</Text>
               <Text style={[styles.statLabel, { color: c.mutedForeground }]}>Tổng thời lượng</Text>
               <Text style={[styles.statValue, { color: c.primary }]}>
-                {goal?.dailyStudyTimeMinutes ?? 0} phút
+                {activityLoading ? "—" : (activityData?.totalStudyTimeMinutes ?? 0) >= 60 ? `${Math.round((activityData?.totalStudyTimeMinutes ?? 0) / 60 * 10) / 10} giờ` : `${activityData?.totalStudyTimeMinutes ?? 0} phút`}
               </Text>
             </View>
             <View style={[styles.statCard, { borderColor: c.border }]}>
               <Text style={styles.statEmoji}>🏆</Text>
-              <Text style={[styles.statLabel, { color: c.mutedForeground }]}>Tổng số cúp</Text>
-              <Text style={[styles.statValue, { color: c.warning }]}>{totalAttempts}</Text>
+              <Text style={[styles.statLabel, { color: c.mutedForeground }]}>Chuỗi ngày học</Text>
+              <Text style={[styles.statValue, { color: c.warning }]}>{activityLoading ? "—" : activityData?.streak ?? 0}</Text>
             </View>
             <View style={[styles.statCard, { borderColor: c.border }]}>
               <Text style={styles.statEmoji}>📝</Text>
               <Text style={[styles.statLabel, { color: c.mutedForeground }]}>Số bài test đã làm</Text>
-              <Text style={[styles.statValue, { color: c.primary }]}>{totalAttempts}</Text>
+              <Text style={[styles.statValue, { color: c.primary }]}>{activityLoading ? "—" : activityData?.totalExercises ?? 0}</Text>
             </View>
             <View style={[styles.statCard, { borderColor: c.border }]}>
               <Text style={styles.statEmoji}>📚</Text>
               <Text style={[styles.statLabel, { color: c.mutedForeground }]}>Số bài đã học</Text>
-              <Text style={[styles.statValue, { color: c.primary }]}>{skills.length}</Text>
+              <Text style={[styles.statValue, { color: c.primary }]}>{activityLoading ? "—" : activityData?.total ?? 0}</Text>
             </View>
           </View>
         </Animated.View>

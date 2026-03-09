@@ -16,19 +16,22 @@ import { LoadingScreen } from "@/components/LoadingScreen";
 import { ErrorScreen } from "@/components/ErrorScreen";
 import { SKILL_LABELS } from "@/components/SkillIcon";
 import { useQuestions } from "@/hooks/use-questions";
-import { useCreateSubmission } from "@/hooks/use-practice";
+import { useCreateSubmission } from "@/hooks/use-submissions";
+import { useUploadAudio } from "@/hooks/use-practice";
 import { useThemeColors, spacing, radius, fontSize } from "@/theme";
 import type {
   Skill,
   Question,
-  QuestionContent,
-  ListeningContent,
-  ReadingContent,
-  WritingContent,
-  SpeakingPart1Content,
-  SpeakingPart2Content,
-  SpeakingPart3Content,
 } from "@/types/api";
+
+interface QuestionItem { stem: string; options: string[]; }
+interface ListeningContent { audioUrl: string; transcript?: string; items: QuestionItem[]; }
+interface ReadingContent { passage: string; title?: string; items: QuestionItem[]; }
+interface WritingContent { prompt: string; taskType: string; instructions?: string; minWords?: number; requiredPoints?: string[]; }
+interface SpeakingPart1Content { topics: { name: string; questions: string[] }[]; }
+interface SpeakingPart2Content { situation: string; options: string[]; preparationSeconds: number; speakingSeconds: number; }
+interface SpeakingPart3Content { centralIdea: string; suggestions: string[]; followUpQuestion: string; preparationSeconds: number; speakingSeconds: number; }
+type QuestionContent = ListeningContent | ReadingContent | WritingContent | SpeakingPart1Content | SpeakingPart2Content | SpeakingPart3Content;
 
 type ContentKind = "objective" | "writing" | "speaking";
 
@@ -81,6 +84,7 @@ export default function PracticeQuestionScreen() {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [text, setText] = useState("");
   const submitMutation = useCreateSubmission();
+  const uploadAudio = useUploadAudio();
 
   if (isLoading) return <LoadingScreen />;
   if (error) return <ErrorScreen message={error.message} onRetry={() => refetch()} />;
@@ -91,7 +95,7 @@ export default function PracticeQuestionScreen() {
       />
     );
 
-  const kind = detectContentKind(question.content);
+  const kind = detectContentKind(question.content as QuestionContent);
 
   const canSubmit =
     kind === "objective"
@@ -100,14 +104,26 @@ export default function PracticeQuestionScreen() {
         ? audioUri !== null
         : text.trim().length > 0;
 
-  const handleSubmit = () => {
-    if (!canSubmit || submitMutation.isPending) return;
+  const isUploading = uploadAudio.isPending;
+
+  const handleSubmit = async () => {
+    if (!canSubmit || submitMutation.isPending || isUploading) return;
 
     let answer;
     if (kind === "objective") {
       answer = { answers };
     } else if (kind === "speaking") {
-      answer = { audioUrl: audioUri!, durationSeconds: Math.round(audioDuration / 1000) };
+      try {
+        const ext = audioUri!.split(".").pop() || "m4a";
+        const uploadResult = await uploadAudio.mutateAsync({
+          uri: audioUri!,
+          name: `recording.${ext}`,
+          type: `audio/${ext === "m4a" ? "mp4" : ext}`,
+        });
+        answer = { audioUrl: uploadResult.audioKey, durationSeconds: Math.round(audioDuration / 1000) };
+      } catch {
+        return;
+      }
     } else {
       answer = { text: text.trim() };
     }
@@ -183,9 +199,9 @@ export default function PracticeQuestionScreen() {
               { backgroundColor: canSubmit ? c.primary : c.muted },
             ]}
             onPress={handleSubmit}
-            disabled={!canSubmit || submitMutation.isPending}
+            disabled={!canSubmit || submitMutation.isPending || isUploading}
           >
-            {submitMutation.isPending ? (
+            {submitMutation.isPending || isUploading ? (
               <ActivityIndicator size="small" color={c.primaryForeground} />
             ) : (
               <>
@@ -207,9 +223,9 @@ export default function PracticeQuestionScreen() {
           </HapticTouchable>
         </View>
 
-        {submitMutation.isError && (
+        {(submitMutation.isError || uploadAudio.isError) && (
           <Text style={[styles.errorText, { color: c.destructive }]}>
-            {submitMutation.error?.message ?? "Lỗi khi nộp bài"}
+            {uploadAudio.error?.message ?? submitMutation.error?.message ?? "Lỗi khi nộp bài"}
           </Text>
         )}
       </BouncyScrollView>

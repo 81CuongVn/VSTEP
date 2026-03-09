@@ -12,7 +12,7 @@ import { ErrorScreen } from "@/components/ErrorScreen";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { useExams } from "@/hooks/use-exams";
 import { useThemeColors, useSkillColor, spacing, radius, fontSize, fontFamily } from "@/theme";
-import type { Exam, ExamBlueprint, Skill } from "@/types/api";
+import type { Exam, Skill } from "@/types/api";
 
 const SKILL_ORDER: Skill[] = ["listening", "reading", "writing", "speaking"];
 const SKILL_LABELS: Record<Skill, string> = {
@@ -54,7 +54,7 @@ function useFadeIn(delay = 0) {
 export default function ExamsScreen() {
   const c = useThemeColors();
   const router = useRouter();
-  const { data, isLoading, error, refetch } = useExams();
+  const { data, isLoading, error, refetch } = useExams({ type: "mock" });
   const scrollY = useRef(new Animated.Value(0)).current;
   const insets = useSafeAreaInsets();
   const headerFade = useFadeIn(0);
@@ -140,12 +140,12 @@ function AnimatedExamCard({
   colors: ReturnType<typeof useThemeColors>;
 }) {
   const fade = useFadeIn(100 + index * 80);
-  const bp = exam.blueprint as ExamBlueprint;
   const levelStyle = LEVEL_COLORS[exam.level] ?? LEVEL_COLORS.B1;
-  const totalQuestions = SKILL_ORDER.reduce((sum, s) => {
-    const section = bp[s];
+  const bp = exam.blueprint;
+  const totalQuestions = bp ? SKILL_ORDER.reduce((sum, s) => {
+    const section = (bp as any)[s];
     return sum + (section?.questionIds?.length ?? 0);
-  }, 0);
+  }, 0) : null;
 
   return (
     <Animated.View style={fade}>
@@ -164,15 +164,22 @@ function AnimatedExamCard({
           {/* Title row */}
           <View style={styles.cardTitleRow}>
             <Text style={[styles.cardTitle, { color: c.foreground }]} numberOfLines={1}>
-              Đề thi {exam.level}
+              {exam.title}
             </Text>
-            {bp.durationMinutes ? (
+            {exam.durationMinutes ? (
               <View style={[styles.durationBadge, { backgroundColor: c.muted }]}>
                 <Ionicons name="time-outline" size={12} color={c.mutedForeground} />
-                <Text style={[styles.durationText, { color: c.mutedForeground }]}>{bp.durationMinutes}\u2019</Text>
+                <Text style={[styles.durationText, { color: c.mutedForeground }]}>{exam.durationMinutes}’</Text>
               </View>
             ) : null}
           </View>
+
+          {/* Description */}
+          {exam.description ? (
+            <Text style={[styles.descriptionText, { color: c.mutedForeground }]} numberOfLines={2}>
+              {exam.description}
+            </Text>
+          ) : null}
 
           {/* Skills grid */}
           <View style={styles.skillsGrid}>
@@ -193,7 +200,7 @@ function AnimatedExamCard({
           {/* Footer */}
           <View style={styles.cardFooter}>
             <Text style={[styles.totalText, { color: c.mutedForeground }]}>
-              {totalQuestions} câu hỏi
+              {totalQuestions != null ? `${totalQuestions} câu hỏi` : `${exam.durationMinutes ?? '?'} phút`}
             </Text>
             <View style={[styles.startBtn, { backgroundColor: c.primary }]}>
               <Text style={[styles.startBtnText, { color: c.primaryForeground }]}>Bắt đầu</Text>
@@ -284,6 +291,7 @@ const styles = StyleSheet.create({
   cardBody: { padding: spacing.base, gap: spacing.md },
   cardTitleRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   cardTitle: { fontFamily: fontFamily.bold, fontSize: fontSize.base, flex: 1 },
+  descriptionText: { fontFamily: fontFamily.regular, fontSize: fontSize.sm, lineHeight: 18 },
   durationBadge: {
     flexDirection: "row",
     alignItems: "center",

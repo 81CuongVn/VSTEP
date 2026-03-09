@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@/hooks/use-auth";
+import { useUnreadCount } from "@/hooks/use-notifications";
 import { useThemeColors, spacing, fontSize, fontFamily } from "@/theme";
 
 const HEADER_H = 56;
@@ -19,6 +20,8 @@ export function StickyHeader({ scrollY, subtitle }: StickyHeaderProps) {
   const insets = useSafeAreaInsets();
   const { user } = useAuth();
   const router = useRouter();
+  const { data: unreadData } = useUnreadCount();
+  const unreadCount = unreadData?.count ?? 0;
 
   const borderOpacity = scrollY.interpolate({
     inputRange: [0, 40],
@@ -50,12 +53,12 @@ export function StickyHeader({ scrollY, subtitle }: StickyHeaderProps) {
       <View style={styles.headerInner}>
         <View style={[styles.avatar, { backgroundColor: c.primary }]}>
           <Text style={styles.avatarText}>
-            {(user?.fullName ?? "?").charAt(0).toUpperCase()}
+            {(user?.displayName ?? "?").charAt(0).toUpperCase()}
           </Text>
         </View>
         <View style={styles.textWrap}>
           <Text style={[styles.headerTitle, { color: c.foreground }]} numberOfLines={1}>
-            Xin chào, {user?.fullName ?? "bạn"}
+            Xin chào, {user?.displayName ?? "bạn"}
           </Text>
           {subtitle ? (
             <Text style={[styles.headerSub, { color: c.mutedForeground }]} numberOfLines={1}>
@@ -69,6 +72,13 @@ export function StickyHeader({ scrollY, subtitle }: StickyHeaderProps) {
           activeOpacity={0.7}
         >
           <Ionicons name="notifications-outline" size={20} color={c.foreground} />
+          {unreadCount > 0 && (
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>
+                {unreadCount > 99 ? "99+" : unreadCount}
+              </Text>
+            </View>
+          )}
         </TouchableOpacity>
       </View>
     </Animated.View>
@@ -109,5 +119,22 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
+  },
+  badge: {
+    position: "absolute",
+    top: -4,
+    right: -4,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: "#EF4444",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  badgeText: {
+    color: "#fff",
+    fontSize: 9,
+    fontFamily: fontFamily.bold,
+    lineHeight: 16,
   },
 });

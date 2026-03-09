@@ -8,11 +8,11 @@ import { LoadingScreen } from "@/components/LoadingScreen";
 import { SkillIcon, SKILL_LABELS } from "@/components/SkillIcon";
 import { useProgress } from "@/hooks/use-progress";
 import { useThemeColors, useSkillColor, spacing, radius, fontSize } from "@/theme";
-import type { Skill, StreakDirection } from "@/types/api";
+import type { Skill } from "@/types/api";
 
 const SKILL_ORDER: Skill[] = ["listening", "reading", "writing", "speaking"];
 
-const TREND_MAP: Record<StreakDirection, { icon: string; label: string }> = {
+const TREND_MAP: Record<string, { icon: string; label: string }> = {
   up: { icon: "↑", label: "Tiến bộ" },
   neutral: { icon: "→", label: "Ổn định" },
   down: { icon: "↓", label: "Giảm" },
@@ -56,12 +56,12 @@ function SkillCard({
   onPress,
 }: {
   skill: Skill;
-  progress?: { currentLevel: string | null; attemptCount: number; streakDirection: StreakDirection };
+  progress?: { currentLevel: string | null; attemptCount: number; streakCount?: number };
   onPress: () => void;
 }) {
   const c = useThemeColors();
   const skillColor = useSkillColor(skill);
-  const trend = TREND_MAP[progress?.streakDirection ?? "neutral"];
+  const trend = TREND_MAP[((progress?.streakCount ?? 0) > 0 ? "up" : "neutral")];
 
   return (
     <HapticTouchable

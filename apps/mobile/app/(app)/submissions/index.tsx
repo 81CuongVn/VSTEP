@@ -10,7 +10,7 @@ import { LoadingScreen } from "@/components/LoadingScreen";
 import { SkillIcon, SKILL_LABELS } from "@/components/SkillIcon";
 import { useSubmissions } from "@/hooks/use-submissions";
 import { useThemeColors, spacing, radius, fontSize } from "@/theme";
-import type { SubmissionFull, SubmissionStatus } from "@/types/api";
+import type { Submission, SubmissionStatus } from "@/types/api";
 
 const statusConfig: Record<SubmissionStatus, { label: string; color: "muted" | "success" | "destructive" }> = {
   pending: { label: "Đang chờ", color: "muted" },

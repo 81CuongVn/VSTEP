@@ -15,7 +15,7 @@ import { ErrorScreen } from "@/components/ErrorScreen";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { useClasses, useJoinClass } from "@/hooks/use-classes";
 import { useThemeColors, spacing, radius, fontSize } from "@/theme";
-import type { Class } from "@/types/api";
+import type { ClassItem } from "@/types/api";
 
 export default function ClassesScreen() {
   const c = useThemeColors();
@@ -44,7 +44,7 @@ export default function ClassesScreen() {
     }
   };
 
-  const renderClass = ({ item }: { item: Class }) => (
+  const renderClass = ({ item }: { item: ClassItem }) => (
     <HapticTouchable
       style={[styles.card, { backgroundColor: c.card, borderColor: c.border }]}
       onPress={() => router.push(`/(app)/classes/${item.id}`)}

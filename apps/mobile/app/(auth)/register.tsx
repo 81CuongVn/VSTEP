@@ -122,19 +122,14 @@ export default function RegisterScreen() {
           </HapticTouchable>
         </View>
 
-        <View style={styles.divider}>
-          <View style={[styles.dividerLine, { backgroundColor: c.border }]} />
-          <Text style={[styles.dividerText, { color: c.mutedForeground }]}>hoặc</Text>
-          <View style={[styles.dividerLine, { backgroundColor: c.border }]} />
+        <View style={styles.footerRow}>
+          <Text style={[styles.footerText, { color: c.mutedForeground }]}>Đã có tài khoản? </Text>
+          <Link href="/(auth)/login" asChild>
+            <HapticTouchable>
+              <Text style={[styles.footerLink, { color: c.primary }]}>Đăng nhập</Text>
+            </HapticTouchable>
+          </Link>
         </View>
-
-        <Link href="/(auth)/login" asChild>
-          <HapticTouchable style={[styles.outlineButton, { borderColor: c.border }]}>
-            <Text style={[styles.outlineButtonText, { color: c.foreground }]}>
-              Đã có tài khoản? Đăng nhập
-            </Text>
-          </HapticTouchable>
-        </Link>
 
         <Text style={[styles.version, { color: c.mutedForeground }]}>Phiên bản 1.0.0</Text>
       </BouncyScrollView>
@@ -179,20 +174,14 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   buttonText: { fontSize: fontSize.base, fontWeight: "600" },
-  divider: {
+  footerRow: {
     flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
-    marginVertical: spacing.xl,
+    marginTop: spacing.xl,
   },
-  dividerLine: { flex: 1, height: 1 },
-  dividerText: { marginHorizontal: spacing.md, fontSize: fontSize.sm },
-  outlineButton: {
-    borderWidth: 1,
-    borderRadius: radius.lg,
-    paddingVertical: spacing.base,
-    alignItems: "center",
-  },
-  outlineButtonText: { fontSize: fontSize.base, fontWeight: "600" },
+  footerText: { fontSize: fontSize.sm },
+  footerLink: { fontSize: fontSize.sm, fontWeight: "600" },
   version: {
     fontSize: fontSize.xs,
     textAlign: "center",

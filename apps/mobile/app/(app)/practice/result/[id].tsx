@@ -10,7 +10,7 @@ import { ErrorScreen } from "@/components/ErrorScreen";
 import { SkillIcon, SKILL_LABELS } from "@/components/SkillIcon";
 import { api } from "@/lib/api";
 import { useThemeColors, spacing, radius, fontSize } from "@/theme";
-import type { SubmissionFull, SubmissionStatus } from "@/types/api";
+import type { Submission, SubmissionStatus } from "@/types/api";
 
 const statusConfig: Record<SubmissionStatus, { label: string; icon: keyof typeof Ionicons.glyphMap }> = {
   pending: { label: "Đang chờ", icon: "time-outline" },
@@ -27,7 +27,7 @@ export default function PracticeResultScreen() {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["submissions", id],
-    queryFn: () => api.get<SubmissionFull>(`/api/submissions/${id}`),
+    queryFn: () => api.get<Submission>(`/api/submissions/${id}`),
     enabled: !!id,
     refetchInterval: (query) => {
       const status = query.state.data?.status;
@@ -75,7 +75,7 @@ export default function PracticeResultScreen() {
 
         {/* Score */}
         <View style={[styles.scoreBox, { backgroundColor: c.muted }]}>
-          {isGrading ? (
+          {isGrading && (
             <View style={styles.gradingContainer}>
               <ActivityIndicator size="large" color={c.primary} />
               <Text style={[styles.gradingText, { color: c.mutedForeground }]}>
@@ -85,18 +85,20 @@ export default function PracticeResultScreen() {
                 Kết quả sẽ tự động cập nhật
               </Text>
             </View>
-          ) : data.score != null ? (
+          )}
+          {!isGrading && data.score != null && (
             <>
-              <Text style={[styles.scoreBig, { color: c.foreground }]}>{data.score}/10</Text>
-              {data.band && (
+              <Text style={[styles.scoreBig, { color: c.foreground }]}>{String(data.score)}/10</Text>
+              {data.band != null && (
                 <View style={[styles.bandBadge, { borderColor: c.primary }]}>
                   <Text style={{ color: c.primary, fontSize: fontSize.base, fontWeight: "700" }}>
-                    {data.band}
+                    {String(data.band)}
                   </Text>
                 </View>
               )}
             </>
-          ) : (
+          )}
+          {!isGrading && data.score == null && (
             <Text style={{ color: c.mutedForeground, fontSize: fontSize.lg }}>Chưa có điểm</Text>
           )}
         </View>
@@ -112,10 +114,10 @@ export default function PracticeResultScreen() {
         )}
 
         {/* Result details */}
-        {data.result && Object.keys(data.result).length > 0 && (
+        {data.result != null && typeof data.result === "object" && Object.keys(data.result as Record<string, unknown>).length > 0 ? (
           <View style={[styles.section, { backgroundColor: c.card, borderColor: c.border }]}>
             <Text style={[styles.sectionTitle, { color: c.foreground }]}>Chi tiết kết quả</Text>
-            {Object.entries(data.result).map(([key, value]) => (
+            {Object.entries(data.result as Record<string, unknown>).map(([key, value]) => (
               <View key={key} style={styles.resultRow}>
                 <Text style={[styles.resultKey, { color: c.mutedForeground }]}>{key}</Text>
                 <Text style={[styles.resultValue, { color: c.foreground }]}>
@@ -124,7 +126,7 @@ export default function PracticeResultScreen() {
               </View>
             ))}
           </View>
-        )}
+        ) : null}
 
         {/* Actions */}
         <View style={styles.actions}>
