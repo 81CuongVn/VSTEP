@@ -10,6 +10,7 @@ import type { ExamSession } from "@db/schema/exams";
 import { and, desc, eq, inArray } from "drizzle-orm";
 import type { ExamCreateBody, ExamListQuery, ExamUpdateBody } from "./schema";
 import { EXAM_COLUMNS } from "./schema";
+import { validateVstepExamBlueprint } from "./blueprint-validation";
 
 export type ExamSessionStatus = ExamSession["status"];
 
@@ -32,18 +33,25 @@ async function validateBlueprint(
     throw new BadRequestError("Exam must contain at least one question");
 
   const found = await tx
-    .select({ id: table.questions.id })
+    .select({
+      id: table.questions.id,
+      skill: table.questions.skill,
+      part: table.questions.part,
+      content: table.questions.content,
+    })
     .from(table.questions)
     .where(
       and(inArray(table.questions.id, ids), eq(table.questions.isActive, true)),
     );
 
-  if (found.length === ids.length) return;
-
   const have = new Set(found.map((q) => q.id));
-  throw new BadRequestError(
-    `Blueprint references non-existent or inactive questions: [${ids.filter((id) => !have.has(id)).join(", ")}]`,
-  );
+  if (found.length !== ids.length) {
+    throw new BadRequestError(
+      `Blueprint references non-existent or inactive questions: [${ids.filter((id) => !have.has(id)).join(", ")}]`,
+    );
+  }
+
+  validateVstepExamBlueprint(blueprint, found);
 }
 
 export async function find(id: string, actor: Actor) {
