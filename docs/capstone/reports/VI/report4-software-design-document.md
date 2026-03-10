@@ -1082,7 +1082,7 @@ sequenceDiagram
     B->>DB: SELECT question WHERE id = ? AND skill = "writing"
     DB-->>B: Question record
 
-    rect rgb(230, 245, 230)
+    rect rgba(46, 125, 50, 0.1)
         Note over B,DB: Database Transaction
         B->>DB: INSERT submissions (status=pending)
         B->>DB: INSERT submission_details (answer JSONB)
