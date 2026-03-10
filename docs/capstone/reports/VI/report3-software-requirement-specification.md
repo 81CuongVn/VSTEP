@@ -124,11 +124,19 @@ Các quyết định kiến trúc chính:
 
 #### 2.2.1 Biểu Đồ Use Case
 
-![Diagram 02](../../../diagrams/srs/diagram-02.svg)
+**Learner Use Cases**
 
-![Diagram 03](../../../diagrams/srs/diagram-03.svg)
+![Learner Use Cases](../../diagrams/usecase/uc-learner.svg)
 
-![Diagram 04](../../../diagrams/srs/diagram-04.svg)
+**Instructor Use Cases**
+
+![Instructor Use Cases](../../diagrams/usecase/uc-instructor.svg)
+
+**Admin Use Cases**
+
+![Admin Use Cases](../../diagrams/usecase/uc-admin.svg)
+
+> Source: [`docs/capstone/diagrams/usecase/`](../../diagrams/usecase/) — render bằng `plantuml -tsvg`
 
 #### 2.2.2 Mô Tả Use Case
 
