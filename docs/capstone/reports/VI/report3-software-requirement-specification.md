@@ -392,12 +392,12 @@ flowchart LR
 
 #### 3.1.1 Luồng Màn Hình
 
+**Luồng Đăng Ký (người dùng mới)**
+
 ```mermaid
 flowchart TB
     Landing["Landing Page"]
-    Login["Login Screen"]
     Register["Register Screen"]
-    Home["Home / Dashboard"]
 
     subgraph Onboarding ["Onboarding (First-time)"]
         Welcome["Welcome<br/>(choose path)"]
@@ -406,6 +406,33 @@ flowchart TB
         QuizResult["Quiz Result<br/>(estimated level)"]
         GoalSetup["Goal Setup<br/>(target band, deadline,<br/>daily study time)"]
     end
+
+    ProgressOverview["Progress Overview<br/>(Spider Chart)"]
+
+    Landing -->|"Đăng ký"| Register
+    Register -->|"auto-login"| Welcome
+    Welcome -->|"Tự xác định"| SelfAssess
+    Welcome -->|"Làm bài kiểm tra"| PlacementQuiz
+    SelfAssess -->|"chọn level"| GoalSetup
+    PlacementQuiz --> QuizResult -->|"tiếp tục"| GoalSetup
+    GoalSetup -->|"Bắt đầu luyện tập"| ProgressOverview
+
+    classDef auth fill:#78909c,stroke:#546e7a,color:#fff
+    classDef onboarding fill:#0097a7,stroke:#00838f,color:#fff
+    classDef progress fill:#f57c00,stroke:#e65100,color:#fff
+
+    class Landing,Register auth
+    class Welcome,SelfAssess,PlacementQuiz,QuizResult,GoalSetup onboarding
+    class ProgressOverview progress
+```
+
+**Luồng Đăng Nhập (người dùng hiện tại)**
+
+```mermaid
+flowchart TB
+    Landing["Landing Page"]
+    Login["Login Screen"]
+    Home["Home / Dashboard"]
 
     subgraph Practice ["Practice Mode"]
         SkillSelect["Skill Selection<br/>(L/R/W/S)"]
@@ -447,15 +474,7 @@ flowchart TB
     Profile["Profile Settings"]
 
     Landing -->|"Đăng nhập"| Login
-    Landing -->|"Đăng ký"| Register
-    Register -->|"auto-login"| Welcome
     Login -->|"learner"| Home
-
-    Welcome -->|"Tự xác định"| SelfAssess
-    Welcome -->|"Làm bài kiểm tra"| PlacementQuiz
-    SelfAssess -->|"chọn level"| GoalSetup
-    PlacementQuiz --> QuizResult -->|"tiếp tục"| GoalSetup
-    GoalSetup -->|"Bắt đầu luyện tập"| ProgressOverview
 
     Home --> SkillSelect
     Home --> ExamList
@@ -471,6 +490,7 @@ flowchart TB
 
     ProgressOverview --> SkillDetail
     ProgressOverview --> GoalSetting
+    ProgressOverview --> ProgressHistory
 
     ClassList --> JoinClass
     ClassList --> FeedbackView
@@ -481,20 +501,16 @@ flowchart TB
     Home --> SubmissionList
     SubmissionList --> SubmissionDetail
 
-    ProgressOverview --> ProgressHistory
-
     classDef auth fill:#78909c,stroke:#546e7a,color:#fff
     classDef main fill:#1565c0,stroke:#0d47a1,color:#fff
-    classDef onboarding fill:#0097a7,stroke:#00838f,color:#fff
     classDef practice fill:#2e7d32,stroke:#1b5e20,color:#fff
     classDef exam fill:#6a1b9a,stroke:#4a148c,color:#fff
     classDef progress fill:#f57c00,stroke:#e65100,color:#fff
     classDef cls fill:#00796b,stroke:#004d40,color:#fff
     classDef vocab fill:#00695c,stroke:#004d40,color:#fff
 
-    class Landing,Login,Register auth
+    class Landing,Login auth
     class Home,Profile main
-    class Welcome,SelfAssess,PlacementQuiz,QuizResult,GoalSetup onboarding
     class SkillSelect,QuestionView,SubmitAnswer,ResultView,SubmissionList,SubmissionDetail practice
     class ExamList,ExamDetail,ExamSession,ExamResult exam
     class ProgressOverview,SkillDetail,GoalSetting,ProgressHistory progress
