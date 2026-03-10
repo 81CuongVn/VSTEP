@@ -1,108 +1,103 @@
-# I. Lịch Sử Thay Đổi
+# I. Record of Changes
 
-\*A — Thêm mới · M — Chỉnh sửa · D — Xóa
+| Version | Date | Author | Description |
+|---------|------|--------|-------------|
+| 1.0 | 01/01/2026 | Hoàng Văn Anh Nghĩa | Kế hoạch dự án ban đầu, WBS, sổ đăng ký rủi ro |
+| 1.1 | 15/01/2026 | Hoàng Văn Anh Nghĩa | Thêm ma trận trách nhiệm và kế hoạch truyền thông |
+| 1.2 | 01/02/2026 | Hoàng Văn Anh Nghĩa | Cập nhật ước lượng sau baseline velocity Sprint 1 |
+| 1.3 | 15/02/2026 | Nguyễn Minh Khôi | Điều chỉnh phạm vi backend — loại bỏ các tính năng ngoài phạm vi capstone |
+| 1.4 | 01/03/2026 | Hoàng Văn Anh Nghĩa | Cập nhật lịch bàn giao sau khi hoàn thành Phase 1–3 |
 
-| Ngày | A/M/D | Người phụ trách | Mô tả thay đổi |
-|------|-------|-----------------|-----------------|
-| 01/01/2026 | A | Nghĩa (Leader) | Kế hoạch dự án ban đầu, WBS, sổ đăng ký rủi ro |
-| 15/01/2026 | A | Nghĩa | Thêm ma trận trách nhiệm và kế hoạch truyền thông |
-| 01/02/2026 | M | Nghĩa | Cập nhật ước lượng sau khi có baseline velocity Sprint 1 |
-| 15/02/2026 | M | Khôi | Điều chỉnh các phase backend — loại bỏ Rate Limiting, Circuit Breaker, Admin/Observability, Data Retention (ngoài phạm vi capstone) |
-| 01/03/2026 | M | Nghĩa | Cập nhật lịch bàn giao sau khi hoàn thành Phase 1–3 |
+# II. Project Management Plan
 
----
+## 1. Overview
 
-# II. Kế Hoạch Quản Lý Dự Án
+### 1.1 Scope & Estimation
 
-## 1. Tổng Quan
-
-### 1.1 Phạm vi & Ước lượng
-
-| # | Hạng mục WBS | Độ phức tạp | Effort ước lượng (man-day) |
-|---|-------------|-------------|---------------------------|
-| **1** | **Xác thực & Phân quyền** | | **18** |
-| 1.1 | Đăng ký & đăng nhập (email/password) | Trung bình | 4 |
-| 1.2 | Vòng đời JWT access/refresh token (rotation, phát hiện tái sử dụng, tối đa 3 thiết bị) | Phức tạp | 7 |
-| 1.3 | Middleware RBAC (learner/instructor/admin) | Trung bình | 4 |
-| 1.4 | Quản lý hồ sơ (GET /auth/me, cập nhật profile) | Đơn giản | 3 |
-| **2** | **Ngân hàng câu hỏi** | | **14** |
-| 2.1 | CRUD câu hỏi (4 kỹ năng × nhiều định dạng, nội dung JSONB) | Trung bình | 5 |
-| 2.2 | Validation nội dung câu hỏi (Zod schema theo từng kỹ năng) | Trung bình | 4 |
-| 2.3 | Pipeline nạp dữ liệu mẫu (JSON → DB với schema validation) | Đơn giản | 3 |
-| 2.4 | Quản lý phiên bản câu hỏi | Đơn giản | 2 |
-| **3** | **Nộp bài & Chấm tự động** | | **22** |
-| 3.1 | CRUD submission với máy trạng thái 5 trạng thái (pending/processing/completed/review_pending/failed) | Phức tạp | 7 |
-| 3.2 | Chấm tự động Nghe/Đọc (so sánh answer key, tính điểm) | Trung bình | 5 |
-| 3.3 | Tích hợp Redis queue — LPUSH grading tasks cho Viết/Nói | Trung bình | 5 |
-| 3.4 | Chi tiết submission (lưu trữ answer/result dạng JSONB) | Đơn giản | 3 |
-| 3.5 | Endpoint polling fallback (GET /submissions/:id/status) | Đơn giản | 2 |
-| **4** | **Dịch vụ chấm điểm AI (Python)** | | **25** |
-| 4.1 | Pipeline chấm Viết (LLM rubric prompt → điểm 4 tiêu chí + nhận xét) | Phức tạp | 8 |
-| 4.2 | Pipeline chấm Nói (Whisper STT → LLM đánh giá → điểm 4 tiêu chí) | Phức tạp | 8 |
-| 4.3 | Vòng lặp worker Redis BRPOP với retry (tối đa 3 lần) và dead letter queue | Trung bình | 5 |
-| 4.4 | Định tuyến theo confidence (high → completed, medium/low → review_pending) | Đơn giản | 2 |
-| 4.5 | Quy đổi điểm → band và lưu kết quả vào PostgreSQL | Đơn giản | 2 |
-| **5** | **Quy trình chấm thủ công** | | **12** |
-| 5.1 | Endpoint hàng đợi review (sắp xếp theo priority, FIFO) | Trung bình | 3 |
-| 5.2 | Cơ chế claim/release (Redis distributed lock, TTL 15 phút) | Trung bình | 4 |
-| 5.3 | Gửi kết quả review với merge rules (điểm instructor là cuối cùng, audit flag) | Trung bình | 3 |
-| 5.4 | Audit trail (lưu giữ kết quả AI + kết quả instructor) | Đơn giản | 2 |
-| **6** | **Thi thử giả lập** | | **18** |
-| 6.1 | CRUD exam blueprint (cấu trúc 4 phần, chọn câu hỏi) | Trung bình | 4 |
-| 6.2 | Vòng đời exam session (bắt đầu → tự lưu → nộp bài → hoàn thành) | Phức tạp | 6 |
-| 6.3 | Nộp bài thi: chấm tự động Nghe/Đọc, tạo submission cho Viết/Nói, tổng hợp điểm | Phức tạp | 6 |
-| 6.4 | Endpoint chi tiết đề thi và kết quả session | Đơn giản | 2 |
-| **7** | **Theo dõi tiến độ & Trực quan hóa** | | **16** |
-| 7.1 | Tính toán sliding window (N=10, theo từng kỹ năng, avg/stddev) | Trung bình | 4 |
-| 7.2 | Phân loại xu hướng (improving/stable/declining/inconsistent) | Trung bình | 3 |
-| 7.3 | Endpoint dữ liệu spider chart (current/trend/confidence theo kỹ năng) | Trung bình | 3 |
-| 7.4 | Xác định overall band (min của 4 kỹ năng) | Đơn giản | 2 |
-| 7.5 | Heuristic ước lượng ETA (linear regression, theo kỹ năng và tổng thể) | Trung bình | 4 |
+| # | Work Package | Complexity | Effort (man-day) |
+|---|-------------|------------|------------------|
+| **1** | **Authentication & Authorization** | | **18** |
+| 1.1 | Đăng ký, đăng nhập (email/password) | Medium | 4 |
+| 1.2 | JWT access/refresh token lifecycle | Complex | 7 |
+| 1.3 | RBAC middleware (Learner/Instructor/Admin) | Medium | 4 |
+| 1.4 | Quản lý hồ sơ người dùng | Simple | 3 |
+| **2** | **Question Bank** | | **14** |
+| 2.1 | CRUD câu hỏi (4 kỹ năng, nhiều định dạng) | Medium | 5 |
+| 2.2 | Validation nội dung câu hỏi | Medium | 4 |
+| 2.3 | Pipeline nạp dữ liệu mẫu | Simple | 3 |
+| 2.4 | Quản lý phiên bản câu hỏi | Simple | 2 |
+| **3** | **Submission & Auto-Grading** | | **22** |
+| 3.1 | CRUD submission với state machine | Complex | 7 |
+| 3.2 | Chấm tự động Listening/Reading | Medium | 5 |
+| 3.3 | Tích hợp message queue cho Writing/Speaking | Medium | 5 |
+| 3.4 | Chi tiết submission (lưu trữ answer/result) | Simple | 3 |
+| 3.5 | Endpoint polling trạng thái | Simple | 2 |
+| **4** | **AI Grading Service (Python)** | | **25** |
+| 4.1 | Pipeline chấm Writing (LLM + rubric VSTEP) | Complex | 8 |
+| 4.2 | Pipeline chấm Speaking (STT + LLM) | Complex | 8 |
+| 4.3 | Worker consume queue với retry và dead letter queue | Medium | 5 |
+| 4.4 | Định tuyến theo confidence score | Simple | 2 |
+| 4.5 | Quy đổi điểm thành band và lưu kết quả | Simple | 2 |
+| **5** | **Human Grading Workflow** | | **12** |
+| 5.1 | Hàng đợi review cho Instructor | Medium | 3 |
+| 5.2 | Cơ chế claim/release bài chấm | Medium | 4 |
+| 5.3 | Gửi kết quả review (Instructor override AI) | Medium | 3 |
+| 5.4 | Audit trail (lưu kết quả AI + Instructor) | Simple | 2 |
+| **6** | **Mock Test** | | **18** |
+| 6.1 | CRUD exam blueprint (cấu trúc 4 phần) | Medium | 4 |
+| 6.2 | Vòng đời exam session (bắt đầu → nộp bài) | Complex | 6 |
+| 6.3 | Tổng hợp điểm: chấm tự động + tạo submission cho AI | Complex | 6 |
+| 6.4 | Endpoint chi tiết đề thi và kết quả | Simple | 2 |
+| **7** | **Progress Tracking & Visualization** | | **16** |
+| 7.1 | Tính toán Sliding Window theo kỹ năng | Medium | 4 |
+| 7.2 | Phân loại xu hướng tiến bộ | Medium | 3 |
+| 7.3 | Dữ liệu Spider Chart | Medium | 3 |
+| 7.4 | Xác định overall band | Simple | 2 |
+| 7.5 | Ước lượng thời gian đạt mục tiêu (ETA) | Medium | 4 |
 | **8** | **Adaptive Scaffolding** | | **10** |
-| 8.1 | Engine chuyển đổi stage (Viết: Template→Keywords→Free, Nghe: FullText→Highlights→PureAudio) | Trung bình | 4 |
-| 8.2 | Gán stage ban đầu dựa trên trình độ | Đơn giản | 2 |
-| 8.3 | Theo dõi micro-hints và rule chặn level-up | Đơn giản | 2 |
-| 8.4 | Tích hợp trigger khi submission hoàn thành | Đơn giản | 2 |
-| **9** | **Thiết lập mục tiêu** | | **6** |
-| 9.1 | CRUD goal (target band, deadline, thời gian học hàng ngày) | Đơn giản | 3 |
-| 9.2 | Tính toán trạng thái goal (achieved, onTrack, daysRemaining) | Đơn giản | 3 |
-| **10** | **Quản lý lớp học** | | **10** |
-| 10.1 | CRUD lớp học với mã mời | Trung bình | 3 |
-| 10.2 | Quản lý thành viên lớp (tham gia/rời/xóa) | Đơn giản | 3 |
-| 10.3 | Dashboard giảng viên và phản hồi | Trung bình | 4 |
-| **11** | **Frontend (Ứng dụng Web)** | | **30** |
-| 11.1 | Trang xác thực (đăng nhập, đăng ký, hồ sơ) | Trung bình | 4 |
-| 11.2 | Giao diện chế độ luyện tập (4 kỹ năng với scaffolding) | Phức tạp | 8 |
-| 11.3 | Giao diện thi thử (đề thi có giới hạn thời gian, tự lưu) | Phức tạp | 6 |
-| 11.4 | Dashboard tiến độ (spider chart, xu hướng, ETA) | Trung bình | 5 |
-| 11.5 | Giao diện review cho giảng viên | Trung bình | 4 |
-| 11.6 | Đồng bộ type từ backend và tích hợp API | Đơn giản | 3 |
-| **12** | **Hạ tầng & DevOps** | | **8** |
-| 12.1 | Docker Compose (PostgreSQL + Redis) | Đơn giản | 2 |
-| 12.2 | Pipeline nạp dữ liệu mẫu vào database | Đơn giản | 3 |
-| 12.3 | Thiết lập CI và triển khai | Đơn giản | 3 |
-| **13** | **Kiểm thử & QA** | | **15** |
-| 13.1 | Integration tests backend (auth, submissions, exams, progress, classes, review) | Trung bình | 6 |
-| 13.2 | Unit tests backend (scoring, state machine, scaffolding) | Đơn giản | 3 |
-| 13.3 | Tests dịch vụ chấm điểm (scoring, model validation) | Đơn giản | 3 |
-| 13.4 | Kiểm thử hệ thống và UAT | Trung bình | 3 |
-| | **Tổng Effort Ước Lượng (man-day)** | | **204** |
+| 8.1 | Engine chuyển đổi stage theo trình độ | Medium | 4 |
+| 8.2 | Gán stage ban đầu | Simple | 2 |
+| 8.3 | Theo dõi và kiểm soát level-up | Simple | 2 |
+| 8.4 | Tích hợp trigger khi submission hoàn thành | Simple | 2 |
+| **9** | **Goal Setting** | | **6** |
+| 9.1 | CRUD goal (target band, deadline) | Simple | 3 |
+| 9.2 | Tính toán trạng thái goal | Simple | 3 |
+| **10** | **Class Management** | | **10** |
+| 10.1 | CRUD lớp học với mã mời | Medium | 3 |
+| 10.2 | Quản lý thành viên lớp | Simple | 3 |
+| 10.3 | Dashboard giảng viên | Medium | 4 |
+| **11** | **Frontend (Web Application)** | | **30** |
+| 11.1 | Trang xác thực (đăng nhập, đăng ký, hồ sơ) | Medium | 4 |
+| 11.2 | Giao diện Practice Mode (4 kỹ năng) | Complex | 8 |
+| 11.3 | Giao diện Mock Test (có giới hạn thời gian) | Complex | 6 |
+| 11.4 | Dashboard tiến độ (Spider Chart, xu hướng) | Medium | 5 |
+| 11.5 | Giao diện review cho Instructor | Medium | 4 |
+| 11.6 | Tích hợp API | Simple | 3 |
+| **12** | **Infrastructure & DevOps** | | **8** |
+| 12.1 | Docker Compose (PostgreSQL + Redis) | Simple | 2 |
+| 12.2 | Pipeline nạp dữ liệu mẫu | Simple | 3 |
+| 12.3 | CI và triển khai | Simple | 3 |
+| **13** | **Testing & QA** | | **15** |
+| 13.1 | Integration tests backend | Medium | 6 |
+| 13.2 | Unit tests backend | Simple | 3 |
+| 13.3 | Tests grading service | Simple | 3 |
+| 13.4 | System testing và UAT | Medium | 3 |
+| | **Total Estimated Effort** | | **204** |
 
-### 1.2 Mục tiêu dự án
+### 1.2 Project Objectives
 
-**Mục tiêu tổng quát**: Xây dựng nền tảng ôn luyện VSTEP thích ứng, kết hợp chấm điểm AI, duyệt bài thủ công và học tập cá nhân hóa nhằm giúp người học Việt Nam nâng cao hiệu quả cả 4 kỹ năng tiếng Anh (Nghe, Đọc, Viết, Nói).
+**Mục tiêu tổng quát:** Xây dựng nền tảng ôn luyện VSTEP thích ứng, kết hợp chấm điểm AI, duyệt bài thủ công và học tập cá nhân hóa nhằm giúp người học Việt Nam nâng cao hiệu quả cả 4 kỹ năng tiếng Anh.
 
-**Chỉ tiêu chất lượng**:
+**Chỉ tiêu chất lượng:**
 
 | Chỉ tiêu | Mục tiêu |
 |----------|----------|
-| Tỷ lệ milestone đúng hạn | >= 90% milestone bàn giao đúng tiến độ |
-| Tỷ lệ lỗi thoát ra production | < 5% tổng số lỗi phát hiện sau triển khai |
-| Độ chính xác chấm AI (so với giám khảo) | >= 85% tương đồng (trong biên độ 0.5 điểm) |
-| Độ phủ kiểm thử (backend integration) | >= 80% API endpoints được kiểm thử |
-| Chất lượng mã nguồn | Toàn bộ mã nguồn pass `bun run check` (Biome lint/format, không lỗi) |
+| Tỷ lệ milestone đúng hạn | ≥ 90% |
+| Tỷ lệ lỗi thoát ra production | < 5% |
+| Độ chính xác chấm AI (so với giám khảo) | ≥ 85% tương đồng (biên độ 0.5 điểm) |
+| Độ phủ kiểm thử backend | ≥ 80% API endpoints |
 
-**Phân bổ effort theo hoạt động**:
+**Phân bổ effort theo hoạt động:**
 
 | Hoạt động | Man-day | % |
 |-----------|---------|---|
@@ -111,301 +106,169 @@
 | Kiểm thử & QA | 30 | 14,7% |
 | Quản lý dự án & Tài liệu | 24 | 11,8% |
 | Triển khai & Hạ tầng | 10 | 4,9% |
-| Dự phòng (Buffer) | 10 | 4,9% |
+| Dự phòng | 10 | 4,9% |
 | **Tổng** | **204** | **100%** |
 
-### 1.3 Rủi ro dự án
+### 1.3 Project Risks
 
-| # | Mô tả rủi ro | Tác động | Khả năng xảy ra | Kế hoạch ứng phó |
-|---|--------------|----------|-----------------|------------------|
-| 1 | Nhà cung cấp LLM/STT (Groq, OpenAI) bị rate limit hoặc downtime gây trễ chấm điểm | Cao | Trung bình | Sử dụng LiteLLM router với hỗ trợ fallback model. Worker retry (tối đa 3 lần, exponential backoff). Dead letter queue cho các lỗi liên tục. |
-| 2 | Chất lượng chấm AI không đủ tốt cho kỹ năng Viết/Nói | Cao | Trung bình | Định tuyến theo confidence: low/medium → hàng đợi review giảng viên. Audit flag theo dõi chênh lệch điểm AI vs. giảng viên để cải thiện mô hình. |
-| 3 | Thành viên thiếu kinh nghiệm với Bun/Elysia/Drizzle | Trung bình | Cao | Kế hoạch đào tạo (Tuần 1-2). Leader review code và pair programming. Technical specs viết trước khi code. |
-| 4 | Độ phức tạp schema JSONB gây không nhất quán dữ liệu | Trung bình | Trung bình | Zod validation tại API boundary. Seed data được validate theo schema. Schema nội dung câu hỏi được tài liệu hóa trong specs. |
-| 5 | Phình phạm vi — tính năng Phase 2 lấn vào thời gian phát triển lõi | Cao | Trung bình | Phân tách phase nghiêm ngặt (Phase 1: MVP tuần 1-10/Sprint 1-5, Phase 2: nâng cao tuần 11-14/Sprint 6-7). Tính năng FE-12 đến FE-16 hoãn rõ ràng. Các phase Rate Limiting, Circuit Breaker, Observability, Data Retention bị loại khỏi phạm vi capstone. |
-| 6 | Vấn đề tích hợp giữa Bun Main App và Python Grading Worker | Trung bình | Trung bình | Kiến trúc Shared-DB (cả hai service ghi cùng PostgreSQL). Redis queue contract được định nghĩa trong specs. Integration test sớm từ Sprint 3. |
-| 7 | Xử lý file âm thanh cho đánh giá Nói (upload, lưu trữ, phiên âm) | Trung bình | Thấp | Sử dụng pre-signed URL cho upload audio. Whisper transcription qua LiteLLM với Redis caching (tránh phiên âm lại). |
+| # | Risk Description | Impact | Likelihood | Response Plan |
+|---|-----------------|--------|------------|---------------|
+| 1 | Nhà cung cấp LLM/STT bị rate limit hoặc downtime | High | Medium | Sử dụng router với fallback model; worker retry tối đa 3 lần; dead letter queue cho lỗi liên tục |
+| 2 | Chất lượng chấm AI không đủ tốt cho Writing/Speaking | High | Medium | Định tuyến theo confidence: low/medium → hàng đợi review Instructor; audit flag theo dõi chênh lệch |
+| 3 | Thành viên thiếu kinh nghiệm với tech stack mới | Medium | High | Kế hoạch đào tạo tuần 1-2; Leader review code và pair programming |
+| 4 | Độ phức tạp schema gây không nhất quán dữ liệu | Medium | Medium | Validation tại API boundary; seed data được validate theo schema |
+| 5 | Phình phạm vi — tính năng Phase 2 lấn vào thời gian Phase 1 | High | Medium | Phân tách phase nghiêm ngặt; tính năng FE-12 đến FE-16 hoãn rõ ràng |
+| 6 | Vấn đề tích hợp giữa Backend và Grading Worker | Medium | Medium | Shared-DB architecture; queue contract định nghĩa trong specs; integration test sớm |
 
----
+## 2. Management Approach
 
-## 2. Phương Pháp Quản Lý
+### 2.1 Project Process
 
-### 2.1 Quy trình dự án
-
-Nhóm áp dụng quy trình **Agile dựa trên Scrum** với sprint 2 tuần, điều chỉnh cho timeline capstone:
+Nhóm áp dụng quy trình **Agile dựa trên Scrum** với sprint 2 tuần, tổng thời lượng 4 tháng (14 tuần, 7 sprint):
 
 ```
-Sprint Planning → Phát triển → Code Review → Kiểm thử → Sprint Review → Retrospective
-    (Ngày 1)      (Ngày 2-9)    (liên tục)   (Ngày 8-10)   (Ngày 10)     (Ngày 10)
+Sprint Planning → Development → Code Review → Testing → Sprint Review → Retrospective
+    (Day 1)        (Day 2-9)     (continuous)   (Day 8-10)   (Day 10)      (Day 10)
 ```
 
-**Mô hình phát triển 2 giai đoạn** (tổng thời lượng: 4 tháng — 14 tuần — 7 sprint):
+**Mô hình phát triển 2 giai đoạn:**
 
-- **Phase 1 — MVP (Tuần 1-10, Sprint 1-5)**: 11 tính năng cốt lõi (FE-01 đến FE-11), tập trung vào trải nghiệm học tập và pipeline chấm điểm AI
-- **Phase 2 — Nâng cao (Tuần 11-14, Sprint 6-7)**: 5 tính năng quản trị và hỗ trợ (FE-12 đến FE-16) sau khi tính năng cốt lõi ổn định
+- **Phase 1 — MVP (Tuần 1-10, Sprint 1-5):** 11 tính năng cốt lõi (FE-01 đến FE-11), tập trung vào trải nghiệm học tập và pipeline chấm điểm AI.
+- **Phase 2 — Enhancement (Tuần 11-14, Sprint 6-7):** 5 tính năng quản trị và hỗ trợ (FE-12 đến FE-16) sau khi tính năng cốt lõi ổn định.
 
-**Các phase triển khai Backend** (từ implementation roadmap):
+### 2.2 Quality Management
 
-```
-Phase 1 (Củng cố nền tảng)
-├── Phase 2 (Vòng đời Submission & Chấm tự động)
-│   ├── Phase 4 (Engine tính toán tiến độ)
-│   │   └── Phase 5 (Adaptive Scaffolding)
-│   ├── Phase 6 (SSE thông báo realtime)
-│   └── Phase 7 (Redis Queue + tích hợp Grading Worker)
-│       ├── Phase 8 (Quy trình chấm thủ công)
-│       └── Phase 9 (Chấm điểm & vòng đời Exam)
-└── Phase 3 (Module mục tiêu) — có thể song song với Phase 2
-```
+**Defect Prevention:**
 
-Các tính năng Rate Limiting, Circuit Breaker, Admin & Observability, Data Retention **bị loại bỏ** — ngoài phạm vi capstone.
+- Technical specifications viết trước khi triển khai cho từng module.
+- Code style được enforced tự động bằng linter; mọi code phải pass trước khi merge.
+- Input validation tại API boundary cho toàn bộ endpoints.
 
-### 2.2 Quản lý chất lượng
+**Code Review:**
 
-**Phòng ngừa lỗi (Defect Prevention)**:
-- Technical specs viết trước khi triển khai (20 file spec bao gồm domain rules, API contracts, data schemas, platform concerns)
-- Code style được enforced bởi Biome linter (`bun run check`) với các rule nghiêm ngặt: `noConsole`, `noImportCycles`, `useNamingConvention`, `noNonNullAssertion`
-- Zod schemas validate toàn bộ input tại API boundary — nguyên tắc "Parse, Don't Validate"
+- Mọi thay đổi mã nguồn phải qua pull request review trước khi merge vào main.
+- Reviewer kiểm tra: tuân thủ coding standards, xử lý lỗi đúng cách, logic nghiệp vụ chính xác.
 
-**Review mã nguồn (Code Review)**:
-- Mọi thay đổi mã nguồn phải qua pull request review trước khi merge vào main
-- Reviewer kiểm tra: tuân thủ CODE_STYLE.md (5 luật), chuyển trạng thái đúng, xử lý lỗi đúng cách (throw, không return)
-- Cấu trúc hàm được enforced: guard → compute → write (không xen kẽ)
+**Testing Strategy:**
 
-**Kiểm thử đơn vị (Unit Testing)**:
-- Unit test backend nằm cạnh file source (ví dụ: `scoring.test.ts`, `state-machine.test.ts`, `helpers.test.ts`)
-- Test dịch vụ chấm điểm (`test_scoring.py`, `test_models.py`)
-- Chạy: `bun test src/` (backend), `pytest` (grading)
+| # | Test Phase | Scope | Notes |
+|---|-----------|-------|-------|
+| 1 | Code Review | Tất cả PR | Linter tự động + review thủ công |
+| 2 | Unit Test | Scoring, state machine, scaffolding, auth | Backend + Grading service |
+| 3 | Integration Test | Auth, submissions, exams, progress, classes, review | Backend API endpoints |
+| 4 | System Test | Toàn bộ pipeline chấm điểm, luồng cross-service | Thủ công + tự động |
+| 5 | Acceptance Test | Kiểm thử chấp nhận theo tiêu chí specs | Theo tiêu chí từng phase |
 
-**Kiểm thử tích hợp (Integration Testing)**:
-- Integration test backend trong thư mục `tests/` gọi app trực tiếp qua `app.handle()`
-- Test factory: `createTestUser`, `createTestQuestion`, `createTestExam`, `createTestClass`
-- Phạm vi: auth flows, vòng đời submissions, exam sessions, theo dõi tiến độ, quản lý lớp, review workflow
-- Chạy: `bun test tests/`
+### 2.3 Training Plan
 
-**Kiểm thử hệ thống (System Testing)**:
-- Kiểm thử end-to-end toàn bộ pipeline chấm điểm: submission → Redis queue → AI grading → lưu kết quả → SSE notification
-- Tích hợp cross-service: Backend ↔ Grading Worker ↔ PostgreSQL
-
-| # | Giai đoạn kiểm thử | Phạm vi | Số lỗi | % Lỗi | Ghi chú |
-|---|-------------------|---------|--------|--------|---------|
-| 1 | Code Review | Tất cả PR | — | — | Biome lint + review thủ công |
-| 2 | Unit Test | Scoring, state machine, scaffolding, auth helpers | — | — | `bun test src/`, `pytest` |
-| 3 | Integration Test | 8 bộ test (auth, users, questions, submissions, exams, progress, classes, review) | — | — | `bun test tests/` |
-| 4 | System Test | Toàn bộ pipeline chấm điểm, luồng cross-service | — | — | Thủ công + tự động |
-| 5 | Acceptance Test | Kiểm thử chấp nhận theo tiêu chí specs | — | — | Theo tiêu chí chấp nhận từng phase |
-
-*Ghi chú: Số lỗi sẽ được cập nhật trong quá trình thực hiện.*
-
-### 2.3 Kế hoạch đào tạo
-
-| Lĩnh vực đào tạo | Người tham gia | Thời gian, Thời lượng | Điều kiện miễn |
-|------------------|----------------|----------------------|----------------|
-| Bun runtime + Elysia framework | Nghĩa | Tuần 1-2, 3 ngày | Có kinh nghiệm Elysia trước đó |
+| Training Area | Participants | Duration | Exemption |
+|--------------|-------------|----------|-----------|
+| Bun runtime + Elysia framework | Nghĩa | Tuần 1-2, 3 ngày | Có kinh nghiệm trước đó |
 | Drizzle ORM + PostgreSQL | Nghĩa | Tuần 1-2, 2 ngày | Bắt buộc |
-| TypeBox schema validation | Nghĩa | Tuần 2, 1 ngày | Bắt buộc |
-| Python FastAPI + LiteLLM | Nghĩa | Tuần 1-2, 3 ngày | Có kinh nghiệm FastAPI trước đó |
+| Python FastAPI + LiteLLM | Nghĩa | Tuần 1-2, 3 ngày | Có kinh nghiệm trước đó |
 | React 19 + Vite 7 | Phát (NTT), Phát (NN) | Tuần 1-2, 3 ngày | Có kinh nghiệm React trước đó |
-| React Native (Mobile) | Khôi | Tuần 1-2, 3 ngày | Có kinh nghiệm React Native trước đó |
-| Luồng xác thực JWT | Tất cả developers | Tuần 2, 1 ngày | Bắt buộc |
-| Git workflow (branching, PR review) | Tất cả thành viên | Tuần 1, 0,5 ngày | Bắt buộc |
+| React Native (Mobile) | Khôi | Tuần 1-2, 3 ngày | Có kinh nghiệm trước đó |
+| JWT authentication flow | Tất cả developers | Tuần 2, 1 ngày | Bắt buộc |
+| Git workflow (branching, PR review) | Tất cả thành viên | Tuần 1, 0.5 ngày | Bắt buộc |
 
----
+## 3. Project Deliverables
 
-## 3. Sản Phẩm Bàn Giao
+| # | Deliverable | Due Date | Owner | Notes |
+|---|------------|----------|-------|-------|
+| 1 | Report 1 — Project Introduction | 15/01/2026 | Nghĩa | Đã nộp |
+| 2 | Report 2 — Project Management Plan | 01/02/2026 | Nghĩa | Tài liệu này |
+| 3 | Technical Specifications | 15/01/2026 | Nghĩa | Domain rules, API contracts, data schemas |
+| 4 | Database Schema & Migrations | 31/01/2026 | Nghĩa | PostgreSQL tables, enums, indexes |
+| 5 | Sprint 1-2: Foundation + Auth + Questions + Submissions | 28/02/2026 | Nghĩa | Backend core modules |
+| 6 | Sprint 3-4: AI Grading + Auto-grading + Review | 15/03/2026 | Nghĩa | Grading worker + human review workflow |
+| 7 | Sprint 5: Progress + Scaffolding + Exams | 31/03/2026 | Nghĩa | Backend remaining modules |
+| 8 | Frontend MVP (Web) | 31/03/2026 | Phát (NTT), Phát (NN) | Auth, practice, mock test, dashboard |
+| 9 | Mobile Application | 15/04/2026 | Khôi | React Native Android |
+| 10 | Report 3 — Software Requirement Specification | 15/03/2026 | Nghĩa | SRS |
+| 11 | Sprint 6-7: Enhancement + System Testing | 15/04/2026 | Tất cả | Phase 2 features (FE-12 đến FE-16) |
+| 12 | Final Report + Demo | 30/04/2026 | Tất cả | Thuyết trình cuối và triển khai |
 
-| # | Sản phẩm bàn giao | Ngày hạn | Người phụ trách | Ghi chú |
-|---|-------------------|----------|----------------|---------|
-| 1 | Report 1 — Giới thiệu dự án | 15/01/2026 | Nghĩa | Đã nộp |
-| 2 | Report 2 — Kế hoạch quản lý dự án | 01/02/2026 | Nghĩa | Tài liệu này |
-| 3 | Technical Specifications (20 file spec) | 15/01/2026 | Nghĩa | Domain, contracts, data, platform, ops |
-| 4 | Database Schema (Drizzle ORM + migrations) | 31/01/2026 | Nghĩa | PostgreSQL tables, enums, indexes |
-| 5 | Sprint 1-2: Nền tảng + Auth + Questions + Submissions | 28/02/2026 | Nghĩa | Backend Phases 1-3 |
-| 6 | Sprint 3-4: Dịch vụ chấm AI + Chấm tự động + Review | 15/03/2026 | Nghĩa | Grading worker + quy trình chấm thủ công |
-| 7 | Sprint 5: Theo dõi tiến độ + Scaffolding + Exams | 31/03/2026 | Nghĩa | Backend Phases 4-5, 9 |
-| 8 | Frontend MVP (Web) | 31/03/2026 | Phát (NTT), Phát (NN) | Giao diện web cốt lõi (auth, luyện tập, thi thử, dashboard) |
-| 9 | Ứng dụng Mobile (React Native) | 15/04/2026 | Khôi | Ứng dụng di động cho learner |
-| 10 | Report 3 — Tài liệu SRS | 15/03/2026 | Nghĩa | Đặc tả yêu cầu phần mềm |
-| 11 | Sprint 6-7: Tính năng nâng cao + Kiểm thử hệ thống | 15/04/2026 | Tất cả | Tính năng Phase 2 (FE-12 đến FE-16) |
-| 12 | Báo cáo cuối + Demo | 30/04/2026 | Tất cả | Thuyết trình cuối và triển khai |
+## 4. Responsibility Assignments
 
----
+D — Do · R — Review · S — Support · I — Informed
 
-## 4. Phân Công Trách Nhiệm
-
-D — Thực hiện · R — Review · S — Hỗ trợ · I — Được thông báo · (trống) — Không liên quan
-
-| Trách nhiệm | Nghĩa (Leader, BE & AI) | Khôi (Mobile) | Phát NN (FE) | Phát NTT (FE) |
-|-------------|:---:|:---:|:---:|:---:|
-| Lập kế hoạch & Theo dõi dự án | D | S | I | I |
-| Technical Specifications (specs/) | D | S | S | S |
-| Report 1 — Giới thiệu dự án | D | S | S | S |
-| Report 2 — Kế hoạch quản lý dự án | D | R | I | I |
-| Report 3 — Tài liệu SRS | D | S | S | R |
-| Backend: Module Auth | D | | | |
-| Backend: Module Questions | D | | | |
-| Backend: Module Submissions & State machine | D | | | |
-| Backend: Module Exams | D | | | |
-| Backend: Module Progress & Scaffolding | D | | | |
-| Backend: Quy trình chấm thủ công | D | | | |
-| Backend: Module Goals & Classes | D | | | |
+| Responsibility | Nghĩa (Leader) | Khôi (Mobile) | Phát NN (FE) | Phát NTT (FE) |
+|---------------|:---:|:---:|:---:|:---:|
+| Project Planning & Tracking | D | S | I | I |
+| Technical Specifications | D | S | S | S |
+| Report 1 — Project Introduction | D | S | S | S |
+| Report 2 — Project Management Plan | D | R | I | I |
+| Report 3 — SRS | D | S | S | R |
+| Backend: Auth Module | D | | | |
+| Backend: Questions Module | D | | | |
+| Backend: Submissions & State Machine | D | | | |
+| Backend: Exams Module | D | | | |
+| Backend: Progress & Scaffolding | D | | | |
+| Backend: Human Grading Workflow | D | | | |
+| Backend: Goals & Classes | D | | | |
 | Backend: Integration Tests | D | | S | S |
-| Frontend: Trang xác thực & Hồ sơ | | | D | S |
-| Frontend: Giao diện chế độ luyện tập | | | S | D |
-| Frontend: Giao diện thi thử | | | D | S |
-| Frontend: Dashboard tiến độ | | | S | D |
-| Frontend: Giao diện review giảng viên | | | D | S |
-| Frontend: Đồng bộ type và tích hợp API | S | | D | D |
-| Mobile: Giao diện learner (React Native) | | D | S | S |
-| Mobile: Tích hợp API backend | S | D | | |
-| Mobile: Ghi âm & Upload audio (Speaking) | S | D | | |
-| Grading: Pipeline chấm Viết | D | | | |
-| Grading: Pipeline chấm Nói (STT + LLM) | D | | | |
-| Grading: Redis worker + retry logic | D | | | |
-| Grading: Unit tests | D | | | |
+| Frontend: Auth & Profile Pages | | | D | S |
+| Frontend: Practice Mode UI | | | S | D |
+| Frontend: Mock Test UI | | | D | S |
+| Frontend: Progress Dashboard | | | S | D |
+| Frontend: Instructor Review UI | | | D | S |
+| Frontend: API Integration | S | | D | D |
+| Mobile: Learner UI (React Native) | | D | S | S |
+| Mobile: API Integration | S | D | | |
+| Mobile: Audio Recording (Speaking) | S | D | | |
+| Grading: Writing Pipeline | D | | | |
+| Grading: Speaking Pipeline (STT + LLM) | D | | | |
+| Grading: Queue Worker | D | | | |
 | Database Schema & Migrations | D | I | I | I |
-| Pipeline nạp dữ liệu mẫu | D | | | |
-| Docker Compose & Hạ tầng | D | S | | |
-| Kiểm thử hệ thống & QA | D | S | S | S |
-| Báo cáo cuối & Demo | D | S | S | S |
+| Docker Compose & Infrastructure | D | S | | |
+| System Testing & QA | D | S | S | S |
+| Final Report & Demo | D | S | S | S |
 
----
+## 5. Project Communications
 
-## 5. Truyền Thông Dự Án
+| Communication | Audience | Purpose | Frequency | Format |
+|--------------|----------|---------|-----------|--------|
+| Sprint Planning | Toàn bộ thành viên | Xác định sprint backlog, phân công | 2 tuần/lần (Thứ Hai) | Google Meet |
+| Daily Standup | Toàn bộ thành viên | Chia sẻ tiến độ, vấn đề | Hàng ngày (15 phút, async) | Discord text |
+| Sprint Review & Retro | Thành viên + GVHD | Demo, đánh giá quy trình | 2 tuần/lần (Thứ Sáu) | Google Meet |
+| Supervisor Meeting | Leader + GVHD | Báo cáo tiến độ, nhận hướng dẫn | Hàng tuần hoặc 2 tuần/lần | Trực tiếp / Google Meet |
+| Code Review | Developer + Reviewer | Đảm bảo chất lượng code | Theo từng PR | GitHub Pull Request |
+| Technical Discussion | Developers liên quan | Thảo luận thiết kế, debug | Khi cần | Discord voice / thread |
 
-| Nội dung truyền thông | Đối tượng | Mục đích | Thời gian, Tần suất | Hình thức, Công cụ |
-|-----------------------|-----------|----------|---------------------|-------------------|
-| Sprint Planning | Toàn bộ thành viên | Xác định sprint backlog, phân công công việc | 2 tuần/lần (Thứ Hai) | Họp online, Google Meet |
-| Daily Standup | Toàn bộ thành viên | Chia sẻ tiến độ, vấn đề gặp phải | Hàng ngày (15 phút, async trong tuần) | Cập nhật text, kênh Discord |
-| Sprint Review & Retro | Toàn bộ thành viên + GVHD | Demo công việc đã hoàn thành, đánh giá quy trình | 2 tuần/lần (Thứ Sáu) | Họp online, Google Meet |
-| Họp với GVHD | Leader + GVHD | Báo cáo tiến độ, nhận hướng dẫn | Hàng tuần hoặc 2 tuần/lần | Trực tiếp hoặc Google Meet |
-| Code Review | Dev mở PR + Reviewer | Đảm bảo chất lượng và tuân thủ code style | Theo từng pull request | GitHub Pull Request review |
-| Thảo luận kỹ thuật | Developers liên quan | Thảo luận thiết kế, debug vấn đề | Khi cần | Kênh voice Discord hoặc thread |
-| Cập nhật tài liệu | Toàn bộ thành viên | Giữ specs, reports, diagrams cập nhật | Khi có thay đổi | Git commit vào `docs/` |
+## 6. Configuration Management
 
----
+### 6.1 Document Management
 
-## 6. Quản Lý Cấu Hình
+- Toàn bộ tài liệu dự án lưu trữ trong Git repository dưới `docs/capstone/`.
+- `specs/` — Technical specifications.
+- `reports/` — Báo cáo capstone (Markdown, chuyển đổi sang DOCX khi cần).
+- `diagrams/` — Sơ đồ (sources + rendered images).
+- Quản lý phiên bản qua Git commit với semantic commit messages.
 
-### 6.1 Quản lý tài liệu
+### 6.2 Source Code Management
 
-- Toàn bộ tài liệu dự án được lưu trữ trong Git repository dưới `docs/capstone/`
-  - `specs/` — Technical specifications (22 file, tổ chức theo 00-overview, 10-contracts, 20-domain, 30-data, 40-platform, 50-ops)
-  - `reports/` — Báo cáo capstone (phiên bản ENG và VI)
-  - `diagrams/` — Sơ đồ luồng và sơ đồ kiến trúc
-- Quản lý phiên bản qua Git commit với semantic commit messages (prefix `docs:`)
-- Phiên bản tài liệu được theo dõi ở footer mỗi file spec (ví dụ: "Document version: 2.0")
-- Định dạng Markdown cho toàn bộ tài liệu (chuyển đổi sang DOCX qua `scripts/build.py` khi cần)
-- Báo cáo được duy trì song ngữ Anh-Việt (`reports/ENG/`, `reports/VI/`)
+- **Repository:** Monorepo duy nhất chứa cả ba ứng dụng (`apps/backend`, `apps/frontend`, `apps/grading`).
+- **Branching strategy:** Feature branch từ `main`, merge qua pull request. Đặt tên: `feat/<feature>`, `fix/<bug>`, `docs/<topic>`.
+- **Commit convention:** Conventional commits có scope — `feat(backend):`, `fix(grading):`, `docs:`.
+- **Code style:** Enforced tự động bằng linter. Mọi code phải pass trước khi merge.
+- **Secret management:** File `.env` được git-ignore, validate lúc startup.
 
-### 6.2 Quản lý mã nguồn
+### 6.3 Tools & Infrastructure
 
-- **Repository**: Monorepo duy nhất (`VSTEP/`) chứa cả ba ứng dụng
-- **Chiến lược nhánh**: Feature branch từ `main`, merge qua pull request
-  - Đặt tên nhánh: `feat/<feature>`, `fix/<bug>`, `refactor/<scope>`, `docs/<topic>`
-  - Mọi merge yêu cầu PR review và pass `bun run check`
-- **Cách ly ứng dụng**: Mỗi app trong `apps/<name>/` với `package.json` (backend, frontend) hoặc `requirements.txt` (grading) riêng
-- **Quy ước commit**: Conventional commits có scope — `feat(backend):`, `fix(grading):`, `docs:`, `refactor(questions):`
-- **Enforced code style**: Biome (TypeScript), CODE_STYLE.md (quy tắc toàn dự án)
-- **Không có secret trong code**: File `.env` được git-ignore, validate lúc startup qua `t3-oss/env-core` (backend) và Pydantic Settings (grading)
-
-### 6.3 Công cụ & Hạ tầng
-
-| Danh mục | Công cụ / Hạ tầng |
-|----------|-------------------|
-| Công nghệ (Backend) | Bun + Elysia + Drizzle ORM + Zod + Jose (JWT) |
-| Công nghệ (Frontend) | React 19 + Vite 7 + TypeScript |
-| Công nghệ (Grading) | Python + FastAPI + LiteLLM + Redis BRPOP worker |
-| Cơ sở dữ liệu | PostgreSQL 17 (dùng chung bởi Backend + Grading) |
-| Queue / Cache | Redis 7 Alpine (grading queue + caching) |
-| Nhà cung cấp AI | Groq (Llama 3.3 70B cho LLM, Whisper Large V3 Turbo cho STT) qua LiteLLM |
-| IDE/Editor | Visual Studio Code, Cursor |
-| Lint / Format | Biome (TypeScript) |
-| Kiểm thử | bun:test (backend), pytest (grading) |
-| Sơ đồ | Mermaid (trong Markdown), draw.io |
-| Tài liệu | Markdown (quản lý bằng Git), python-docx (sinh DOCX qua `scripts/build.py`) |
-| Quản lý phiên bản | Git + GitHub (monorepo) |
-| Container hóa | Docker Compose (PostgreSQL, Redis cho local dev) |
-| Quản lý dự án | GitHub Issues, GitHub Projects |
-| Truyền thông | Discord (hàng ngày), Google Meet (sprint ceremonies) |
-| Tài liệu API | OpenAPI (tự sinh từ Elysia route schemas) |
-
-
----
-
-## 7. Đóng Góp & Theo Dõi Nỗ Lực Nhóm (Tuần 1–8)
-
-### 7.1 Vai Trò & Trách Nhiệm Thành Viên
-
-| Thành viên | MSSV | Vai trò | Trách nhiệm chính |
-|-------------|------|---------|---------------------|
-| Hoàng Văn Anh Nghĩa | SE172605 | Trưởng nhóm, Lập trình viên Backend & AI | Kiến trúc backend, tất cả các module backend, dịch vụ chấm điểm AI, thiết kế CSDL, đặc tả kỹ thuật, quản lý dự án, tài liệu |
-| Nguyễn Minh Khôi | SE172625 | Lập trình viên Mobile | Ứng dụng React Native, tích hợp API, ghi âm (Speaking) |
-| Nguyễn Nhật Phát | SE172607 | Lập trình viên Frontend | Giao diện web (xác thực, luyện tập, thi thử, bài nộp), tích hợp API |
-| Nguyễn Trần Tấn Phát | SE173198 | Lập trình viên Frontend | Giao diện web (dashboard tiến độ, từ vựng, kết quả thi, components), đồng bộ type |
-
-### 7.2 Tổng Hợp Nỗ Lực (Tuần 1–8)
-
-| Thành viên | Phát triển (giờ) | Tài liệu (giờ) | Tổng (giờ) | Đóng góp (%) | Trạng thái |
-|-------------|-------------------:|---------------------:|-------------:|-----------------:|------------|
-| Hoàng Văn Anh Nghĩa | 96 | 36 | 132 | 30% | Hoạt động (Tuần 1–8) |
-| Nguyễn Minh Khôi | 82 | 12 | 94 | 22% | Hoạt động (Tuần 1–8) |
-| Nguyễn Nhật Phát | 84 | 14 | 98 | 24% | Hoạt động (Tuần 1–8) |
-| Nguyễn Trần Tấn Phát | 80 | 16 | 96 | 24% | Hoạt động (Tuần 1–8) |
-| **Tổng** | **342** | **78** | **420** | **100%** | |
-
-*Số giờ ước tính dựa trên báo cáo sprint hàng tuần và nhật ký hoạt động git.*
-
-### 7.3 Chi Tiết Công Việc
-
-| Tuần | Thành viên | Công việc | Phân loại | Giờ | Hoàn thành |
-|------|-------------|-----------|-----------|-----:|------------|
-| 1–2 | Nghĩa | Lập kế hoạch dự án, WBS, đặc tả kỹ thuật (20 file) | Tài liệu | 18 | Hoàn thành |
-| 1–2 | Nghĩa | Thiết kế schema CSDL (Drizzle ORM + migrations) | Phát triển | 8 | Hoàn thành |
-| 1–2 | Nghĩa | Backend Phase 1: Module xác thực (JWT, RBAC, refresh rotation) | Phát triển | 10 | Hoàn thành |
-| 1–2 | Khôi | Cài đặt dự án React Native, cấu trúc navigation | Phát triển | 14 | Hoàn thành |
-| 1–2 | Khôi | Nghiên cứu & prototype ghi âm | Phát triển | 6 | Hoàn thành |
-| 1–2 | Phát NN | Cài đặt dự án Frontend (React 19 + Vite 7 + TanStack Router) | Phát triển | 12 | Hoàn thành |
-| 1–2 | Phát NN | Hệ thống layout, route guards, API client | Phát triển | 8 | Hoàn thành |
-| 1–2 | Phát NTT | Cài đặt thư viện UI (shadcn/ui + Tailwind) | Phát triển | 14 | Hoàn thành |
-| 1–2 | Phát NTT | Bản thảo Report 1–2 | Tài liệu | 6 | Hoàn thành |
-| 3–4 | Nghĩa | Backend Phase 2–3: Câu hỏi, Bài nộp, Chấm tự động | Phát triển | 16 | Hoàn thành |
-| 3–4 | Nghĩa | Dịch vụ chấm điểm: Pipeline Writing (LLM), Speaking (STT + LLM) | Phát triển | 12 | Hoàn thành |
-| 3–4 | Nghĩa | Backend Phase 4: Theo dõi tiến độ, sliding window | Phát triển | 8 | Hoàn thành |
-| 3–4 | Khôi | Mobile: Màn hình xác thực, dashboard, giao diện luyện tập | Phát triển | 16 | Hoàn thành |
-| 3–4 | Khôi | Mobile: Tích hợp API, quản lý token | Phát triển | 6 | Hoàn thành |
-| 3–4 | Phát NN | Frontend: Trang xác thực (đăng nhập, đăng ký, quên mật khẩu) | Phát triển | 10 | Hoàn thành |
-| 3–4 | Phát NN | Frontend: Chế độ luyện tập (4 kỹ năng), luồng bài tập | Phát triển | 14 | Hoàn thành |
-| 3–4 | Phát NTT | Frontend: Dashboard tiến độ (Spider Chart), danh sách bài thi | Phát triển | 16 | Hoàn thành |
-| 3–4 | Phát NTT | Frontend: Trang kết quả, hiển thị điểm | Phát triển | 6 | Hoàn thành |
-| 5–6 | Nghĩa | Backend Phase 5–9: Bài thi, phiên thi, mục tiêu, lớp học, quy trình review | Phát triển | 14 | Hoàn thành |
-| 5–6 | Nghĩa | Backend: Module từ vựng, thông báo, uploads (S3/MinIO) | Phát triển | 10 | Hoàn thành |
-| 5–6 | Nghĩa | Report 1–4 (phiên bản ENG + VI) | Tài liệu | 10 | Hoàn thành |
-| 5–6 | Khôi | Mobile: Phiên thi, ghi âm Speaking, push notifications | Phát triển | 18 | Hoàn thành |
-| 5–6 | Khôi | Báo cáo phần kiến trúc mobile | Tài liệu | 6 | Hoàn thành |
-| 5–6 | Phát NN | Frontend: Giao diện thi thử (có giới hạn thời gian), lịch sử bài nộp | Phát triển | 18 | Hoàn thành |
-| 5–6 | Phát NN | Frontend: Chi tiết bài nộp, hiển thị phản hồi | Phát triển | 6 | Hoàn thành |
-| 5–6 | Phát NTT | Frontend: Trang từ vựng, lịch sử tiến độ (heatmap) | Phát triển | 16 | Hoàn thành |
-| 5–6 | Phát NTT | Báo cáo mô tả màn hình, ảnh chụp UI | Tài liệu | 6 | Hoàn thành |
-| 7–8 | Nghĩa | Backend: Knowledge points, phiên luyện tập, lộ trình học | Phát triển | 10 | Hoàn thành |
-| 7–8 | Nghĩa | Kiểm thử tích hợp, seed data pipeline, cài đặt Docker | Phát triển | 8 | Hoàn thành |
-| 7–8 | Nghĩa | Cập nhật báo cáo, biểu đồ ERD, biểu đồ hoạt động | Tài liệu | 8 | Hoàn thành |
-| 7–8 | Khôi | Mobile: Cài đặt offline, kiểm tra thiết bị, hoàn thiện nền tảng | Phát triển | 16 | Hoàn thành |
-| 7–8 | Khôi | Báo cáo phần triển khai, kiểm thử | Tài liệu | 6 | Hoàn thành |
-| 7–8 | Phát NN | Frontend: Trang quản trị (người dùng, câu hỏi, bài thi, bài nộp) | Phát triển | 16 | Hoàn thành |
-| 7–8 | Phát NN | Báo cáo luồng màn hình, test cases | Tài liệu | 14 | Hoàn thành |
-| 7–8 | Phát NTT | Frontend: Chi tiết câu trả lời Reading, biểu đồ, hoàn thiện UI | Phát triển | 14 | Hoàn thành |
-| 7–8 | Phát NTT | Báo cáo bảng công nghệ, tài liệu component | Tài liệu | 4 | Hoàn thành |
-
-*Số giờ ước tính dựa trên tốc độ sprint và độ phức tạp công việc. Mỗi sprint = 2 tuần.*
-
-### 7.4 Sản Phẩm Chính Theo Thành Viên
-
-| Thành viên | Sản phẩm chính | Số dòng code (ước tính) |
-|-------------|-----------------|------------------------:|
-| Nghĩa | Backend (tất cả 12 module), Dịch vụ chấm điểm (Python), Schema CSDL (24 bảng), 20 file đặc tả, 8 báo cáo (ENG+VI), seed data, cấu hình Docker | ~18.500 |
-| Khôi | Ứng dụng mobile (React Native Android), ghi âm, push notifications, offline caching, phiên thi | ~14.200 |
-| Phát NN | Giao diện xác thực, chế độ luyện tập (4 kỹ năng), thi thử, trang quản trị (4 CRUD), lịch sử bài nộp, API client | ~12.800 |
-| Phát NTT | Dashboard tiến độ (Spider Chart + Heatmap), giao diện từ vựng, biểu đồ, kết quả thi, thư viện UI component | ~11.600 |
-
-*Số dòng code = insertions − deletions từ lịch sử git (từ 01/01/2026). Bao gồm code, cấu hình và tài liệu.*
+| Category | Tool |
+|----------|------|
+| Backend | Bun + Elysia + Drizzle ORM |
+| Frontend | React 19 + Vite 7 + TypeScript |
+| Grading | Python + FastAPI + LiteLLM |
+| Database | PostgreSQL 17 |
+| Queue / Cache | Redis 7 |
+| AI Provider | Groq (Llama 3.3 70B, Whisper Large V3 Turbo) |
+| IDE | Visual Studio Code, Cursor |
+| Linter | Biome (TypeScript) |
+| Testing | bun:test (backend), pytest (grading) |
+| Diagrams | Draw.io, Mermaid |
+| Version Control | Git + GitHub (monorepo) |
+| Containers | Docker Compose (PostgreSQL, Redis) |
+| Project Management | GitHub Issues, GitHub Projects |
+| Communication | Discord (daily), Google Meet (sprint ceremonies) |
+| API Documentation | OpenAPI (auto-generated from route schemas) |
