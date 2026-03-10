@@ -600,7 +600,7 @@ erDiagram
 
     user_placements {
         uuid id PK
-        uuid user_id FK UK "unique, not null"
+        uuid user_id UK "FK users, unique"
         uuid session_id FK "nullable"
         enum status "placement_status enum"
         enum source "placement_source enum"
