@@ -88,59 +88,47 @@ Hệ thống bao gồm 3 thành phần chính: Web Client (React), API Server (B
 
 #### 2.2.2 Use Case Descriptions
 
-**Learner Use Cases**
-
-| ID | Use Case | Mô tả |
-|----|----------|-------|
-| UC-01 | Đăng ký | Tạo tài khoản với email, password, họ tên. Vai trò mặc định là Learner. |
-| UC-02 | Đăng nhập | Xác thực bằng email + password, nhận cặp JWT access/refresh token. |
-| UC-03 | Đăng xuất | Thu hồi refresh token hiện tại. |
-| UC-04 | Làm mới token | Xoay vòng refresh token — thu hồi cũ, phát hành cặp mới. |
-| UC-10 | Luyện Listening | Lấy câu hỏi nghe với adaptive scaffolding. Chấm tự động ngay lập tức. |
-| UC-11 | Luyện Reading | Lấy câu hỏi đọc (MCQ, T/F/NG, Matching, Gap Fill). Chấm tự động. |
-| UC-12 | Luyện Writing | Nộp bài viết để chấm điểm AI bất đồng bộ. |
-| UC-13 | Luyện Speaking | Nộp bản ghi âm để STT + chấm điểm AI bất đồng bộ. |
-| UC-14 | Xem kết quả bài nộp | Xem điểm, band, chi tiết từng tiêu chí, phản hồi AI. |
-| UC-20 | Xem danh sách bài thi | Duyệt bài thi thử, lọc theo cấp độ (B1/B2/C1). |
-| UC-21 | Bắt đầu phiên thi | Bắt đầu phiên thi thử có giới hạn thời gian. |
-| UC-22 | Trả lời câu hỏi thi | Trả lời câu hỏi trong phiên thi. Tự động lưu định kỳ. |
-| UC-23 | Nộp bài thi | Hoàn tất bài thi. L/R chấm tự động, W/S chuyển sang chấm AI. |
-| UC-24 | Xem kết quả thi | Xem điểm từng kỹ năng, band và điểm tổng. |
-| UC-30 | Xem tổng quan tiến độ | Xem 4 kỹ năng: trình độ, điểm trung bình, xu hướng. |
-| UC-31 | Xem Spider Chart | Biểu đồ radar 4 trục hiển thị điểm hiện tại + mục tiêu. |
-| UC-32 | Xem chi tiết kỹ năng | Lịch sử điểm, phân loại xu hướng, mức scaffolding. |
-| UC-33 | Đặt mục tiêu học tập | Đặt band mục tiêu, thời hạn, thời gian học hàng ngày. |
-| UC-34 | Xem ước tính ETA | Ước tính thời gian để đạt mục tiêu mỗi kỹ năng. |
-| UC-40 | Tham gia lớp học | Tham gia lớp bằng mã mời. |
-| UC-41 | Rời lớp học | Rời khỏi lớp đã tham gia. |
-| UC-42 | Xem phản hồi giảng viên | Xem nhận xét phản hồi từ giảng viên cho lớp cụ thể. |
-
-**Instructor Use Cases**
-
-| ID | Use Case | Mô tả |
-|----|----------|-------|
-| UC-50 | Xem hàng đợi đánh giá | Danh sách bài nộp chờ đánh giá, sắp xếp theo ưu tiên. |
-| UC-51 | Nhận bài chấm | Nhận một bài nộp để đánh giá độc quyền. |
-| UC-52 | Đánh giá & chấm bài | Nộp điểm cuối cùng, band, điểm từng tiêu chí, phản hồi. |
-| UC-53 | Trả lại bài nộp | Trả lại bài đã nhận vào hàng đợi. |
-| UC-61 | Quản lý câu hỏi | Tạo và cập nhật câu hỏi trong ngân hàng câu hỏi. |
-| UC-70 | Tạo lớp học | Tạo lớp với mã mời tự động. |
-| UC-71 | Xem dashboard lớp | Xem thành viên, tiến độ, học viên có nguy cơ. |
-| UC-72 | Xem tiến độ thành viên | Tiến độ chi tiết của từng học viên trong lớp. |
-| UC-73 | Gửi phản hồi | Gửi nhận xét cho học viên cụ thể trong lớp. |
-| UC-74 | Xoay mã mời | Tạo mã mời mới, vô hiệu mã cũ. |
-| UC-75 | Xóa thành viên | Xóa học viên khỏi lớp. |
-
-**Admin Use Cases**
-
-| ID | Use Case | Mô tả |
-|----|----------|-------|
-| UC-80 | Danh sách người dùng | Xem danh sách người dùng phân trang với bộ lọc. |
-| UC-81 | Đổi vai trò | Thay đổi vai trò người dùng (Learner/Instructor/Admin). |
-| UC-85 | Quản lý ngân hàng câu hỏi | CRUD đầy đủ trên câu hỏi. |
-| UC-87 | Quản lý knowledge points | CRUD trên phân loại điểm kiến thức. |
-| UC-88 | Quản lý bài thi | Tạo, cập nhật và xóa bài thi. |
-| UC-89 | Quản lý hàng đợi đánh giá | Xem và thao tác trên quy trình đánh giá với quyền nâng cao. |
+| ID | Use Case | Actors | Mô tả |
+|----|----------|--------|-------|
+| UC-01 | Đăng ký | Learner | Tạo tài khoản với email, password, họ tên. Vai trò mặc định là Learner. |
+| UC-02 | Đăng nhập | All | Xác thực bằng email + password, nhận cặp JWT access/refresh token. |
+| UC-03 | Đăng xuất | All | Thu hồi refresh token hiện tại. |
+| UC-04 | Làm mới token | All | Xoay vòng refresh token — thu hồi cũ, phát hành cặp mới. |
+| UC-10 | Luyện Listening | Learner | Lấy câu hỏi nghe với adaptive scaffolding. Chấm tự động ngay lập tức. |
+| UC-11 | Luyện Reading | Learner | Lấy câu hỏi đọc (MCQ, T/F/NG, Matching, Gap Fill). Chấm tự động. |
+| UC-12 | Luyện Writing | Learner | Nộp bài viết để chấm điểm AI bất đồng bộ. |
+| UC-13 | Luyện Speaking | Learner | Nộp bản ghi âm để STT + chấm điểm AI bất đồng bộ. |
+| UC-14 | Xem kết quả bài nộp | Learner | Xem điểm, band, chi tiết từng tiêu chí, phản hồi AI. |
+| UC-20 | Xem danh sách bài thi | Learner | Duyệt bài thi thử, lọc theo cấp độ (B1/B2/C1). |
+| UC-21 | Bắt đầu phiên thi | Learner | Bắt đầu phiên thi thử có giới hạn thời gian. |
+| UC-22 | Trả lời câu hỏi thi | Learner | Trả lời câu hỏi trong phiên thi. Tự động lưu định kỳ. |
+| UC-23 | Nộp bài thi | Learner | Hoàn tất bài thi. L/R chấm tự động, W/S chuyển sang chấm AI. |
+| UC-24 | Xem kết quả thi | Learner | Xem điểm từng kỹ năng, band và điểm tổng. |
+| UC-30 | Xem tổng quan tiến độ | Learner | Xem 4 kỹ năng: trình độ, điểm trung bình, xu hướng. |
+| UC-31 | Xem Spider Chart | Learner | Biểu đồ radar 4 trục hiển thị điểm hiện tại + mục tiêu. |
+| UC-32 | Xem chi tiết kỹ năng | Learner | Lịch sử điểm, phân loại xu hướng, mức scaffolding. |
+| UC-33 | Đặt mục tiêu học tập | Learner | Đặt band mục tiêu, thời hạn, thời gian học hàng ngày. |
+| UC-34 | Xem ước tính ETA | Learner | Ước tính thời gian để đạt mục tiêu mỗi kỹ năng. |
+| UC-40 | Tham gia lớp học | Learner | Tham gia lớp bằng mã mời. |
+| UC-41 | Rời lớp học | Learner | Rời khỏi lớp đã tham gia. |
+| UC-42 | Xem phản hồi giảng viên | Learner | Xem nhận xét phản hồi từ giảng viên cho lớp cụ thể. |
+| UC-50 | Xem hàng đợi đánh giá | Instructor | Danh sách bài nộp chờ đánh giá, sắp xếp theo ưu tiên. |
+| UC-51 | Nhận bài chấm | Instructor | Nhận một bài nộp để đánh giá độc quyền. |
+| UC-52 | Đánh giá & chấm bài | Instructor | Nộp điểm cuối cùng, band, điểm từng tiêu chí, phản hồi. |
+| UC-53 | Trả lại bài nộp | Instructor | Trả lại bài đã nhận vào hàng đợi. |
+| UC-61 | Quản lý câu hỏi | Instructor | Tạo và cập nhật câu hỏi trong ngân hàng câu hỏi. |
+| UC-70 | Tạo lớp học | Instructor | Tạo lớp với mã mời tự động. |
+| UC-71 | Xem dashboard lớp | Instructor | Xem thành viên, tiến độ, học viên có nguy cơ. |
+| UC-72 | Xem tiến độ thành viên | Instructor | Tiến độ chi tiết của từng học viên trong lớp. |
+| UC-73 | Gửi phản hồi | Instructor | Gửi nhận xét cho học viên cụ thể trong lớp. |
+| UC-74 | Xoay mã mời | Instructor | Tạo mã mời mới, vô hiệu mã cũ. |
+| UC-75 | Xóa thành viên | Instructor | Xóa học viên khỏi lớp. |
+| UC-80 | Danh sách người dùng | Admin | Xem danh sách người dùng phân trang với bộ lọc. |
+| UC-81 | Đổi vai trò | Admin | Thay đổi vai trò người dùng (Learner/Instructor/Admin). |
+| UC-85 | Quản lý ngân hàng câu hỏi | Admin | CRUD đầy đủ trên câu hỏi. |
+| UC-87 | Quản lý knowledge points | Admin | CRUD trên phân loại điểm kiến thức. |
+| UC-88 | Quản lý bài thi | Admin | Tạo, cập nhật và xóa bài thi. |
+| UC-89 | Quản lý hàng đợi đánh giá | Admin | Xem và thao tác trên quy trình đánh giá với quyền nâng cao. |
 
 ---
 
