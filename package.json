@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "@nghyane/arcane-natives": "^0.1.9"
+  },
+  "devDependencies": {
+    "beautiful-mermaid": "^1.1.3"
   }
 }
