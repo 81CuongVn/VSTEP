@@ -48,7 +48,7 @@ Hệ thống **không** bao gồm:
 
 Biểu đồ ngữ cảnh bên dưới minh họa các giao diện hệ thống hiện được triển khai cho Hệ Thống Luyện Thi VSTEP Thích Ứng. Ranh giới hệ thống bao gồm client Web, client Di động, Máy chủ API Chính, Dịch vụ Chấm Điểm, PostgreSQL, Redis và object storage dùng cho âm thanh được tải lên. Các thực thể bên ngoài bao gồm ba vai trò người dùng (Học viên, Giảng viên, Quản trị viên) và các API AI có thể cấu hình nhà cung cấp mà dịch vụ chấm điểm sử dụng.
 
-![Diagram 01](../../diagrams/srs/diagram-01.svg)
+![System Context Diagram](../diagrams/images/srs-system-context.svg)
 
 Các quyết định kiến trúc chính:
 
@@ -126,17 +126,17 @@ Các quyết định kiến trúc chính:
 
 **Learner Use Cases**
 
-![Learner Use Cases](../../diagrams/usecase/uc-learner.svg)
+![Learner Use Cases](../diagrams/images/uc-learner.svg)
 
 **Instructor Use Cases**
 
-![Instructor Use Cases](../../diagrams/usecase/uc-instructor.svg)
+![Instructor Use Cases](../diagrams/images/uc-instructor.svg)
 
 **Admin Use Cases**
 
-![Admin Use Cases](../../diagrams/usecase/uc-admin.svg)
+![Admin Use Cases](../diagrams/images/uc-admin.svg)
 
-> Source: [`docs/capstone/diagrams/usecase/`](../../diagrams/usecase/) — render bằng `plantuml -tsvg`
+> Source: [`docs/capstone/diagrams/sources/`](../diagrams/sources/) — render bằng `plantuml -tsvg`
 
 #### 2.2.2 Mô Tả Use Case
 
@@ -201,13 +201,13 @@ Các quyết định kiến trúc chính:
 
 **Luồng Đăng Ký (người dùng mới)**
 
-![Diagram 05](../../diagrams/srs/diagram-05.svg)
+![Registration Flow](../diagrams/images/srs-registration-flow.svg)
 
 **Luồng Đăng Nhập (người dùng hiện tại)**
 
-![Diagram 06](../../diagrams/srs/diagram-06.svg)
+![Login Flow](../diagrams/images/srs-login-flow.svg)
 
-![Diagram 07](../../diagrams/srs/diagram-07.svg)
+![Onboarding Flow](../diagrams/images/srs-onboarding-flow.svg)
 
 #### 3.1.2 Mô Tả Màn Hình
 
@@ -300,7 +300,7 @@ Các quyết định kiến trúc chính:
 
 #### 3.1.5 Biểu Đồ Quan Hệ Thực Thể
 
-![Diagram 08](../../diagrams/srs/diagram-08.svg)
+![Entity Relationship Diagram](../diagrams/images/srs-entity-relationship.svg)
 
 **Mô Tả Thực Thể:**
 
@@ -382,7 +382,7 @@ Các quyết định kiến trúc chính:
 
 #### 3.2.6 Biểu Đồ Vòng Đời Xác Thực & Token
 
-![Diagram 09](../../diagrams/srs/diagram-09.svg)
+![Auth Token Lifecycle](../diagrams/images/srs-auth-token-lifecycle.svg)
 
 ### 3.3 FE-02: Bài Kiểm Tra Xếp Lớp
 
@@ -402,7 +402,7 @@ Các quyết định kiến trúc chính:
 
 #### 3.3.3 Biểu Đồ Luồng Bài Kiểm Tra Xếp Lớp
 
-![Diagram 10](../../diagrams/srs/diagram-10.svg)
+![Placement Test Flow](../diagrams/images/srs-placement-test-flow.svg)
 ```
 
 ### 3.4 FE-03: Chế Độ Luyện Tập — Nghe
@@ -447,7 +447,7 @@ Các quyết định kiến trúc chính:
 
 #### 3.5.3 Biểu Đồ Luồng Luyện Tập Của Học Viên
 
-![Diagram 11](../../diagrams/srs/diagram-11.svg)
+![Practice Flow](../diagrams/images/srs-practice-flow.svg)
 
 ### 3.6 FE-05: Chế Độ Luyện Tập — Viết + Chấm Điểm AI
 
@@ -495,7 +495,7 @@ Các quyết định kiến trúc chính:
 
 #### 3.6.4 Biểu Đồ Pipeline Chấm Điểm AI Viết/Nói
 
-![Diagram 12](../../diagrams/srs/diagram-12.svg)
+![AI Grading Pipeline](../diagrams/images/srs-ai-grading-pipeline.svg)
 
 ### 3.7 FE-06: Chế Độ Luyện Tập — Nói + Chấm Điểm AI
 
@@ -566,7 +566,7 @@ Các quyết định kiến trúc chính:
 
 #### 3.8.7 Biểu Đồ Luồng Phiên Thi
 
-![Diagram 13](../../diagrams/srs/diagram-13.svg)
+![Exam Session Flow](../diagrams/images/srs-exam-session-flow.svg)
 
 ### 3.9 FE-08: Đánh Giá Thủ Công (Giảng Viên Đánh Giá)
 
@@ -607,11 +607,11 @@ Các quyết định kiến trúc chính:
 
 #### 3.9.5 Biểu Đồ Quy Trình Đánh Giá Của Giảng Viên
 
-![Diagram 14](../../diagrams/srs/diagram-14.svg)
+![Instructor Review Flow](../diagrams/images/srs-instructor-review-flow.svg)
 
 #### 3.9.6 Biểu Đồ Máy Trạng Thái Bài Nộp
 
-![Diagram 15](../../diagrams/srs/diagram-15.svg)
+![Submission State Machine](../diagrams/images/srs-submission-state-machine.svg)
 
 ### 3.10 FE-09: Theo Dõi Tiến Độ
 
@@ -671,7 +671,7 @@ Các quyết định kiến trúc chính:
 
 #### 3.10.6 Biểu Đồ Theo Dõi Tiến Độ & Sliding Window
 
-![Diagram 16](../../diagrams/srs/diagram-16.svg)
+![Progress Sliding Window](../diagrams/images/srs-progress-sliding-window.svg)
 
 ### 3.11 FE-10: Lộ Trình Học Tập
 
@@ -689,7 +689,7 @@ Các quyết định kiến trúc chính:
 
 #### 3.11.2 Biểu Đồ Luồng Quản Lý Lớp Học
 
-![Diagram 17](../../diagrams/srs/diagram-17.svg)
+![Class Management Flow](../diagrams/images/srs-class-management-flow.svg)
 
 ### 3.12 FE-11: Đặt Mục Tiêu
 

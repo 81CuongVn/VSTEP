@@ -223,15 +223,15 @@ flowchart TB
 
 ### 2.1 ERD Khái Niệm (Conceptual ERD)
 
-![Conceptual ERD](../../diagrams/erd/conceptual-erd.svg)
+![Conceptual ERD](../diagrams/images/erd-conceptual.svg)
 
-> Source: [`docs/capstone/diagrams/erd/conceptual-erd.d2`](../../diagrams/erd/conceptual-erd.d2) — render bằng `d2 --layout=elk`
+> Source: [`docs/capstone/diagrams/sources/conceptual-erd.d2`](../diagrams/sources/conceptual-erd.d2) — render bằng `d2 --layout=elk`
 
 ### 2.2 ERD Vật Lý (Physical ERD)
 
-![Physical ERD](../../diagrams/erd/physical-erd.svg)
+![Physical ERD](../diagrams/images/erd-physical.svg)
 
-> Source: [`docs/capstone/diagrams/erd/physical-erd.d2`](../../diagrams/erd/physical-erd.d2) — render bằng `d2 --layout=elk`
+> Source: [`docs/capstone/diagrams/sources/physical-erd.d2`](../diagrams/sources/physical-erd.d2) — render bằng `d2 --layout=elk`
 
 
 | # | Bảng | Mô tả |
