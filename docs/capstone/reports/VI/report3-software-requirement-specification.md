@@ -48,7 +48,7 @@ Hệ thống **không** bao gồm:
 
 Biểu đồ ngữ cảnh bên dưới minh họa các giao diện hệ thống hiện được triển khai cho Hệ Thống Luyện Thi VSTEP Thích Ứng. Ranh giới hệ thống bao gồm client Web, client Di động, Máy chủ API Chính, Dịch vụ Chấm Điểm, PostgreSQL, Redis và object storage dùng cho âm thanh được tải lên. Các thực thể bên ngoài bao gồm ba vai trò người dùng (Học viên, Giảng viên, Quản trị viên) và các API AI có thể cấu hình nhà cung cấp mà dịch vụ chấm điểm sử dụng.
 
-![Diagram 01](../../../diagrams/srs/diagram-01.svg)
+![Diagram 01](../../diagrams/srs/diagram-01.svg)
 
 Các quyết định kiến trúc chính:
 
@@ -201,13 +201,13 @@ Các quyết định kiến trúc chính:
 
 **Luồng Đăng Ký (người dùng mới)**
 
-![Diagram 05](../../../diagrams/srs/diagram-05.svg)
+![Diagram 05](../../diagrams/srs/diagram-05.svg)
 
 **Luồng Đăng Nhập (người dùng hiện tại)**
 
-![Diagram 06](../../../diagrams/srs/diagram-06.svg)
+![Diagram 06](../../diagrams/srs/diagram-06.svg)
 
-![Diagram 07](../../../diagrams/srs/diagram-07.svg)
+![Diagram 07](../../diagrams/srs/diagram-07.svg)
 
 #### 3.1.2 Mô Tả Màn Hình
 
@@ -300,7 +300,7 @@ Các quyết định kiến trúc chính:
 
 #### 3.1.5 Biểu Đồ Quan Hệ Thực Thể
 
-![Diagram 08](../../../diagrams/srs/diagram-08.svg)
+![Diagram 08](../../diagrams/srs/diagram-08.svg)
 
 **Mô Tả Thực Thể:**
 
@@ -382,7 +382,7 @@ Các quyết định kiến trúc chính:
 
 #### 3.2.6 Biểu Đồ Vòng Đời Xác Thực & Token
 
-![Diagram 09](../../../diagrams/srs/diagram-09.svg)
+![Diagram 09](../../diagrams/srs/diagram-09.svg)
 
 ### 3.3 FE-02: Bài Kiểm Tra Xếp Lớp
 
@@ -402,7 +402,7 @@ Các quyết định kiến trúc chính:
 
 #### 3.3.3 Biểu Đồ Luồng Bài Kiểm Tra Xếp Lớp
 
-![Diagram 10](../../../diagrams/srs/diagram-10.svg)
+![Diagram 10](../../diagrams/srs/diagram-10.svg)
 ```
 
 ### 3.4 FE-03: Chế Độ Luyện Tập — Nghe
@@ -447,7 +447,7 @@ Các quyết định kiến trúc chính:
 
 #### 3.5.3 Biểu Đồ Luồng Luyện Tập Của Học Viên
 
-![Diagram 11](../../../diagrams/srs/diagram-11.svg)
+![Diagram 11](../../diagrams/srs/diagram-11.svg)
 
 ### 3.6 FE-05: Chế Độ Luyện Tập — Viết + Chấm Điểm AI
 
@@ -495,7 +495,7 @@ Các quyết định kiến trúc chính:
 
 #### 3.6.4 Biểu Đồ Pipeline Chấm Điểm AI Viết/Nói
 
-![Diagram 12](../../../diagrams/srs/diagram-12.svg)
+![Diagram 12](../../diagrams/srs/diagram-12.svg)
 
 ### 3.7 FE-06: Chế Độ Luyện Tập — Nói + Chấm Điểm AI
 
@@ -566,7 +566,7 @@ Các quyết định kiến trúc chính:
 
 #### 3.8.7 Biểu Đồ Luồng Phiên Thi
 
-![Diagram 13](../../../diagrams/srs/diagram-13.svg)
+![Diagram 13](../../diagrams/srs/diagram-13.svg)
 
 ### 3.9 FE-08: Đánh Giá Thủ Công (Giảng Viên Đánh Giá)
 
@@ -607,11 +607,11 @@ Các quyết định kiến trúc chính:
 
 #### 3.9.5 Biểu Đồ Quy Trình Đánh Giá Của Giảng Viên
 
-![Diagram 14](../../../diagrams/srs/diagram-14.svg)
+![Diagram 14](../../diagrams/srs/diagram-14.svg)
 
 #### 3.9.6 Biểu Đồ Máy Trạng Thái Bài Nộp
 
-![Diagram 15](../../../diagrams/srs/diagram-15.svg)
+![Diagram 15](../../diagrams/srs/diagram-15.svg)
 
 ### 3.10 FE-09: Theo Dõi Tiến Độ
 
@@ -671,7 +671,7 @@ Các quyết định kiến trúc chính:
 
 #### 3.10.6 Biểu Đồ Theo Dõi Tiến Độ & Sliding Window
 
-![Diagram 16](../../../diagrams/srs/diagram-16.svg)
+![Diagram 16](../../diagrams/srs/diagram-16.svg)
 
 ### 3.11 FE-10: Lộ Trình Học Tập
 
@@ -689,7 +689,7 @@ Các quyết định kiến trúc chính:
 
 #### 3.11.2 Biểu Đồ Luồng Quản Lý Lớp Học
 
-![Diagram 17](../../../diagrams/srs/diagram-17.svg)
+![Diagram 17](../../diagrams/srs/diagram-17.svg)
 
 ### 3.12 FE-11: Đặt Mục Tiêu
 
