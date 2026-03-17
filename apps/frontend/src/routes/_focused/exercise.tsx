@@ -17,6 +17,10 @@ import { useExplain, useParaphrase } from "@/hooks/use-ai"
 import { useUploadAudio } from "@/hooks/use-uploads"
 import { cn } from "@/lib/utils"
 import { ListeningAnswerDetail } from "@/routes/_focused/-components/ListeningAnswerDetail"
+import {
+	ConversationTranscriptPanel,
+	ListeningConversationDetail,
+} from "@/routes/_focused/-components/ListeningConversationDetail"
 import { ReadingAnswerDetail } from "@/routes/_focused/-components/ReadingAnswerDetail"
 import { skillColor, skillMeta } from "@/routes/_learner/exams/-components/skill-meta"
 import {
@@ -387,6 +391,7 @@ function ExercisePage() {
 	const [activeAiTool, setActiveAiTool] = useState<"paraphrase" | "explain" | null>(null)
 	const [highlightParagraphIndex, setHighlightParagraphIndex] = useState<number | null>(null)
 	const [highlightSentenceIndex, setHighlightSentenceIndex] = useState<number | null>(null)
+	const [highlightMessageIndex, setHighlightMessageIndex] = useState<number | null>(null)
 	const paraphrase = useParaphrase()
 	const explain = useExplain()
 	const uploadAudio = useUploadAudio()
@@ -415,6 +420,7 @@ function ExercisePage() {
 		setActiveAiTool(null)
 		setHighlightParagraphIndex(null)
 		setHighlightSentenceIndex(null)
+		setHighlightMessageIndex(null)
 		setAudioFile(null)
 		setAudioUrl(null)
 		window.scrollTo({ top: 0, behavior: "smooth" })
@@ -630,41 +636,57 @@ function ExercisePage() {
 							) : (
 								<>
 									<div className="flex flex-1 overflow-hidden">
-										{/* Left — Transcript (after submit) */}
+										{/* Left — Transcript or Conversation */}
 										<div className="w-1/2 overflow-y-auto border-r">
-											<div className="p-6">
-												<h3 className="mb-4 text-lg font-bold">Transcript</h3>
-												{sentences.length > 0 ? (
-													<div className="space-y-1 text-sm leading-relaxed">
-														{sentences.map((sentence, i) => (
-															<span
-																key={i}
-																className={cn(
-																	"inline transition-all duration-300",
-																	highlightSentenceIndex !== null
-																		? highlightSentenceIndex === i
-																			? "rounded bg-primary/10 px-0.5 font-medium text-primary"
-																			: "text-muted-foreground/50"
-																		: "",
-																)}
-															>
-																{sentence}{" "}
-															</span>
-														))}
-													</div>
-												) : (
-													<p className="text-sm text-muted-foreground">Không có transcript.</p>
-												)}
-											</div>
+											{e.isConversation ? (
+												<ConversationTranscriptPanel
+													examId={id}
+													highlightMessageIndex={highlightMessageIndex}
+												/>
+											) : (
+												<div className="p-6">
+													<h3 className="mb-4 text-lg font-bold">Transcript</h3>
+													{sentences.length > 0 ? (
+														<div className="space-y-1 text-sm leading-relaxed">
+															{sentences.map((sentence, i) => (
+																<span
+																	key={i}
+																	className={cn(
+																		"inline transition-all duration-300",
+																		highlightSentenceIndex !== null
+																			? highlightSentenceIndex === i
+																				? "rounded bg-primary/10 px-0.5 font-medium text-primary"
+																				: "text-muted-foreground/50"
+																			: "",
+																	)}
+																>
+																	{sentence}{" "}
+																</span>
+															))}
+														</div>
+													) : (
+														<p className="text-sm text-muted-foreground">Không có transcript.</p>
+													)}
+												</div>
+											)}
 										</div>
 										{/* Right — Answer detail */}
 										<div className="flex flex-1 flex-col overflow-hidden">
-											<ListeningAnswerDetail
-												examId={id}
-												questions={questions}
-												answers={selectedAnswers}
-												onHighlightSentence={setHighlightSentenceIndex}
-											/>
+											{e.isConversation ? (
+												<ListeningConversationDetail
+													examId={id}
+													questions={questions}
+													answers={selectedAnswers}
+													onHighlightMessage={setHighlightMessageIndex}
+												/>
+											) : (
+												<ListeningAnswerDetail
+													examId={id}
+													questions={questions}
+													answers={selectedAnswers}
+													onHighlightSentence={setHighlightSentenceIndex}
+												/>
+											)}
 										</div>
 									</div>
 									{/* Audio bar pinned at bottom */}

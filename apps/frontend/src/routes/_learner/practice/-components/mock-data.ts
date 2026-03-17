@@ -67,10 +67,12 @@ export interface ListeningExam {
 	title: string
 	topic: ListeningTopic
 	audioUrl: string
+	isConversation?: boolean
 	sections: {
 		partNumber: number
 		partTitle: string
 		instructions: string
+		transcript?: string
 		questions: ExamQuestion[]
 	}[]
 }
@@ -126,6 +128,8 @@ export const LISTENING_EXAMS: ListeningExam[] = [
 				partNumber: 1,
 				partTitle: "Listening",
 				instructions: "",
+				transcript:
+					"The next train to London will depart at 4:50 from platform 3. Please note that the earlier train at 4:40 has been cancelled due to maintenance work. Your booking reference number is 15FACAS. Please keep this number for future reference when contacting our office. If you need assistance with your booking, please press 2 on your phone to speak with a customer service representative. I started rock climbing about two years ago, and I find it really exciting. It's much more thrilling than just riding a bicycle around the park. Today on our cooking show, I'm going to show you how to cook rice properly using a rice cooker. It's actually simpler than most people think. All camera owners should register their equipment at the front desk before entering the exhibition hall. This is for security purposes and to ensure the safety of all displayed items. Welcome to the city transport guide. This section will help you understand how to get around using the local bus service. You can find route maps at any bus stop. Attention all palace visitors. You are required to wear comfortable shoes for the walking tour as the grounds are quite extensive. The tour will last approximately two hours.",
 				questions: [
 					{
 						questionNumber: 1,
@@ -210,6 +214,7 @@ export const LISTENING_EXAMS: ListeningExam[] = [
 		title: "Bài luyện nghe số 2",
 		audioUrl:
 			"https://luyenthivstep.vn/assets/nhch/listening/bac3/lp2-1642953803_eb7ab6f2e8dead6de076.mp3",
+		isConversation: true,
 		sections: [
 			{
 				partNumber: 1,
