@@ -65,9 +65,9 @@ export function AppSidebar() {
 	return (
 		<Sidebar>
 			<SidebarHeader>
-				<div className="flex h-12 items-center px-2">
+				<Link to="/practice" className="flex h-12 items-center px-2">
 					<Logo />
-				</div>
+				</Link>
 			</SidebarHeader>
 			<SidebarContent>
 				<SidebarGroup>

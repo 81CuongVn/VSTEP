@@ -146,13 +146,13 @@ function ProgressOverviewPage() {
 			{/* Tabs */}
 			<Tabs defaultValue="overview">
 				<TabsList variant="line" className="w-full">
-					<TabsTrigger value="overview" className="flex-1">
+					<TabsTrigger value="overview" className="flex-1 data-[state=active]:!bg-transparent data-[state=active]:!text-foreground/60 data-[state=active]:!shadow-none">
 						Tổng Quát
 					</TabsTrigger>
-					<TabsTrigger value="test-practice" className="flex-1">
+					<TabsTrigger value="test-practice" className="flex-1 data-[state=active]:!bg-transparent data-[state=active]:!text-foreground/60 data-[state=active]:!shadow-none">
 						Test Practice
 					</TabsTrigger>
-					<TabsTrigger value="learning-path" className="flex-1">
+					<TabsTrigger value="learning-path" className="flex-1 data-[state=active]:!bg-transparent data-[state=active]:!text-foreground/60 data-[state=active]:!shadow-none">
 						Lộ trình
 					</TabsTrigger>
 				</TabsList>
@@ -229,6 +229,9 @@ function OverviewTab({
 				/>
 			</div>
 
+			{/* Activity Heatmap */}
+			<ActivityHeatmap activeDays={activityData?.activeDays ?? []} />
+
 			{/* Goal Card */}
 			<GoalCard goal={progressData?.goal ?? null} />
 
@@ -237,9 +240,6 @@ function OverviewTab({
 				<SpiderChartCard spiderData={spiderData} />
 				<DoughnutChartCard progressData={progressData} />
 			</div>
-
-			{/* Activity Heatmap */}
-			<ActivityHeatmap activeDays={activityData?.activeDays ?? []} />
 		</>
 	)
 }

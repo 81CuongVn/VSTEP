@@ -84,7 +84,7 @@ export function LearnerLayout() {
 		<div className="min-h-screen bg-background">
 			<header className="sticky top-0 z-40 border-b bg-background">
 				<div className="mx-auto flex h-14 max-w-6xl items-center px-6">
-					<Link to="/" className="mr-8">
+					<Link to="/practice" className="mr-8">
 						<Logo />
 					</Link>
 					<nav className="hidden items-center gap-1 md:flex">

@@ -13,7 +13,7 @@ import {
 } from "@hugeicons/core-free-icons"
 import type { IconSvgElement } from "@hugeicons/react"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { createFileRoute, Link } from "@tanstack/react-router"
+import { createFileRoute, Link, redirect } from "@tanstack/react-router"
 import { type MotionValue, motion, useScroll, useTransform } from "motion/react"
 import { useEffect, useRef, useState } from "react"
 import { Logo } from "@/components/common/Logo"
@@ -30,11 +30,14 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useActivity } from "@/hooks/use-progress"
 import { useUser } from "@/hooks/use-user"
 import { logout } from "@/lib/api"
-import { clear, refreshToken, token, user } from "@/lib/auth"
+import { clear, isAuthenticated, refreshToken, token, user } from "@/lib/auth"
 import { avatarUrl, getInitials } from "@/lib/avatar"
 import { cn } from "@/lib/utils"
 
 export const Route = createFileRoute("/")({
+	beforeLoad: () => {
+		if (isAuthenticated()) throw redirect({ to: "/practice" })
+	},
 	component: LandingPage,
 })
 
