@@ -17,10 +17,10 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Textarea } from "@/components/ui/textarea"
-import { Input } from "@/components/ui/input"
 import {
 	useClass,
 	useClassDashboard,
@@ -177,9 +177,7 @@ function ClassDetailPage() {
 			{tab === "members" && (
 				<div className="space-y-2">
 					{cls.members.length === 0 ? (
-						<p className="py-8 text-center text-sm text-muted-foreground">
-							Chưa có thành viên nào
-						</p>
+						<p className="py-8 text-center text-sm text-muted-foreground">Chưa có thành viên nào</p>
 					) : (
 						cls.members.map((m) => (
 							<div key={m.id} className="flex items-center gap-3 rounded-xl border px-4 py-3">
@@ -228,9 +226,7 @@ function ClassDetailPage() {
 							<p className="text-xs text-muted-foreground">Cần hỗ trợ</p>
 						</div>
 						<div className="rounded-xl border p-4 text-center">
-							<p className="text-2xl font-bold">
-								{Object.keys(dashboard.skillSummary).length}
-							</p>
+							<p className="text-2xl font-bold">{Object.keys(dashboard.skillSummary).length}</p>
 							<p className="text-xs text-muted-foreground">Kỹ năng</p>
 						</div>
 					</div>
@@ -266,13 +262,9 @@ function ClassDetailPage() {
 										<span className="text-sm font-medium capitalize">{skill}</span>
 										<div className="flex items-center gap-4 text-xs text-muted-foreground">
 											<span>TB: {data.avgScore?.toFixed(1) ?? "—"}</span>
-											<span className="text-green-600">
-												↑{data.trendDistribution.improving}
-											</span>
+											<span className="text-green-600">↑{data.trendDistribution.improving}</span>
 											<span>→{data.trendDistribution.stable}</span>
-											<span className="text-red-500">
-												↓{data.trendDistribution.declining}
-											</span>
+											<span className="text-red-500">↓{data.trendDistribution.declining}</span>
 										</div>
 									</div>
 								))}
@@ -285,9 +277,7 @@ function ClassDetailPage() {
 			{tab === "feedback" && (
 				<div className="space-y-2">
 					{feedbackList.length === 0 ? (
-						<p className="py-8 text-center text-sm text-muted-foreground">
-							Chưa có nhận xét nào
-						</p>
+						<p className="py-8 text-center text-sm text-muted-foreground">Chưa có nhận xét nào</p>
 					) : (
 						feedbackList.map((fb) => (
 							<div key={fb.id} className="rounded-xl border px-4 py-3">

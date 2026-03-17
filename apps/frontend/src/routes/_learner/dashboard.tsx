@@ -3,7 +3,6 @@ import {
 	ArrowRight01Icon,
 	Copy01Icon,
 	Delete02Icon,
-	Logout03Icon,
 	UserGroup02Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
@@ -21,14 +20,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Textarea } from "@/components/ui/textarea"
-import {
-	useClasses,
-	useCreateClass,
-	useDeleteClass,
-	useJoinClass,
-	useLeaveClass,
-} from "@/hooks/use-classes"
+import { useClasses, useCreateClass, useDeleteClass } from "@/hooks/use-classes"
 import { user } from "@/lib/auth"
+import { getMockClasses } from "@/lib/mock-classes"
 
 export const Route = createFileRoute("/_learner/dashboard")({
 	component: DashboardPage,
@@ -193,26 +187,7 @@ function InstructorView() {
 }
 
 function LearnerView() {
-	const { data, isLoading } = useClasses()
-	const joinClass = useJoinClass()
-	const leaveClass = useLeaveClass()
-	const [showJoin, setShowJoin] = useState(false)
-	const [inviteCode, setInviteCode] = useState("")
-
-	const classes = data?.data ?? []
-
-	function handleJoin() {
-		if (!inviteCode.trim()) return
-		joinClass.mutate(
-			{ inviteCode: inviteCode.trim() },
-			{
-				onSuccess: () => {
-					setShowJoin(false)
-					setInviteCode("")
-				},
-			},
-		)
-	}
+	const classes = getMockClasses("learner")
 
 	return (
 		<div className="space-y-6">
@@ -221,27 +196,14 @@ function LearnerView() {
 					<h1 className="text-2xl font-bold">Lớp học của tôi</h1>
 					<p className="mt-1 text-muted-foreground">Xem các lớp học bạn đã tham gia</p>
 				</div>
-				<Button className="gap-1.5" onClick={() => setShowJoin(true)}>
-					<HugeiconsIcon icon={Add01Icon} className="size-4" />
-					Tham gia lớp
-				</Button>
 			</div>
 
-			{isLoading ? (
-				<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-					{Array.from({ length: 3 }).map((_, i) => (
-						<Skeleton key={`skeleton-${i.toString()}`} className="h-36 rounded-2xl" />
-					))}
-				</div>
-			) : classes.length === 0 ? (
+			{classes.length === 0 ? (
 				<div className="flex flex-col items-center gap-4 py-16">
 					<div className="flex size-16 items-center justify-center rounded-2xl bg-muted">
 						<HugeiconsIcon icon={UserGroup02Icon} className="size-8 text-muted-foreground" />
 					</div>
 					<p className="text-muted-foreground">Bạn chưa tham gia lớp học nào</p>
-					<Button variant="outline" onClick={() => setShowJoin(true)}>
-						Tham gia lớp
-					</Button>
 				</div>
 			) : (
 				<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -265,56 +227,17 @@ function LearnerView() {
 							</div>
 
 							<div className="mt-auto flex items-center gap-2 pt-4">
-								<Button
-									variant="ghost"
-									size="sm"
-									className="gap-1 text-xs text-destructive hover:text-destructive"
-									onClick={() => leaveClass.mutate(cls.id)}
-									disabled={leaveClass.isPending}
-								>
-									<HugeiconsIcon icon={Logout03Icon} className="size-3.5" />
-									Rời lớp
+								<Button size="sm" variant="outline" className="flex-1 gap-1.5" asChild>
+									<Link to="/classes/$classId" params={{ classId: cls.id }}>
+										Chi tiết
+										<HugeiconsIcon icon={ArrowRight01Icon} className="size-3.5" />
+									</Link>
 								</Button>
 							</div>
 						</div>
 					))}
 				</div>
 			)}
-
-			{joinClass.isError && <p className="text-sm text-destructive">{joinClass.error.message}</p>}
-
-			<Dialog open={showJoin} onOpenChange={setShowJoin}>
-				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>Tham gia lớp học</DialogTitle>
-					</DialogHeader>
-					<div className="space-y-4">
-						<div className="space-y-1.5">
-							<Label htmlFor="inviteCode">Mã mời</Label>
-							<Input
-								id="inviteCode"
-								placeholder="Nhập mã mời từ giảng viên"
-								value={inviteCode}
-								onChange={(e) => setInviteCode(e.target.value)}
-								onKeyDown={(e) => {
-									if (e.key === "Enter") handleJoin()
-								}}
-							/>
-						</div>
-						{joinClass.isError && (
-							<p className="text-sm text-destructive">{joinClass.error.message}</p>
-						)}
-					</div>
-					<DialogFooter>
-						<Button variant="outline" onClick={() => setShowJoin(false)}>
-							Huỷ
-						</Button>
-						<Button onClick={handleJoin} disabled={joinClass.isPending || !inviteCode.trim()}>
-							{joinClass.isPending ? "Đang tham gia..." : "Tham gia"}
-						</Button>
-					</DialogFooter>
-				</DialogContent>
-			</Dialog>
 		</div>
 	)
 }
