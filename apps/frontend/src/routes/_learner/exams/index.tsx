@@ -1,8 +1,11 @@
-import { DocumentValidationIcon } from "@hugeicons/core-free-icons"
+import { DocumentValidationIcon, FilterIcon, Search01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { useCallback, useMemo, useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useStartExam } from "@/hooks/use-exam-session"
 import { useExams } from "@/hooks/use-exams"
@@ -216,18 +219,57 @@ function ExamListPage() {
 
 			{/* Mobile layout */}
 			<div className="lg:hidden">
-				<div className="space-y-2">
-					{filteredExams.map((exam) => (
-						<ExamListItem
-							key={exam.id}
-							exam={exam}
-							isSelected={selectedId === exam.id}
-							onSelect={() => setSelectedId(exam.id)}
-							compact={false}
+				{/* Search + Filter bar */}
+				<div className="mb-4 flex gap-2">
+					<div className="relative flex-1">
+						<HugeiconsIcon
+							icon={Search01Icon}
+							className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
 						/>
-					))}
+						<Input
+							placeholder="Tìm kiếm đề thi..."
+							value={filters.search}
+							onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+							className="h-10 pl-9 text-sm"
+						/>
+					</div>
+					<Sheet>
+						<SheetTrigger asChild>
+							<Button variant="outline" size="icon" className="size-10 shrink-0">
+								<HugeiconsIcon icon={FilterIcon} className="size-4" />
+							</Button>
+						</SheetTrigger>
+						<SheetContent side="left" className="w-[300px] p-0">
+							<SheetHeader className="border-b px-4 py-3">
+								<SheetTitle>Bộ lọc & Sắp xếp</SheetTitle>
+							</SheetHeader>
+							<div className="overflow-y-auto p-0">
+								<ExamSidebar filters={filters} onFiltersChange={setFilters} />
+							</div>
+						</SheetContent>
+					</Sheet>
 				</div>
 
+				{/* Exam list */}
+				{filteredExams.length > 0 ? (
+					<div className="space-y-2">
+						{filteredExams.map((exam) => (
+							<ExamListItem
+								key={exam.id}
+								exam={exam}
+								isSelected={selectedId === exam.id}
+								onSelect={() => setSelectedId(exam.id)}
+								compact={false}
+							/>
+						))}
+					</div>
+				) : (
+					<div className="flex h-40 items-center justify-center text-sm text-muted-foreground">
+						Không tìm thấy đề thi phù hợp
+					</div>
+				)}
+
+				{/* Fullscreen detail overlay */}
 				{selectedExam && (
 					<div className="fixed inset-0 z-50 flex flex-col bg-background">
 						<div className="flex-1 overflow-y-auto p-5">
