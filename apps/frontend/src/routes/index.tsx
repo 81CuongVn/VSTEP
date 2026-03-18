@@ -119,6 +119,7 @@ const STEPS = [
 		desc: "Chọn đề thi VSTEP đầy đủ 4 kỹ năng hoặc luyện riêng từng phần. Bắt đầu chỉ trong 30 giây.",
 		icon: CheckmarkCircle01Icon,
 		accent: "from-sky-400/30 to-sky-400/10",
+		image: "/images/step1.jpg",
 	},
 	{
 		num: "2",
@@ -126,6 +127,7 @@ const STEPS = [
 		desc: "Hệ thống AI phân tích bài Writing & Speaking theo rubric chuẩn VSTEP, trả kết quả trong vài phút.",
 		icon: Target02Icon,
 		accent: "from-sky-400/30 to-sky-400/10",
+		image: "/images/step2.jpg",
 	},
 	{
 		num: "3",
@@ -133,6 +135,7 @@ const STEPS = [
 		desc: "Nhận phân tích điểm mạnh / yếu và bài tập được gợi ý riêng theo trình độ của bạn.",
 		icon: Fire02Icon,
 		accent: "from-sky-400/30 to-sky-400/10",
+		image: "/images/step3.jpg",
 	},
 ]
 
@@ -448,8 +451,12 @@ function StepCard({
 
 			{/* Illustration — absolutely centered on right half */}
 			<div className="pointer-events-none absolute inset-y-0 right-8 hidden w-[45%] items-center lg:flex lg:right-10">
-				<div className="flex h-[70%] w-full items-center justify-center rounded-2xl bg-white/[0.06] backdrop-blur-sm">
-					<HugeiconsIcon icon={step.icon} className="size-16 text-white/25" />
+				<div className="flex h-[70%] w-full items-center justify-center overflow-hidden rounded-2xl bg-white/[0.06] backdrop-blur-sm">
+					{step.image ? (
+						<img src={step.image} alt={step.title} className="size-full object-cover" />
+					) : (
+						<HugeiconsIcon icon={step.icon} className="size-16 text-white/25" />
+					)}
 				</div>
 			</div>
 
@@ -462,8 +469,12 @@ function StepCard({
 			</div>
 
 			{/* Mobile illustration fallback */}
-			<div className="mt-4 flex flex-1 items-center justify-center rounded-2xl bg-white/[0.06] backdrop-blur-sm sm:mt-6 sm:flex-1 lg:hidden">
-				<HugeiconsIcon icon={step.icon} className="size-16 text-white/25" />
+			<div className="mt-4 flex flex-1 items-center justify-center overflow-hidden rounded-2xl bg-white/[0.06] backdrop-blur-sm sm:mt-6 sm:flex-1 lg:hidden">
+				{step.image ? (
+					<img src={step.image} alt={step.title} className="size-full object-cover" />
+				) : (
+					<HugeiconsIcon icon={step.icon} className="size-16 text-white/25" />
+				)}
 			</div>
 		</motion.div>
 	)
