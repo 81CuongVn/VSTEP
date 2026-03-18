@@ -429,7 +429,7 @@ function StepCard({
 		<motion.div
 			className={cn(
 				index === 0 ? "relative" : "absolute inset-0",
-				"flex flex-col overflow-hidden rounded-2xl bg-gradient-to-b from-[#001656] from-[7%] to-[#0172FA] p-5 sm:min-h-[calc(100vh-120px)] sm:p-8 lg:rounded-3xl lg:p-10 2xl:rounded-[32px] 2xl:p-14",
+				"flex flex-col overflow-hidden rounded-2xl bg-gradient-to-b from-[#001656] from-[7%] to-[#0172FA] p-5 min-h-[calc(100svh-100px)] sm:min-h-[calc(100vh-120px)] sm:p-8 lg:rounded-3xl lg:p-10 2xl:rounded-[32px] 2xl:p-14",
 			)}
 			style={{ y: isLast ? undefined : y, zIndex: total - index }}
 		>
@@ -462,7 +462,7 @@ function StepCard({
 			</div>
 
 			{/* Mobile illustration fallback */}
-			<div className="mt-4 flex min-h-[160px] items-center justify-center rounded-2xl bg-white/[0.06] backdrop-blur-sm sm:mt-6 sm:min-h-0 sm:flex-1 lg:hidden">
+			<div className="mt-4 flex flex-1 items-center justify-center rounded-2xl bg-white/[0.06] backdrop-blur-sm sm:mt-6 sm:flex-1 lg:hidden">
 				<HugeiconsIcon icon={step.icon} className="size-16 text-white/25" />
 			</div>
 		</motion.div>
