@@ -4,6 +4,8 @@ import { createFileRoute, Link } from "@tanstack/react-router"
 import { cn } from "@/lib/utils"
 import type { VocabTopic } from "./-components/mock-data"
 import { POPULAR_TOPIC_IDS, VOCAB_TOPICS } from "./-components/mock-data"
+import type { SentenceTopic } from "./-components/sentence-mock-data"
+import { SENTENCE_TOPICS } from "./-components/sentence-mock-data"
 import { useVocabProgress } from "./-components/use-vocab-progress"
 
 export const Route = createFileRoute("/_learner/vocabulary/")({
@@ -48,6 +50,32 @@ function TopicCard({ topic, learnedCount, weakCount, isPopular }: TopicCardProps
 						</span>
 					)}
 					{weakCount > 0 && <span className="text-red-500">{weakCount} còn yếu</span>}
+				</div>
+			</div>
+		</Link>
+	)
+}
+
+interface SentenceTopicCardProps {
+	topic: SentenceTopic
+}
+
+function SentenceTopicCard({ topic }: SentenceTopicCardProps) {
+	return (
+		<Link
+			to="/vocabulary/sentences/$topicId"
+			params={{ topicId: topic.id }}
+			className="group flex items-start gap-3 rounded-2xl px-4 py-3 transition-colors hover:bg-muted/50"
+		>
+			<div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600">
+				<HugeiconsIcon icon={topic.icon} className="size-4.5" />
+			</div>
+			<div className="flex min-w-0 flex-1 flex-col gap-1">
+				<div className="flex items-center justify-between">
+					<p className="text-sm font-medium">{topic.name}</p>
+				</div>
+				<div className="flex items-center gap-3 text-xs text-muted-foreground">
+					<span>{topic.sentenceCount} câu</span>
 				</div>
 			</div>
 		</Link>
@@ -101,6 +129,21 @@ function VocabularyPage() {
 							/>
 						)
 					})}
+				</div>
+			</section>
+
+			<div>
+				<h1 className="text-2xl font-bold">Luyện theo câu</h1>
+				<p className="mt-1 text-muted-foreground">
+					Luyện viết câu theo các dạng thường gặp trong bài thi VSTEP Writing
+				</p>
+			</div>
+
+			<section className="space-y-3">
+				<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+					{SENTENCE_TOPICS.map((topic) => (
+						<SentenceTopicCard key={topic.id} topic={topic} />
+					))}
 				</div>
 			</section>
 		</div>

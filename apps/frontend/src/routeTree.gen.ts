@@ -45,6 +45,7 @@ import { Route as LearnerDashboardClassIdRouteImport } from './routes/_learner/d
 import { Route as LearnerClassesClassIdRouteImport } from './routes/_learner/classes.$classId'
 import { Route as FocusedPracticeSessionIdRouteImport } from './routes/_focused/practice.$sessionId'
 import { Route as LearnerVocabularyTopicIdIndexRouteImport } from './routes/_learner/vocabulary/$topicId.index'
+import { Route as LearnerVocabularySentencesTopicIdRouteImport } from './routes/_learner/vocabulary/sentences.$topicId'
 import { Route as LearnerVocabularyTopicIdPracticeRouteImport } from './routes/_learner/vocabulary/$topicId.practice'
 import { Route as LearnerVocabularyTopicIdFlashcardsRouteImport } from './routes/_learner/vocabulary/$topicId.flashcards'
 import { Route as LearnerExamsSessionsSessionIdRouteImport } from './routes/_learner/exams/sessions.$sessionId'
@@ -230,6 +231,12 @@ const LearnerVocabularyTopicIdIndexRoute =
     path: '/',
     getParentRoute: () => LearnerVocabularyTopicIdRoute,
   } as any)
+const LearnerVocabularySentencesTopicIdRoute =
+  LearnerVocabularySentencesTopicIdRouteImport.update({
+    id: '/vocabulary/sentences/$topicId',
+    path: '/vocabulary/sentences/$topicId',
+    getParentRoute: () => LearnerRoute,
+  } as any)
 const LearnerVocabularyTopicIdPracticeRoute =
   LearnerVocabularyTopicIdPracticeRouteImport.update({
     id: '/practice',
@@ -285,6 +292,7 @@ export interface FileRoutesByFullPath {
   '/exams/sessions/$sessionId': typeof LearnerExamsSessionsSessionIdRoute
   '/vocabulary/$topicId/flashcards': typeof LearnerVocabularyTopicIdFlashcardsRoute
   '/vocabulary/$topicId/practice': typeof LearnerVocabularyTopicIdPracticeRoute
+  '/vocabulary/sentences/$topicId': typeof LearnerVocabularySentencesTopicIdRoute
   '/vocabulary/$topicId/': typeof LearnerVocabularyTopicIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -321,6 +329,7 @@ export interface FileRoutesByTo {
   '/exams/sessions/$sessionId': typeof LearnerExamsSessionsSessionIdRoute
   '/vocabulary/$topicId/flashcards': typeof LearnerVocabularyTopicIdFlashcardsRoute
   '/vocabulary/$topicId/practice': typeof LearnerVocabularyTopicIdPracticeRoute
+  '/vocabulary/sentences/$topicId': typeof LearnerVocabularySentencesTopicIdRoute
   '/vocabulary/$topicId': typeof LearnerVocabularyTopicIdIndexRoute
 }
 export interface FileRoutesById {
@@ -363,6 +372,7 @@ export interface FileRoutesById {
   '/_learner/exams/sessions/$sessionId': typeof LearnerExamsSessionsSessionIdRoute
   '/_learner/vocabulary/$topicId/flashcards': typeof LearnerVocabularyTopicIdFlashcardsRoute
   '/_learner/vocabulary/$topicId/practice': typeof LearnerVocabularyTopicIdPracticeRoute
+  '/_learner/vocabulary/sentences/$topicId': typeof LearnerVocabularySentencesTopicIdRoute
   '/_learner/vocabulary/$topicId/': typeof LearnerVocabularyTopicIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -403,6 +413,7 @@ export interface FileRouteTypes {
     | '/exams/sessions/$sessionId'
     | '/vocabulary/$topicId/flashcards'
     | '/vocabulary/$topicId/practice'
+    | '/vocabulary/sentences/$topicId'
     | '/vocabulary/$topicId/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -439,6 +450,7 @@ export interface FileRouteTypes {
     | '/exams/sessions/$sessionId'
     | '/vocabulary/$topicId/flashcards'
     | '/vocabulary/$topicId/practice'
+    | '/vocabulary/sentences/$topicId'
     | '/vocabulary/$topicId'
   id:
     | '__root__'
@@ -480,6 +492,7 @@ export interface FileRouteTypes {
     | '/_learner/exams/sessions/$sessionId'
     | '/_learner/vocabulary/$topicId/flashcards'
     | '/_learner/vocabulary/$topicId/practice'
+    | '/_learner/vocabulary/sentences/$topicId'
     | '/_learner/vocabulary/$topicId/'
   fileRoutesById: FileRoutesById
 }
@@ -745,6 +758,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnerVocabularyTopicIdIndexRouteImport
       parentRoute: typeof LearnerVocabularyTopicIdRoute
     }
+    '/_learner/vocabulary/sentences/$topicId': {
+      id: '/_learner/vocabulary/sentences/$topicId'
+      path: '/vocabulary/sentences/$topicId'
+      fullPath: '/vocabulary/sentences/$topicId'
+      preLoaderRoute: typeof LearnerVocabularySentencesTopicIdRouteImport
+      parentRoute: typeof LearnerRoute
+    }
     '/_learner/vocabulary/$topicId/practice': {
       id: '/_learner/vocabulary/$topicId/practice'
       path: '/practice'
@@ -838,6 +858,7 @@ interface LearnerRouteChildren {
   LearnerSubmissionsIndexRoute: typeof LearnerSubmissionsIndexRoute
   LearnerVocabularyIndexRoute: typeof LearnerVocabularyIndexRoute
   LearnerExamsSessionsSessionIdRoute: typeof LearnerExamsSessionsSessionIdRoute
+  LearnerVocabularySentencesTopicIdRoute: typeof LearnerVocabularySentencesTopicIdRoute
 }
 
 const LearnerRouteChildren: LearnerRouteChildren = {
@@ -860,6 +881,8 @@ const LearnerRouteChildren: LearnerRouteChildren = {
   LearnerSubmissionsIndexRoute: LearnerSubmissionsIndexRoute,
   LearnerVocabularyIndexRoute: LearnerVocabularyIndexRoute,
   LearnerExamsSessionsSessionIdRoute: LearnerExamsSessionsSessionIdRoute,
+  LearnerVocabularySentencesTopicIdRoute:
+    LearnerVocabularySentencesTopicIdRoute,
 }
 
 const LearnerRouteWithChildren =

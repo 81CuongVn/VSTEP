@@ -171,25 +171,10 @@ function ProgressOverviewPage() {
 
 			{/* Tabs */}
 			<Tabs defaultValue="overview">
-				<TabsList variant="line" className="w-full">
-					<TabsTrigger
-						value="overview"
-						className="flex-1 text-muted-foreground data-[state=active]:!bg-transparent data-[state=active]:!text-muted-foreground data-[state=active]:!shadow-none"
-					>
-						Tổng Quát
-					</TabsTrigger>
-					<TabsTrigger
-						value="test-practice"
-						className="flex-1 text-muted-foreground data-[state=active]:!bg-transparent data-[state=active]:!text-muted-foreground data-[state=active]:!shadow-none"
-					>
-						Test Practice
-					</TabsTrigger>
-					<TabsTrigger
-						value="learning-path"
-						className="flex-1 text-muted-foreground data-[state=active]:!bg-transparent data-[state=active]:!text-muted-foreground data-[state=active]:!shadow-none"
-					>
-						Lộ trình
-					</TabsTrigger>
+				<TabsList className="w-full">
+					<TabsTrigger value="overview">Tổng Quát</TabsTrigger>
+					<TabsTrigger value="test-practice">Test Practice</TabsTrigger>
+					<TabsTrigger value="learning-path">Lộ trình</TabsTrigger>
 				</TabsList>
 
 				<TabsContent value="overview" className="mt-6 space-y-6">
@@ -448,6 +433,7 @@ function TestPracticeTab({
 							>
 								{visibleSkills.has(key) && (
 									<svg className="size-3 text-white" viewBox="0 0 12 12" fill="none">
+										<title>Đã chọn</title>
 										<path
 											d="M2 6l3 3 5-5"
 											stroke="currentColor"
@@ -578,7 +564,7 @@ function TestPracticeTab({
 												<div className="min-w-0 flex-1">
 													{skillInfo && (
 														<span
-															className={cn("text-xs font-medium", skillColorText[best!.skill])}
+															className={cn("text-xs font-medium", skillColorText[skillInfo.key])}
 														>
 															{skillInfo.label}
 														</span>
