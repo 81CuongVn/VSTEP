@@ -1,203 +1,82 @@
-import { Clock01Icon, DocumentValidationIcon, Loading03Icon } from "@hugeicons/core-free-icons"
+import { DocumentValidationIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
-import { useCallback, useState } from "react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { useCallback, useMemo, useState } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useStartExam } from "@/hooks/use-exam-session"
 import { useExams } from "@/hooks/use-exams"
 import { cn } from "@/lib/utils"
-import {
-	getBlueprint,
-	SKILL_ORDER,
-	skillColor,
-	skillMeta,
-} from "@/routes/_learner/exams/-components/skill-meta"
 import type { Exam, Skill } from "@/types/api"
+import { ExamDetail } from "./-components/ExamDetail"
+import { ExamListItem, getExamSkills } from "./-components/ExamListItem"
+import { type ExamFilters, ExamSidebar, type SortOption } from "./-components/ExamSidebar"
 
 export const Route = createFileRoute("/_learner/exams/")({
 	component: ExamListPage,
 })
 
-// --- Helpers ---
+function applyFilters(exams: Exam[], filters: ExamFilters): Exam[] {
+	let result = exams
 
-function getExamSkills(exam: Exam): Skill[] {
-	const bp = getBlueprint(exam)
-	return SKILL_ORDER.filter((s) => (bp[s]?.questionIds.length ?? 0) > 0)
+	if (filters.search.trim()) {
+		const q = filters.search.trim().toLowerCase()
+		result = result.filter(
+			(e) =>
+				e.title?.toLowerCase().includes(q) ||
+				e.level.toLowerCase().includes(q) ||
+				e.description?.toLowerCase().includes(q),
+		)
+	}
+
+	if (filters.skills.size > 0) {
+		result = result.filter((e) => {
+			const examSkills = getExamSkills(e)
+			return examSkills.some((s) => filters.skills.has(s))
+		})
+	}
+
+	return sortExams(result, filters.sort)
 }
 
-function getTotalQuestions(exam: Exam): number {
-	const bp = getBlueprint(exam)
-	return SKILL_ORDER.reduce((sum, s) => sum + (bp[s]?.questionIds.length ?? 0), 0)
+function sortExams(exams: Exam[], sort: SortOption): Exam[] {
+	const sorted = [...exams]
+	switch (sort) {
+		case "newest":
+			return sorted.sort(
+				(a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+			)
+		case "oldest":
+			return sorted.sort(
+				(a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+			)
+		case "az":
+			return sorted.sort((a, b) => (a.title || "").localeCompare(b.title || "", "vi"))
+		case "za":
+			return sorted.sort((a, b) => (b.title || "").localeCompare(a.title || "", "vi"))
+		default:
+			return sorted
+	}
 }
 
-function getDuration(exam: Exam): number | undefined {
-	return exam.durationMinutes ?? getBlueprint(exam).durationMinutes
+const DEFAULT_FILTERS: ExamFilters = {
+	search: "",
+	skills: new Set<Skill>(),
+	sort: "newest",
+	statuses: new Set(),
 }
-
-// --- Exam list item (left panel) ---
-
-function ExamListItem({
-	exam,
-	isSelected,
-	onSelect,
-	compact,
-}: {
-	exam: Exam
-	isSelected: boolean
-	onSelect: () => void
-	compact: boolean
-}) {
-	const duration = getDuration(exam)
-	const total = getTotalQuestions(exam)
-	const skills = getExamSkills(exam)
-
-	return (
-		<button
-			type="button"
-			onClick={onSelect}
-			className={cn(
-				"flex w-full flex-col gap-1.5 rounded-2xl border text-left transition-all duration-200",
-				compact ? "px-3 py-2.5" : "px-4 py-4",
-				isSelected
-					? "border-primary bg-primary/5 ring-1 ring-primary/20"
-					: "border-transparent hover:bg-muted/50",
-			)}
-		>
-			<div className="flex items-center justify-between gap-2">
-				<span
-					className={cn("font-medium leading-snug line-clamp-1", compact ? "text-sm" : "text-base")}
-				>
-					{exam.title || `${exam.level} — Đề thi thử`}
-				</span>
-				<Badge variant="secondary" className="shrink-0 text-[10px] font-bold">
-					{exam.level}
-				</Badge>
-			</div>
-			<div className="flex items-center gap-3 text-xs text-muted-foreground">
-				{duration && (
-					<span className="flex items-center gap-1">
-						<HugeiconsIcon icon={Clock01Icon} className="size-3" />
-						{duration}p
-					</span>
-				)}
-				{total > 0 && <span>{total} câu</span>}
-				<div className="ml-auto flex gap-1">
-					{skills.map((s) => (
-						<span
-							key={s}
-							className={cn("rounded-full", compact ? "size-1.5" : "size-2", `bg-skill-${s}`)}
-							title={skillMeta[s].label}
-						/>
-					))}
-				</div>
-			</div>
-		</button>
-	)
-}
-
-// --- Exam detail (right panel) ---
-
-function ExamDetail({
-	exam,
-	onStart,
-	isStarting,
-	onBack,
-}: {
-	exam: Exam
-	onStart: () => void
-	isStarting: boolean
-	onBack: () => void
-}) {
-	const bp = getBlueprint(exam)
-	const duration = getDuration(exam)
-	const total = getTotalQuestions(exam)
-
-	return (
-		<div className="flex h-full flex-col">
-			{/* Header */}
-			<div className="space-y-3 border-b pb-5">
-				<button
-					type="button"
-					onClick={onBack}
-					className="text-xs text-muted-foreground transition-colors hover:text-foreground"
-				>
-					← Quay lại danh sách
-				</button>
-				<div className="flex items-start justify-between gap-3">
-					<h2 className="text-lg font-bold leading-snug">
-						{exam.title || `${exam.level} — Đề thi thử`}
-					</h2>
-					<Badge className="shrink-0 text-xs font-bold">{exam.level}</Badge>
-				</div>
-				{exam.description && <p className="text-sm text-muted-foreground">{exam.description}</p>}
-				<div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-					{duration && (
-						<span className="flex items-center gap-1.5">
-							<HugeiconsIcon icon={Clock01Icon} className="size-4" />
-							{duration} phút
-						</span>
-					)}
-					{total > 0 && <span>{total} câu hỏi</span>}
-				</div>
-			</div>
-
-			{/* Skill breakdown */}
-			<div className="flex-1 space-y-3 py-5">
-				<p className="text-sm font-medium">Cấu trúc đề</p>
-				<div className="grid gap-2 sm:grid-cols-2">
-					{SKILL_ORDER.map((skill) => {
-						const section = bp[skill]
-						const count = section?.questionIds.length ?? 0
-						if (count === 0) return null
-
-						return (
-							<div
-								key={skill}
-								className={cn("flex items-center gap-3 rounded-2xl px-4 py-3", skillColor[skill])}
-							>
-								<HugeiconsIcon icon={skillMeta[skill].icon} className="size-5" />
-								<span className="text-sm font-medium">{skillMeta[skill].label}</span>
-								<span className="ml-auto text-sm font-bold tabular-nums">{count} câu</span>
-							</div>
-						)
-					})}
-				</div>
-			</div>
-
-			{/* Start button */}
-			<Button
-				size="lg"
-				className="w-full rounded-xl text-base"
-				disabled={isStarting}
-				onClick={onStart}
-			>
-				{isStarting ? (
-					<>
-						<HugeiconsIcon icon={Loading03Icon} className="size-5 animate-spin" />
-						Đang khởi tạo...
-					</>
-				) : (
-					"Bắt đầu thi"
-				)}
-			</Button>
-		</div>
-	)
-}
-
-// --- Page ---
 
 function ExamListPage() {
 	const [selectedId, setSelectedId] = useState<string | null>(null)
+	const [filters, setFilters] = useState<ExamFilters>(DEFAULT_FILTERS)
 	const navigate = useNavigate()
 	const { data, isLoading, error } = useExams()
 	const startExam = useStartExam()
 	const [startingId, setStartingId] = useState<string | null>(null)
 
 	const exams = data?.data ?? []
-	const selectedExam = exams.find((e) => e.id === selectedId) ?? null
+	const filteredExams = useMemo(() => applyFilters(exams, filters), [exams, filters])
+	const selectedExam = filteredExams.find((e) => e.id === selectedId) ?? null
 	const hasSelection = selectedExam !== null
 
 	const handleStart = useCallback(async () => {
@@ -270,36 +149,47 @@ function ExamListPage() {
 
 			{/* Desktop layout */}
 			<div className="relative hidden h-[calc(100vh-10rem)] lg:flex">
-				{/* List panel — always visible, shrinks when detail opens */}
+				{/* Sidebar */}
+				<div className="w-[260px] shrink-0">
+					<ExamSidebar filters={filters} onFiltersChange={setFilters} />
+				</div>
+
+				{/* List panel */}
 				<div
 					className={cn(
-						"shrink-0 transition-[width] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]",
-						hasSelection ? "w-[340px]" : "w-full",
+						"shrink-0 pl-4 transition-[width] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]",
+						hasSelection ? "w-[340px]" : "flex-1",
 					)}
 				>
 					<ScrollArea className="h-full pr-2">
-						<div
-							className={cn(
-								"transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]",
-								hasSelection
-									? "flex flex-col gap-1"
-									: "mx-auto grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5",
-							)}
-						>
-							{exams.map((exam) => (
-								<ExamListItem
-									key={exam.id}
-									exam={exam}
-									isSelected={selectedId === exam.id}
-									onSelect={() => setSelectedId(exam.id)}
-									compact={hasSelection}
-								/>
-							))}
-						</div>
+						{filteredExams.length > 0 ? (
+							<div
+								className={cn(
+									"transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]",
+									hasSelection
+										? "flex flex-col gap-1"
+										: "mx-auto grid gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4",
+								)}
+							>
+								{filteredExams.map((exam) => (
+									<ExamListItem
+										key={exam.id}
+										exam={exam}
+										isSelected={selectedId === exam.id}
+										onSelect={() => setSelectedId(exam.id)}
+										compact={hasSelection}
+									/>
+								))}
+							</div>
+						) : (
+							<div className="flex h-40 items-center justify-center text-sm text-muted-foreground">
+								Không tìm thấy đề thi phù hợp
+							</div>
+						)}
 					</ScrollArea>
 				</div>
 
-				{/* Detail panel — positioned right, width animated */}
+				{/* Detail panel */}
 				<div
 					className={cn(
 						"overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]",
@@ -326,9 +216,8 @@ function ExamListPage() {
 
 			{/* Mobile layout */}
 			<div className="lg:hidden">
-				{/* List */}
 				<div className="space-y-2">
-					{exams.map((exam) => (
+					{filteredExams.map((exam) => (
 						<ExamListItem
 							key={exam.id}
 							exam={exam}
@@ -339,7 +228,6 @@ function ExamListPage() {
 					))}
 				</div>
 
-				{/* Fullscreen detail overlay */}
 				{selectedExam && (
 					<div className="fixed inset-0 z-50 flex flex-col bg-background">
 						<div className="flex-1 overflow-y-auto p-5">
