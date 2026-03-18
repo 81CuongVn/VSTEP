@@ -10,7 +10,7 @@ import {
 import type { IconSvgElement } from "@hugeicons/react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { createFileRoute, Link, redirect } from "@tanstack/react-router"
-import { type MotionValue, motion, useScroll, useTransform } from "motion/react"
+import { type MotionValue, motion, useScroll, useSpring, useTransform } from "motion/react"
 import { useEffect, useRef, useState } from "react"
 import { Logo } from "@/components/common/Logo"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -386,7 +386,7 @@ function HowItWorksSection() {
 			{/* Scroll runway — height drives the album-stack scroll distance */}
 			<div
 				ref={containerRef}
-				className="mx-auto mt-8 max-w-[1800px] px-4 sm:mt-12 sm:px-6 md:px-10 lg:px-16 2xl:px-24 min-[2200px]:max-w-[1400px] h-[200vh] sm:h-[300vh]"
+				className="mx-auto mt-8 max-w-[1800px] px-4 sm:mt-12 sm:px-6 md:px-10 lg:px-16 2xl:px-24 min-[2200px]:max-w-[1400px] h-[120vh] sm:h-[150vh]"
 			>
 				<div className="sticky top-16 sm:top-20">
 					<div className="relative">
@@ -418,9 +418,12 @@ function StepCard({
 	scrollProgress: MotionValue<number>
 }) {
 	const isLast = index === total - 1
-	const segStart = index / total
-	const segEnd = (index + 0.7) / total
-	const y = useTransform(scrollProgress, [segStart, segEnd], ["0%", "-120%"])
+	const animated = total - 1
+	const segStart = index / animated
+	const segEnd = (index + 0.5) / animated
+	const rawY = useTransform(scrollProgress, [segStart, segEnd], [0, -120])
+	const springY = useSpring(rawY, { stiffness: 300, damping: 35, mass: 0.5 })
+	const y = useTransform(springY, (v) => `${v}%`)
 
 	return (
 		<motion.div
