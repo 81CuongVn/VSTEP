@@ -77,11 +77,11 @@ function ExamSidebar({
 					<p className="text-sm font-semibold">Tìm kiếm</p>
 					<div className="flex gap-2">
 						<Input
-							placeholder="Search"
+							placeholder="Nhập từ khóa..."
 							value={searchInput}
 							onChange={(e) => setSearchInput(e.target.value)}
 							onKeyDown={handleSearchKeyDown}
-							className="h-9 text-sm"
+							className="h-9 bg-background text-sm"
 						/>
 						<Button
 							size="icon"
