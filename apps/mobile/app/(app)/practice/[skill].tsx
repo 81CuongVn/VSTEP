@@ -34,7 +34,11 @@ interface SpeakingPart3Content { centralIdea: string; suggestions: string[]; fol
 type QuestionContent = ListeningContent | ReadingContent | WritingContent | SpeakingPart1Content | SpeakingPart2Content | SpeakingPart3Content;
 type ContentKind = "objective" | "writing" | "speaking";
 
-function detectContentKind(content: QuestionContent): ContentKind {
+function detectContentKind(content: QuestionContent, skill?: string): ContentKind {
+  if (skill === "writing") return "writing";
+  if (skill === "speaking") return "speaking";
+  if (skill === "listening" || skill === "reading") return "objective";
+  // Fallback: detect by content shape
   if ("items" in content) return "objective";
   if ("prompt" in content) return "writing";
   return "speaking";
@@ -146,7 +150,7 @@ export default function PracticeQuestionScreen() {
   }
 
   const content = question.content as QuestionContent;
-  const kind = detectContentKind(content);
+  const kind = detectContentKind(content, skill);
   const items: QuestionItem[] = "items" in content ? (content as ListeningContent | ReadingContent).items : [];
   const totalItems = kind === "objective" ? items.length : 1;
   const currentItem = kind === "objective" ? items[state.currentItemIndex] ?? null : null;

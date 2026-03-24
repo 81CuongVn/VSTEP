@@ -9,7 +9,8 @@ import { LoadingScreen } from "@/components/LoadingScreen";
 import { GradientBackground } from "@/components/GradientBackground";
 import { StickyHeader, HEADER_H } from "@/components/StickyHeader";
 import { useAuth } from "@/hooks/use-auth";
-import { useProgress, useActivity } from "@/hooks/use-progress";
+import { useProgress, useActivity, useLearningPath } from "@/hooks/use-progress";
+import { SkillIcon, SKILL_LABELS } from "@/components/SkillIcon";
 import { useThemeColors, spacing, radius, fontSize, fontFamily } from "@/theme";
 
 type QuickAction = {
@@ -44,12 +45,14 @@ export default function HomeScreen() {
   const { user } = useAuth();
   const progress = useProgress();
   const { data: activityData, isLoading: activityLoading } = useActivity(7);
+  const { data: learningPath } = useLearningPath();
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const fade0 = useFadeIn(0);
   const fade1 = useFadeIn(100);
   const fade2 = useFadeIn(200);
   const fade3 = useFadeIn(300);
+  const fade4 = useFadeIn(400);
 
   useEffect(() => {
     if (!progress.isLoading && progress.data && !progress.data.goal) {
@@ -221,6 +224,46 @@ export default function HomeScreen() {
             </HapticTouchable>
           )}
         </Animated.View>
+
+        {/* ── Learning Path ── */}
+        {learningPath?.weeklyPlan && learningPath.weeklyPlan.length > 0 && (
+          <Animated.View style={fade4}>
+            <View style={styles.sectionHeader}>
+              <Text style={[styles.sectionTitle, { color: c.foreground }]}>Lộ trình tuần này</Text>
+              <HapticTouchable onPress={() => router.push("/(app)/(tabs)/progress")}>
+                <Text style={[styles.sectionLink, { color: c.primary }]}>Xem chi tiết</Text>
+              </HapticTouchable>
+            </View>
+
+            <View style={{ gap: spacing.sm, marginTop: spacing.base }}>
+              {learningPath.weeklyPlan.slice(0, 4).map((item) => (
+                <View
+                  key={item.skill}
+                  style={[styles.lpCard, { backgroundColor: c.card, borderColor: c.border }]}
+                >
+                  <View style={styles.lpRow}>
+                    <SkillIcon skill={item.skill as any} size={20} />
+                    <Text style={[styles.lpSkill, { color: c.foreground }]}>
+                      {SKILL_LABELS[item.skill as keyof typeof SKILL_LABELS] ?? item.skill}
+                    </Text>
+                  </View>
+                  <Text style={[styles.lpMeta, { color: c.mutedForeground }]}>
+                    {item.sessionsPerWeek} sessions/week · {item.estimatedMinutes} phút
+                  </Text>
+                  {item.weakTopics.length > 0 && (
+                    <Text style={[styles.lpFocus, { color: c.warning }]}>
+                      Cần tập trung: {item.weakTopics[0].name}
+                    </Text>
+                  )}
+                </View>
+              ))}
+            </View>
+
+            <Text style={[styles.lpTotal, { color: c.mutedForeground }]}>
+              {learningPath.totalMinutesPerWeek} phút/tuần
+            </Text>
+          </Animated.View>
+        )}
       </Animated.ScrollView>
     </View>
   );
@@ -332,4 +375,22 @@ const styles = StyleSheet.create({
   goalRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
   goalTitle: { fontSize: fontSize.sm, fontFamily: fontFamily.semiBold },
   goalMeta: { fontSize: fontSize.xs, fontFamily: fontFamily.regular },
+
+  // Learning Path
+  lpCard: {
+    borderWidth: 1,
+    borderRadius: radius.lg,
+    padding: spacing.base,
+    gap: spacing.xs,
+  },
+  lpRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
+  lpSkill: { fontSize: fontSize.sm, fontFamily: fontFamily.semiBold },
+  lpMeta: { fontSize: fontSize.xs, fontFamily: fontFamily.regular },
+  lpFocus: { fontSize: fontSize.xs, fontFamily: fontFamily.semiBold },
+  lpTotal: {
+    fontSize: fontSize.sm,
+    fontFamily: fontFamily.bold,
+    textAlign: "center",
+    marginTop: spacing.sm,
+  },
 });
