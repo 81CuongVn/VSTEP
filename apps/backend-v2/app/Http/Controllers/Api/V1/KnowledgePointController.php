@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
@@ -8,6 +10,7 @@ use App\Http\Requests\KnowledgePoint\UpdateKnowledgePointRequest;
 use App\Http\Resources\KnowledgePointResource;
 use App\Models\KnowledgePoint;
 use App\Services\KnowledgePointService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class KnowledgePointController extends Controller

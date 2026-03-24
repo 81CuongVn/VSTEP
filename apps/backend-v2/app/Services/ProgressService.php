@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Enums\Skill;
@@ -69,7 +71,10 @@ class ProgressService
             ->count();
 
         $totalMinutes = $sessions->sum(function ($s) {
-            if (!$s->completed_at || !$s->started_at) return 0;
+            if (! $s->completed_at || ! $s->started_at) {
+                return 0;
+            }
+
             return $s->completed_at->diffInMinutes($s->started_at);
         });
 
@@ -140,8 +145,11 @@ class ProgressService
     public function createGoal(string $userId, array $data): UserGoal
     {
         return UserGoal::create([
-            ...$data,
             'user_id' => $userId,
+            'target_band' => $data['target_band'],
+            'current_estimated_band' => $data['current_estimated_band'] ?? null,
+            'deadline' => $data['deadline'] ?? null,
+            'daily_study_time_minutes' => $data['daily_study_time_minutes'] ?? null,
         ]);
     }
 

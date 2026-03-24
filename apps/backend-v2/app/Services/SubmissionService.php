@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Models\Submission;
@@ -11,7 +13,7 @@ class SubmissionService
     {
         $query = Submission::query();
 
-        if (!$adminView) {
+        if (! $adminView) {
             $query->where('user_id', $userId);
         }
 
@@ -30,7 +32,7 @@ class SubmissionService
     {
         $query = Submission::query();
 
-        if (!$adminView) {
+        if (! $adminView) {
             $query->where('user_id', $userId);
         }
 

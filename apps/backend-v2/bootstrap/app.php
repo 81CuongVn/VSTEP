@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckRole;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -16,7 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'role' => \App\Http\Middleware\CheckRole::class,
+            'role' => CheckRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
@@ -24,11 +25,14 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Clean 404 — hide model class names and stack traces
         $exceptions->render(function (NotFoundHttpException $e, Request $request) {
-            if (!$request->is('api/*')) return null;
+            if (! $request->is('api/*')) {
+                return null;
+            }
 
             $previous = $e->getPrevious();
             if ($previous instanceof ModelNotFoundException) {
                 $model = class_basename($previous->getModel());
+
                 return response()->json(['message' => "{$model} not found."], 404);
             }
 

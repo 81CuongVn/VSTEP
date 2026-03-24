@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
 use App\Enums\Role;
@@ -13,7 +15,7 @@ class CheckRole
     {
         $required = Role::from($role);
 
-        if (!$request->user()?->role->is($required)) {
+        if (! $request->user()?->role->is($required)) {
             abort(403, 'Insufficient permissions.');
         }
 

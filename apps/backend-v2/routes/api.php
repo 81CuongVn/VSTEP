@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\ExamController;
 use App\Http\Controllers\Api\V1\KnowledgePointController;
 use App\Http\Controllers\Api\V1\ProgressController;
 use App\Http\Controllers\Api\V1\QuestionController;
+use App\Http\Controllers\Api\V1\SessionController;
 use App\Http\Controllers\Api\V1\SubmissionController;
 use Illuminate\Support\Facades\Route;
 
@@ -43,12 +44,12 @@ Route::prefix('v1')->group(function () {
             Route::patch('/exams/{exam}', [ExamController::class, 'update']);
         });
 
-        // Sessions (top-level resource, not nested under exams)
-        Route::get('/sessions', [ExamController::class, 'sessions']);
-        Route::get('/sessions/{session}', [ExamController::class, 'sessionDetail']);
-        Route::put('/sessions/{session}', [ExamController::class, 'saveAnswers']);
-        Route::post('/sessions/{session}/answer', [ExamController::class, 'answer']);
-        Route::post('/sessions/{session}/submit', [ExamController::class, 'submit']);
+        // Sessions
+        Route::get('/sessions', [SessionController::class, 'index']);
+        Route::get('/sessions/{session}', [SessionController::class, 'show']);
+        Route::put('/sessions/{session}', [SessionController::class, 'saveAnswers']);
+        Route::post('/sessions/{session}/answer', [SessionController::class, 'answer']);
+        Route::post('/sessions/{session}/submit', [SessionController::class, 'submit']);
 
         // Submissions
         Route::get('/submissions', [SubmissionController::class, 'index']);

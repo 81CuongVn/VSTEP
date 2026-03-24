@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
@@ -62,8 +64,8 @@ class AuthController extends Controller
         return response()->json(['data' => ['message' => 'Logged out.']]);
     }
 
-    public function me()
+    public function me(Request $request): UserResource
     {
-        return new UserResource(auth()->user());
+        return new UserResource($request->user());
     }
 }

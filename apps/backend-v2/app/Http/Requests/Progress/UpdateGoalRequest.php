@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Progress;
 
 use Illuminate\Foundation\Http\FormRequest;

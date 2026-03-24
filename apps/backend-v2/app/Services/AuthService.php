@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Enums\Role;
@@ -12,6 +14,7 @@ use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 class AuthService
 {
     private const MAX_REFRESH_TOKENS = 3;
+
     private const REFRESH_TOKEN_DAYS = 30;
 
     public function register(array $data): User
@@ -28,13 +31,14 @@ class AuthService
     {
         $token = JWTAuth::attempt(['email' => $email, 'password' => $password]);
 
-        if (!$token) {
+        if (! $token) {
             throw ValidationException::withMessages([
                 'email' => ['Invalid email or password.'],
             ]);
         }
 
-        $user = auth()->user();
+        /** @var User $user */
+        $user = JWTAuth::user();
         $refreshToken = $this->createRefreshToken($user, $userAgent);
 
         return [
@@ -49,7 +53,7 @@ class AuthService
     {
         $refreshToken = RefreshToken::where('token', $token)->first();
 
-        if (!$refreshToken || $refreshToken->isExpired()) {
+        if (! $refreshToken || $refreshToken->isExpired()) {
             if ($refreshToken) {
                 RefreshToken::where('user_id', $refreshToken->user_id)->delete();
             }

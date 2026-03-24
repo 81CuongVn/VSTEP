@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Enums\SessionStatus;
@@ -28,10 +30,10 @@ class ExamService
         }
 
         if ($skill = $params['skill'] ?? null) {
-            $query->whereRaw("blueprint->? IS NOT NULL", [$skill]);
+            $query->whereRaw('blueprint->? IS NOT NULL', [$skill]);
         }
 
-        if (!$adminView) {
+        if (! $adminView) {
             $query->where('is_active', true);
         }
 
@@ -41,7 +43,12 @@ class ExamService
     public function createExam(array $data, string $userId): Exam
     {
         return Exam::create([
-            ...$data,
+            'title' => $data['title'],
+            'level' => $data['level'] ?? 'B1',
+            'type' => $data['type'] ?? 'practice',
+            'duration_minutes' => $data['duration_minutes'] ?? null,
+            'blueprint' => $data['blueprint'] ?? null,
+            'description' => $data['description'] ?? null,
             'is_active' => $data['is_active'] ?? true,
             'created_by' => $userId,
         ]);
@@ -51,7 +58,7 @@ class ExamService
 
     public function startSession(Exam $exam, string $userId): ExamSession
     {
-        if (!$exam->is_active) {
+        if (! $exam->is_active) {
             throw ValidationException::withMessages(['exam' => ['Exam is not active.']]);
         }
 
@@ -157,7 +164,7 @@ class ExamService
         $blueprint = $exam->blueprint ?? [];
         $allIds = collect($blueprint)->flatMap(fn ($section) => $section['question_ids'] ?? []);
 
-        if (!$allIds->contains($questionId)) {
+        if (! $allIds->contains($questionId)) {
             throw ValidationException::withMessages([
                 'question_id' => ['Question does not belong to this exam.'],
             ]);
@@ -168,12 +175,12 @@ class ExamService
     {
         foreach ($session->answers as $answer) {
             $question = $answer->question;
-            if (!$question || !in_array($question->skill, [Skill::Listening, Skill::Reading])) {
+            if (! $question || ! in_array($question->skill, [Skill::Listening, Skill::Reading])) {
                 continue;
             }
 
             $answerKey = $question->answer_key;
-            if (!$answerKey || empty($answerKey['correctAnswers'])) {
+            if (! $answerKey || empty($answerKey['correctAnswers'])) {
                 continue;
             }
 
@@ -204,7 +211,9 @@ class ExamService
 
         foreach ($objectiveSkills as $skill => $column) {
             $skillAnswers = $session->answers->filter(fn ($a) => $a->question?->skill === $skill);
-            if ($skillAnswers->isEmpty()) continue;
+            if ($skillAnswers->isEmpty()) {
+                continue;
+            }
 
             $correct = $skillAnswers->where('is_correct', true)->count();
             $total = $skillAnswers->count();
@@ -222,7 +231,7 @@ class ExamService
             $update['overall_score'] = round(array_sum($scores) / count($scores), 1);
         }
 
-        if (!empty($update)) {
+        if (! empty($update)) {
             $session->update($update);
         }
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Models\Question;
@@ -42,13 +44,18 @@ class QuestionService
             unset($data['knowledge_point_ids']);
 
             $question = Question::create([
-                ...$data,
+                'skill' => $data['skill'],
                 'level' => $data['level'] ?? 'B1',
+                'part' => $data['part'],
+                'topic' => $data['topic'] ?? null,
+                'content' => $data['content'],
+                'answer_key' => $data['answer_key'] ?? null,
+                'explanation' => $data['explanation'] ?? null,
                 'is_active' => true,
                 'created_by' => $userId,
             ]);
 
-            if (!empty($kpIds)) {
+            if (! empty($kpIds)) {
                 $question->knowledgePoints()->sync($kpIds);
             }
 
