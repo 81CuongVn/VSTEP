@@ -12,6 +12,7 @@ use App\Models\Question;
 use App\Services\QuestionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class QuestionController extends Controller
 {
@@ -19,33 +20,33 @@ class QuestionController extends Controller
         private readonly QuestionService $service,
     ) {}
 
-    public function index(Request $request)
+    public function index(Request $request): AnonymousResourceCollection
     {
         return QuestionResource::collection($this->service->list($request->query()));
     }
 
-    public function show(Question $question)
+    public function show(Question $question): QuestionResource
     {
         $question->load('knowledgePoints');
 
         return new QuestionResource($question);
     }
 
-    public function store(StoreQuestionRequest $request)
+    public function store(StoreQuestionRequest $request): JsonResponse
     {
         $question = $this->service->create($request->validated(), $request->user()->id);
 
         return (new QuestionResource($question))->response()->setStatusCode(201);
     }
 
-    public function update(UpdateQuestionRequest $request, Question $question)
+    public function update(UpdateQuestionRequest $request, Question $question): QuestionResource
     {
         $question = $this->service->update($question, $request->validated());
 
         return new QuestionResource($question);
     }
 
-    public function destroy(Question $question)
+    public function destroy(Question $question): JsonResponse
     {
         $question->delete();
 

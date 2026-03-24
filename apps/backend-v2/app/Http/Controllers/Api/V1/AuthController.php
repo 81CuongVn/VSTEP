@@ -11,6 +11,8 @@ use App\Http\Requests\Auth\RefreshRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Services\AuthService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -18,7 +20,7 @@ class AuthController extends Controller
         private readonly AuthService $authService,
     ) {}
 
-    public function register(RegisterRequest $request)
+    public function register(RegisterRequest $request): JsonResponse
     {
         $user = $this->authService->register($request->validated());
 
@@ -28,7 +30,7 @@ class AuthController extends Controller
         ]], 201);
     }
 
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): JsonResponse
     {
         $result = $this->authService->login(
             $request->validated('email'),
@@ -44,7 +46,7 @@ class AuthController extends Controller
         ]]);
     }
 
-    public function refresh(RefreshRequest $request)
+    public function refresh(RefreshRequest $request): JsonResponse
     {
         $result = $this->authService->refresh(
             $request->validated('refresh_token'),
@@ -54,7 +56,7 @@ class AuthController extends Controller
         return response()->json(['data' => $result]);
     }
 
-    public function logout(LogoutRequest $request)
+    public function logout(LogoutRequest $request): JsonResponse
     {
         $this->authService->logout(
             $request->validated('refresh_token'),

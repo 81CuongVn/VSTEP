@@ -12,6 +12,7 @@ use App\Models\KnowledgePoint;
 use App\Services\KnowledgePointService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class KnowledgePointController extends Controller
 {
@@ -19,38 +20,38 @@ class KnowledgePointController extends Controller
         private readonly KnowledgePointService $service,
     ) {}
 
-    public function index(Request $request)
+    public function index(Request $request): AnonymousResourceCollection
     {
         return KnowledgePointResource::collection($this->service->list($request->query()));
     }
 
-    public function show(KnowledgePoint $knowledgePoint)
+    public function show(KnowledgePoint $knowledgePoint): KnowledgePointResource
     {
         return new KnowledgePointResource($knowledgePoint);
     }
 
-    public function store(StoreKnowledgePointRequest $request)
+    public function store(StoreKnowledgePointRequest $request): JsonResponse
     {
         $kp = $this->service->create($request->validated());
 
         return (new KnowledgePointResource($kp))->response()->setStatusCode(201);
     }
 
-    public function update(UpdateKnowledgePointRequest $request, KnowledgePoint $knowledgePoint)
+    public function update(UpdateKnowledgePointRequest $request, KnowledgePoint $knowledgePoint): KnowledgePointResource
     {
         $knowledgePoint->update($request->validated());
 
         return new KnowledgePointResource($knowledgePoint);
     }
 
-    public function destroy(KnowledgePoint $knowledgePoint)
+    public function destroy(KnowledgePoint $knowledgePoint): JsonResponse
     {
         $knowledgePoint->delete();
 
         return response()->json(['data' => ['id' => $knowledgePoint->id]]);
     }
 
-    public function topics(Request $request)
+    public function topics(Request $request): JsonResponse
     {
         return response()->json(['data' => $this->service->topics($request->query())]);
     }

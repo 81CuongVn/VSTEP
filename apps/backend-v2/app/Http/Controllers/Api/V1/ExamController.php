@@ -13,6 +13,7 @@ use App\Models\Exam;
 use App\Services\ExamService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ExamController extends Controller
 {
@@ -20,31 +21,31 @@ class ExamController extends Controller
         private readonly ExamService $service,
     ) {}
 
-    public function index(Request $request)
+    public function index(Request $request): AnonymousResourceCollection
     {
         return ExamResource::collection($this->service->listExams($request->query()));
     }
 
-    public function show(Exam $exam)
+    public function show(Exam $exam): ExamResource
     {
         return new ExamResource($exam);
     }
 
-    public function store(StoreExamRequest $request)
+    public function store(StoreExamRequest $request): JsonResponse
     {
         $exam = $this->service->createExam($request->validated(), $request->user()->id);
 
         return (new ExamResource($exam))->response()->setStatusCode(201);
     }
 
-    public function update(UpdateExamRequest $request, Exam $exam)
+    public function update(UpdateExamRequest $request, Exam $exam): ExamResource
     {
         $exam->update($request->validated());
 
         return new ExamResource($exam);
     }
 
-    public function start(Request $request, Exam $exam)
+    public function start(Request $request, Exam $exam): JsonResponse
     {
         $session = $this->service->startSession($exam, $request->user()->id);
 

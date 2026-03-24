@@ -19,7 +19,7 @@ class ProgressController extends Controller
         private readonly ProgressService $service,
     ) {}
 
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         $overview = $this->service->overview($request->user()->id);
 
@@ -29,7 +29,7 @@ class ProgressController extends Controller
         ]]);
     }
 
-    public function spiderChart(Request $request)
+    public function spiderChart(Request $request): JsonResponse
     {
         $data = $this->service->spiderChart($request->user()->id);
         $data['goal'] = $data['goal'] ? new GoalResource($data['goal']) : null;
@@ -37,7 +37,7 @@ class ProgressController extends Controller
         return response()->json(['data' => $data]);
     }
 
-    public function activity(Request $request)
+    public function activity(Request $request): JsonResponse
     {
         $days = (int) $request->query('days', 30);
 
@@ -46,7 +46,7 @@ class ProgressController extends Controller
         ]);
     }
 
-    public function bySkill(Request $request, string $skill)
+    public function bySkill(Request $request, string $skill): JsonResponse
     {
         $data = $this->service->bySkill($request->user()->id, $skill);
         $data['progress'] = $data['progress'] ? new UserProgressResource($data['progress']) : null;
@@ -54,28 +54,28 @@ class ProgressController extends Controller
         return response()->json(['data' => $data]);
     }
 
-    public function learningPath(Request $request)
+    public function learningPath(Request $request): JsonResponse
     {
         return response()->json([
             'data' => $this->service->learningPath($request->user()->id),
         ]);
     }
 
-    public function storeGoal(StoreGoalRequest $request)
+    public function storeGoal(StoreGoalRequest $request): JsonResponse
     {
         $goal = $this->service->createGoal($request->user()->id, $request->validated());
 
         return (new GoalResource($goal))->response()->setStatusCode(201);
     }
 
-    public function updateGoal(UpdateGoalRequest $request, string $id)
+    public function updateGoal(UpdateGoalRequest $request, string $id): GoalResource
     {
         $goal = $this->service->updateGoal($request->user()->id, $id, $request->validated());
 
         return new GoalResource($goal);
     }
 
-    public function destroyGoal(Request $request, string $id)
+    public function destroyGoal(Request $request, string $id): JsonResponse
     {
         $this->service->deleteGoal($request->user()->id, $id);
 
