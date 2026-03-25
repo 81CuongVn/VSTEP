@@ -32,4 +32,9 @@ class ExamService
 
         return $exam;
     }
+
+    public function delete(Exam $exam): void
+    {
+        $exam->delete();
+    }
 }

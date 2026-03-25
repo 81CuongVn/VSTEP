@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\NotificationType;
 use App\Enums\Skill;
 use App\Enums\StreakDirection;
 use App\Enums\SubmissionStatus;
@@ -17,6 +18,10 @@ use Illuminate\Support\Collection as BaseCollection;
 
 class ProgressService
 {
+    public function __construct(
+        private readonly NotificationService $notificationService,
+    ) {}
+
     /**
      * @return array{skills: Collection<int, UserProgress>, goal: UserGoal|null}
      */
@@ -133,6 +138,8 @@ class ProgressService
 
     public function createGoal(string $userId, array $data): UserGoal
     {
+        UserGoal::where('user_id', $userId)->delete();
+
         return UserGoal::create([...$data, 'user_id' => $userId]);
     }
 
@@ -334,6 +341,12 @@ class ProgressService
                 if ($progress->scaffold_level >= self::SCAFFOLD_PER_LEVEL) {
                     $nextLevel = $progress->current_level->next();
                     if ($nextLevel) {
+                        $this->notificationService->send(
+                            $progress->user_id,
+                            NotificationType::StreakMilestone,
+                            "Lên level {$nextLevel->value}!",
+                            "Kỹ năng {$progress->skill->value} đã lên {$nextLevel->value}. Tiếp tục phát huy!",
+                        );
                         $progress->current_level = $nextLevel;
                         $progress->scaffold_level = 0;
                     }

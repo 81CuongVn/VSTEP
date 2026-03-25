@@ -67,6 +67,7 @@ Route::prefix('v1')->group(function () {
         Route::middleware('role:admin')->group(function () {
             Route::post('/exams', [ExamController::class, 'store']);
             Route::patch('/exams/{exam}', [ExamController::class, 'update']);
+            Route::delete('/exams/{exam}', [ExamController::class, 'destroy']);
         });
 
         // Sessions

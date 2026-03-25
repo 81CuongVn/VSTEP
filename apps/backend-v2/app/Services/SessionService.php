@@ -35,7 +35,11 @@ class SessionService
                 ->first();
 
             if ($existing) {
-                return $existing;
+                if ($this->isExpired($existing)) {
+                    $existing->update(['status' => SessionStatus::Abandoned, 'completed_at' => now()]);
+                } else {
+                    return $existing;
+                }
             }
 
             return ExamSession::create([
@@ -47,11 +51,12 @@ class SessionService
         });
     }
 
-    public function list(string $userId, ?string $status = null): LengthAwarePaginator
+    public function list(string $userId, ?string $status = null, ?string $examId = null): LengthAwarePaginator
     {
         return ExamSession::with('exam')
             ->forUser($userId)
             ->when($status, fn ($q, $v) => $q->where('status', $v))
+            ->when($examId, fn ($q, $v) => $q->where('exam_id', $v))
             ->orderByDesc('started_at')
             ->paginate();
     }
@@ -77,9 +82,7 @@ class SessionService
 
     public function saveAnswer(ExamSession $session, array $data): void
     {
-        if ($session->status !== SessionStatus::InProgress) {
-            throw ValidationException::withMessages(['session' => ['Session is not in progress.']]);
-        }
+        $this->assertInProgress($session);
 
         $session->loadMissing('exam');
         $this->assertQuestionInExam($session->exam, $data['question_id']);
@@ -92,9 +95,7 @@ class SessionService
 
     public function saveAnswersBatch(ExamSession $session, array $answers): int
     {
-        if ($session->status !== SessionStatus::InProgress) {
-            throw ValidationException::withMessages(['session' => ['Session is not in progress.']]);
-        }
+        $this->assertInProgress($session);
 
         $session->loadMissing('exam');
 
@@ -119,9 +120,7 @@ class SessionService
             return $session;
         }
 
-        if ($session->status !== SessionStatus::InProgress) {
-            throw ValidationException::withMessages(['session' => ['Session is not in progress.']]);
-        }
+        $this->assertInProgress($session);
 
         $session->load('answers.question');
 
@@ -239,5 +238,39 @@ class SessionService
         if (! empty($update)) {
             $session->update($update);
         }
+    }
+
+    private function isExpired(ExamSession $session): bool
+    {
+        $session->loadMissing('exam');
+
+        if (! $session->exam->duration_minutes) {
+            return false;
+        }
+
+        return $session->started_at->addMinutes($session->exam->duration_minutes)->isPast();
+    }
+
+    private function assertInProgress(ExamSession $session): void
+    {
+        if ($session->status !== SessionStatus::InProgress) {
+            throw ValidationException::withMessages(['session' => ['Session is not in progress.']]);
+        }
+
+        if ($this->isExpired($session)) {
+            $session->update(['status' => SessionStatus::Abandoned, 'completed_at' => now()]);
+
+            throw ValidationException::withMessages(['session' => ['Session has expired.']]);
+        }
+    }
+
+    public function abandonExpired(): int
+    {
+        return ExamSession::inProgress()
+            ->whereHas('exam', fn ($q) => $q->whereNotNull('duration_minutes'))
+            ->get()
+            ->filter(fn ($s) => $this->isExpired($s))
+            ->each(fn ($s) => $s->update(['status' => SessionStatus::Abandoned, 'completed_at' => now()]))
+            ->count();
     }
 }

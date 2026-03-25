@@ -45,6 +45,13 @@ class ExamController extends Controller
         return new ExamResource($exam);
     }
 
+    public function destroy(Exam $exam)
+    {
+        $this->examService->delete($exam);
+
+        return response()->json(['data' => ['success' => true]]);
+    }
+
     public function start(Request $request, Exam $exam)
     {
         $session = $this->sessionService->start($exam, $request->user()->id);

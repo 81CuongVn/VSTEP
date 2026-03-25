@@ -22,7 +22,7 @@ class SessionController extends Controller
     public function index(Request $request)
     {
         return ExamSessionResource::collection(
-            $this->service->list($request->user()->id, $request->query('status')),
+            $this->service->list($request->user()->id, $request->query('status'), $request->query('exam_id')),
         );
     }
 

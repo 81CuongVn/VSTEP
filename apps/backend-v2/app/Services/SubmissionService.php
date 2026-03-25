@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\NotificationType;
 use App\Enums\Role;
 use App\Enums\SubmissionStatus;
 use App\Models\Question;
@@ -17,6 +18,7 @@ class SubmissionService
 {
     public function __construct(
         private readonly ProgressService $progressService,
+        private readonly NotificationService $notificationService,
     ) {}
 
     public function list(User $user, array $filters = []): LengthAwarePaginator
@@ -68,6 +70,14 @@ class SubmissionService
             ]);
 
             $this->progressService->applySubmission($submission);
+
+            $this->notificationService->send(
+                $submission->user_id,
+                NotificationType::GradingComplete,
+                'Bài làm đã được chấm điểm',
+                "Bạn đạt {$submission->score}/10 cho bài {$submission->skill->value}.",
+                ['submission_id' => $submission->id, 'score' => $submission->score],
+            );
 
             return $submission;
         });
