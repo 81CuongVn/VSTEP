@@ -23,7 +23,7 @@ class ExamController extends Controller
 
     public function index(Request $request)
     {
-        return ExamResource::collection($this->examService->list($request->only(['type', 'level', 'skill'])));
+        return ExamResource::collection($this->examService->list($request->only(['type', 'level', 'skill', 'search'])));
     }
 
     public function show(Exam $exam)

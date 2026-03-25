@@ -105,6 +105,11 @@ Route::prefix('v1')->group(function () {
         Route::patch('/users/{user}', [UserController::class, 'update']);
         Route::post('/users/{user}/password', [UserController::class, 'changePassword']);
         Route::post('/users/{user}/avatar', [UserController::class, 'uploadAvatar']);
+        Route::middleware('role:admin')->group(function () {
+            Route::get('/users', [UserController::class, 'index']);
+            Route::post('/users', [UserController::class, 'store']);
+            Route::delete('/users/{user}', [UserController::class, 'destroy']);
+        });
 
         // Onboarding
         Route::get('/onboarding/status', [OnboardingController::class, 'status']);

@@ -15,6 +15,7 @@ class ExamService
             ->when($filters['type'] ?? null, fn ($q, $v) => $q->where('type', $v))
             ->when($filters['level'] ?? null, fn ($q, $v) => $q->where('level', $v))
             ->when($filters['skill'] ?? null, fn ($q, $v) => $q->whereJsonContains('blueprint', [['skill' => $v]]))
+            ->when($filters['search'] ?? null, fn ($q, $v) => $q->where('title', 'ilike', "%{$v}%"))
             ->when(! $adminView, fn ($q) => $q->active())
             ->orderByDesc('created_at')
             ->paginate();
