@@ -13,33 +13,24 @@ use Illuminate\Support\Collection;
 class WeakPointService
 {
     /**
-     * Record knowledge gaps from a graded submission into weak points.
-     * Uses SM-2 spaced repetition algorithm.
+     * Record knowledge gaps from a graded submission.
+     * New gaps → create weak points. Existing gaps → reset schedule.
+     * KPs NOT in gaps → progress (learner improved on those).
      */
     public function recordFromSubmission(Submission $submission): void
     {
         $gaps = $submission->result['knowledge_gaps'] ?? [];
-
-        if (empty($gaps)) {
-            return;
-        }
-
         $gapNames = collect($gaps)->pluck('name')->toArray();
-        $kpIds = KnowledgePoint::whereIn('name', $gapNames)->pluck('id', 'name');
+        $gapKpIds = KnowledgePoint::whereIn('name', $gapNames)->pluck('id')->toArray();
 
-        foreach ($gapNames as $name) {
-            $kpId = $kpIds[$name] ?? null;
-            if (! $kpId) {
-                continue;
-            }
-
+        // Create/reset weak points for gaps
+        foreach ($gapKpIds as $kpId) {
             $wp = UserWeakPoint::firstOrCreate(
                 ['user_id' => $submission->user_id, 'knowledge_point_id' => $kpId, 'skill' => $submission->skill],
                 ['next_review_at' => now(), 'ease_factor' => 2.5],
             );
 
-            // Reset review schedule — learner showed weakness again
-            if ($wp->wasRecentlyCreated === false) {
+            if (! $wp->wasRecentlyCreated) {
                 $wp->update([
                     'repetition_count' => 0,
                     'interval_days' => 1,
@@ -47,6 +38,22 @@ class WeakPointService
                     'is_mastered' => false,
                 ]);
             }
+        }
+
+        // Progress weak points for KPs NOT in gaps (learner did well)
+        if ($submission->score !== null && $submission->score >= 5.0) {
+            $quality = match (true) {
+                $submission->score >= 8.0 => 5,
+                $submission->score >= 6.5 => 4,
+                default => 3,
+            };
+
+            UserWeakPoint::forUser($submission->user_id)
+                ->where('skill', $submission->skill)
+                ->where('is_mastered', false)
+                ->whereNotIn('knowledge_point_id', $gapKpIds)
+                ->get()
+                ->each(fn (UserWeakPoint $wp) => $this->updateAfterPractice($wp, $quality));
         }
     }
 

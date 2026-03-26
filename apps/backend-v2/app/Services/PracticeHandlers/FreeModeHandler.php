@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Services\PracticeHandlers;
 
+use App\Enums\Skill;
 use App\Jobs\GradeSubmission;
 use App\Models\Question;
 use App\Models\Submission;
 use App\Support\VstepScoring;
+use App\Support\WritingHints;
 
 class FreeModeHandler implements PracticeModeHandler
 {
@@ -35,6 +37,16 @@ class FreeModeHandler implements PracticeModeHandler
 
     public function enrichItem(Question $question): array
     {
+        if ($question->skill === Skill::Writing) {
+            return [
+                'writing_hints' => WritingHints::forQuestion(
+                    $question->content,
+                    $question->level,
+                    $question->part,
+                ),
+            ];
+        }
+
         return [];
     }
 }

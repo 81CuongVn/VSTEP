@@ -7,6 +7,7 @@ namespace App\Services\PracticeHandlers;
 use App\Jobs\GradeSubmission;
 use App\Models\Question;
 use App\Models\Submission;
+use App\Support\WritingHints;
 
 class GuidedHandler implements PracticeModeHandler
 {
@@ -25,7 +26,11 @@ class GuidedHandler implements PracticeModeHandler
     public function enrichItem(Question $question): array
     {
         return [
-            'outline' => $question->content['outline'] ?? null,
+            'writing_hints' => WritingHints::forQuestion(
+                $question->content,
+                $question->level,
+                $question->part,
+            ),
         ];
     }
 }

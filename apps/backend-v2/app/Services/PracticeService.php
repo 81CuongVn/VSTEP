@@ -100,6 +100,12 @@ class PracticeService
 
         $result = $handler->processAnswer($submission, $question, $answer);
 
+        // Update spaced repetition for sync-graded submissions
+        if ($submission->fresh()->status === SubmissionStatus::Completed && $submission->score !== null) {
+            $quality = $this->scoreToQuality($submission->score);
+            $this->updateWeakPoints($session->user_id, $question, $session->skill, $quality);
+        }
+
         // Compare with previous attempt if retry
         $previousScore = null;
         if ($isRetry) {
@@ -280,6 +286,35 @@ class PracticeService
     {
         if ($session->isCompleted()) {
             throw ValidationException::withMessages(['session' => ['Session is already completed.']]);
+        }
+    }
+
+    /**
+     * Convert VSTEP 0-10 score to SM-2 quality 0-5.
+     */
+    private function scoreToQuality(float $score): int
+    {
+        return match (true) {
+            $score >= 8.0 => 5,
+            $score >= 6.5 => 4,
+            $score >= 5.0 => 3,
+            $score >= 3.0 => 2,
+            $score >= 1.0 => 1,
+            default => 0,
+        };
+    }
+
+    private function updateWeakPoints(string $userId, Question $question, Skill $skill, int $quality): void
+    {
+        $kpIds = $question->knowledgePoints()->pluck('knowledge_points.id');
+
+        $weakPoints = UserWeakPoint::forUser($userId)
+            ->where('skill', $skill)
+            ->whereIn('knowledge_point_id', $kpIds)
+            ->get();
+
+        foreach ($weakPoints as $wp) {
+            $this->weakPointService->updateAfterPractice($wp, $quality);
         }
     }
 }
