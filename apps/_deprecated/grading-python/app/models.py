@@ -17,8 +17,8 @@ class WritingAnswer(BaseModel):
 class SpeakingAnswer(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
-    audio_url: str = Field(alias="audioUrl")
-    duration_seconds: float = Field(alias="durationSeconds")
+    transcript: str
+    duration_seconds: float = Field(0, alias="durationSeconds")
     part_number: int = Field(1, alias="partNumber")
 
 

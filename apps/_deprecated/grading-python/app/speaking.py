@@ -1,12 +1,9 @@
 from datetime import datetime, timezone
 
-from redis.asyncio import Redis
-
 from app.llm import complete
 from app.models import Result, SpeakingScore, Task
 from app.prompts import speaking as speaking_prompt
 from app.scoring import snap, to_band
-from app.stt import transcribe
 
 SPEAKING_CRITERIA = {
     "fluencyOrganization": "fluency_organization",
@@ -33,12 +30,9 @@ def to_result(score: SpeakingScore) -> Result:
     )
 
 
-async def grade(task: Task, redis: Redis) -> Result:
+async def grade(task: Task) -> Result:
     answer = task.speaking_answer()
-    transcript = await transcribe(answer.audio_url, redis)
-    part = answer.part_number
-
-    prompt = speaking_prompt(transcript, part)
+    prompt = speaking_prompt(answer.transcript, answer.part_number)
     content = await complete([{"role": "user", "content": prompt}])
     score = SpeakingScore.model_validate_json(content)
     return to_result(score)
