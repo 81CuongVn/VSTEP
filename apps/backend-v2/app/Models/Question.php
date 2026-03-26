@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\Level;
 use App\Enums\Skill;
+use App\Enums\VstepBand;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -56,7 +57,7 @@ class Question extends BaseModel
         return [
             'correct' => $correct,
             'total' => $total,
-            'score' => $total > 0 ? round(($correct / $total) * 10, 1) : 0.0,
+            'score' => $total > 0 ? VstepBand::roundScore(($correct / $total) * 10) : 0.0,
             'all_correct' => $correct === $total,
         ];
     }
