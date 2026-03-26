@@ -1,0 +1,567 @@
+[
+    {
+        "skill": "speaking",
+        "level": "A2",
+        "part": 1,
+        "topic": "Daily Routine",
+        "bloom_level": null,
+        "content": {
+            "prompt": "Describe your daily routine. What do you do from morning to evening?"
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Simple Sentences",
+            "Basic Tenses",
+            "General Vocabulary",
+            "Individual Sounds",
+            "Word Stress"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "A2",
+        "part": 1,
+        "topic": "Family",
+        "bloom_level": null,
+        "content": {
+            "prompt": "Tell me about your family. How many people are there? What do they do?"
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Simple Sentences",
+            "Basic Tenses",
+            "General Vocabulary",
+            "Individual Sounds",
+            "Word Stress"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "A2",
+        "part": 1,
+        "topic": "Free Time",
+        "bloom_level": "understand",
+        "content": {
+            "prompt": "Describe your free time activities. What do you usually do at weekends?"
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Simple Sentences",
+            "Basic Tenses",
+            "General Vocabulary",
+            "Individual Sounds",
+            "Word Stress"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "A2",
+        "part": 1,
+        "topic": "Friends",
+        "bloom_level": "remember",
+        "content": {
+            "prompt": "Tell me about your best friend. What is he or she like? What do you often do together?"
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Simple Sentences",
+            "Basic Tenses",
+            "General Vocabulary",
+            "Individual Sounds",
+            "Word Stress"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "A2",
+        "part": 1,
+        "topic": "Hometown",
+        "bloom_level": "remember",
+        "content": {
+            "prompt": "Tell me about your hometown. Where is it? What do you like about it?"
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Simple Sentences",
+            "Basic Tenses",
+            "General Vocabulary",
+            "Individual Sounds",
+            "Word Stress"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "B1",
+        "part": 1,
+        "topic": "Daily Routine",
+        "bloom_level": "apply",
+        "content": {
+            "prompt": "Describe your daily routine on a weekday. What do you usually do in the morning, afternoon, and evening? Why is this routine suitable for you?"
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Compound Sentences",
+            "Basic Tenses",
+            "General Vocabulary",
+            "Word Stress",
+            "Sentence Stress",
+            "Self-Correction"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "B1",
+        "part": 1,
+        "topic": "Favorite Food",
+        "bloom_level": "understand",
+        "content": {
+            "prompt": "Talk about your favorite food. What is it? How often do you eat it? Why do you like it?"
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Compound Sentences",
+            "Basic Tenses",
+            "General Vocabulary",
+            "Word Stress",
+            "Sentence Stress",
+            "Self-Correction"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "B1",
+        "part": 1,
+        "topic": "Favorite Hobby",
+        "bloom_level": null,
+        "content": {
+            "prompt": "Talk about your favorite hobby or activity. How did you start it? Why do you enjoy it?"
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Compound Sentences",
+            "Basic Tenses",
+            "General Vocabulary",
+            "Word Stress",
+            "Sentence Stress",
+            "Self-Correction"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "B1",
+        "part": 1,
+        "topic": "Memorable Trip",
+        "bloom_level": null,
+        "content": {
+            "prompt": "Describe a memorable trip you have taken. Where did you go? What did you do? Why was it memorable?"
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Compound Sentences",
+            "Basic Tenses",
+            "General Vocabulary",
+            "Word Stress",
+            "Sentence Stress",
+            "Self-Correction"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "B1",
+        "part": 1,
+        "topic": "Useful Mobile App",
+        "bloom_level": "analyze",
+        "content": {
+            "prompt": "Talk about a mobile app you often use. What is it used for? How does it help you in your daily life? Why do you think it is useful?"
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Compound Sentences",
+            "Basic Tenses",
+            "General Vocabulary",
+            "Word Stress",
+            "Sentence Stress",
+            "Self-Correction"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "B1",
+        "part": 2,
+        "topic": "City vs Countryside",
+        "bloom_level": null,
+        "content": {
+            "prompt": "Look at the two pictures. Compare and contrast life in a big city and life in the countryside. Which would you prefer to live in and why?"
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Compound Sentences",
+            "Comparatives & Superlatives",
+            "Linking Words & Transitions",
+            "Sentence Stress",
+            "Intonation",
+            "Paraphrasing"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "B1",
+        "part": 2,
+        "topic": "Online Shopping vs Shopping in Stores",
+        "bloom_level": "analyze",
+        "content": {
+            "prompt": "Compare shopping online and shopping in stores. What are the advantages and disadvantages of each?"
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Compound Sentences",
+            "Comparatives & Superlatives",
+            "Linking Words & Transitions",
+            "Sentence Stress",
+            "Intonation",
+            "Paraphrasing"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "B1",
+        "part": 2,
+        "topic": "Reading Printed Books vs E-books",
+        "bloom_level": "apply",
+        "content": {
+            "prompt": "Compare reading printed books and reading e-books. Which do you think is better for students and why?"
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Compound Sentences",
+            "Comparatives & Superlatives",
+            "General Vocabulary",
+            "Linking Words & Transitions",
+            "Intonation",
+            "Paraphrasing"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "B1",
+        "part": 2,
+        "topic": "Study Methods",
+        "bloom_level": null,
+        "content": {
+            "prompt": "Compare studying alone and studying in a group. What are the advantages and disadvantages of each?"
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Compound Sentences",
+            "Comparatives & Superlatives",
+            "Linking Words & Transitions",
+            "Sentence Stress",
+            "Intonation",
+            "Paraphrasing"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "B1",
+        "part": 2,
+        "topic": "Travelling by Car vs Travelling by Bus",
+        "bloom_level": "understand",
+        "content": {
+            "prompt": "Look at the two pictures. Compare travelling by car and travelling by bus. Which would you choose for a long trip and why?"
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Compound Sentences",
+            "Comparatives & Superlatives",
+            "Topic-Specific Vocabulary",
+            "Linking Words & Transitions",
+            "Sentence Stress",
+            "Intonation"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "B2",
+        "part": 2,
+        "topic": "Media Influence",
+        "bloom_level": null,
+        "content": {
+            "prompt": "Compare the roles of traditional media and social media in modern society. How do they influence public opinion differently?"
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Complex Sentences",
+            "Topic-Specific Vocabulary",
+            "Linking Words & Transitions",
+            "Intonation",
+            "Connected Speech",
+            "Elaboration"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "B2",
+        "part": 2,
+        "topic": "Online Learning",
+        "bloom_level": "analyze",
+        "content": {
+            "prompt": "Compare online learning and face-to-face learning for university students. How do they affect students’ motivation and learning outcomes differently?"
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Complex Sentences",
+            "Topic-Specific Vocabulary",
+            "Linking Words & Transitions",
+            "Intonation",
+            "Connected Speech",
+            "Elaboration"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "B2",
+        "part": 2,
+        "topic": "Place to Live",
+        "bloom_level": "analyze",
+        "content": {
+            "prompt": "Compare living in the city and living in the countryside. How do these two environments influence young people’s lifestyle and future opportunities differently?"
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Complex Sentences",
+            "Comparatives & Superlatives",
+            "Topic-Specific Vocabulary",
+            "Linking Words & Transitions",
+            "Rhythm & Pacing",
+            "Elaboration"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "B2",
+        "part": 2,
+        "topic": "Student Employment",
+        "bloom_level": "apply",
+        "content": {
+            "prompt": "Compare doing a part-time job and focusing only on study while at university. How can students choose the more suitable option for their own situation?"
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Conditional Clauses",
+            "Modal Verbs",
+            "Topic-Specific Vocabulary",
+            "Paraphrasing",
+            "Intonation",
+            "Time Management"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "B2",
+        "part": 2,
+        "topic": "Urban Transport",
+        "bloom_level": "evaluate",
+        "content": {
+            "prompt": "Compare public transport and private vehicles in big cities. Which is a better solution for daily travel, and why?"
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Comparatives & Superlatives",
+            "Topic-Specific Vocabulary",
+            "Collocations",
+            "Linking Words & Transitions",
+            "Sentence Stress",
+            "Elaboration"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "B2",
+        "part": 3,
+        "topic": "Free University Education",
+        "bloom_level": null,
+        "content": {
+            "prompt": "Should university education be free for all students? Present arguments for both sides and give your opinion."
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Complex Sentences",
+            "Conditional Clauses",
+            "Topic-Specific Vocabulary",
+            "Connected Speech",
+            "Rhythm & Pacing",
+            "Elaboration"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "B2",
+        "part": 3,
+        "topic": "Online Learning",
+        "bloom_level": "apply",
+        "content": {
+            "prompt": "How can online learning be made more effective for university students? Give reasons and examples."
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Complex Sentences",
+            "Conditional Clauses",
+            "Topic-Specific Vocabulary",
+            "Connected Speech",
+            "Rhythm & Pacing",
+            "Elaboration"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "B2",
+        "part": 3,
+        "topic": "Part-Time Jobs for Students",
+        "bloom_level": "analyze",
+        "content": {
+            "prompt": "Some people think that university students should have part-time jobs, while others believe they should focus only on studying. Discuss both views and give your opinion."
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Complex Sentences",
+            "Conditional Clauses",
+            "Topic-Specific Vocabulary",
+            "Connected Speech",
+            "Rhythm & Pacing",
+            "Elaboration"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "B2",
+        "part": 3,
+        "topic": "Public Transport",
+        "bloom_level": "evaluate",
+        "content": {
+            "prompt": "Do you think public transport should be improved to encourage more people to use it? Give reasons and examples."
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Complex Sentences",
+            "Conditional Clauses",
+            "Topic-Specific Vocabulary",
+            "Connected Speech",
+            "Rhythm & Pacing",
+            "Elaboration"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "B2",
+        "part": 3,
+        "topic": "Youth Freedom",
+        "bloom_level": null,
+        "content": {
+            "prompt": "Some people say that young people today have too much freedom. Do you agree or disagree? Give reasons and examples."
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Complex Sentences",
+            "Conditional Clauses",
+            "Topic-Specific Vocabulary",
+            "Connected Speech",
+            "Rhythm & Pacing",
+            "Elaboration"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "C1",
+        "part": 3,
+        "topic": "Artificial Intelligence in Education",
+        "bloom_level": "analyze",
+        "content": {
+            "prompt": "Analyze the impact of artificial intelligence on higher education. Consider its effects on teaching methods, student learning, and academic integrity."
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Complex Sentences",
+            "Noun Clauses",
+            "Academic Vocabulary",
+            "Connected Speech",
+            "Rhythm & Pacing",
+            "Self-Correction"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "C1",
+        "part": 3,
+        "topic": "Future Workplace Skills",
+        "bloom_level": "create",
+        "content": {
+            "prompt": "Propose a strategy for universities to prepare students for the skills required in the future workplace. Explain which abilities should be prioritized and how they can be developed effectively."
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Complex Sentences",
+            "Noun Clauses",
+            "Academic Vocabulary",
+            "Connected Speech",
+            "Rhythm & Pacing",
+            "Self-Correction"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "C1",
+        "part": 3,
+        "topic": "Genetic Engineering Ethics",
+        "bloom_level": null,
+        "content": {
+            "prompt": "Discuss the ethical implications of genetic engineering in humans. Consider the scientific, social, and moral dimensions of this issue."
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Complex Sentences",
+            "Noun Clauses",
+            "Academic Vocabulary",
+            "Connected Speech",
+            "Rhythm & Pacing",
+            "Self-Correction"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "C1",
+        "part": 3,
+        "topic": "Global Inequality",
+        "bloom_level": null,
+        "content": {
+            "prompt": "Evaluate the role of international organizations in addressing global inequality. How effective have they been, and what changes would you recommend?"
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Complex Sentences",
+            "Noun Clauses",
+            "Academic Vocabulary",
+            "Connected Speech",
+            "Rhythm & Pacing",
+            "Self-Correction"
+        ]
+    },
+    {
+        "skill": "speaking",
+        "level": "C1",
+        "part": 3,
+        "topic": "Sustainable Urban Development",
+        "bloom_level": "evaluate",
+        "content": {
+            "prompt": "Evaluate the effectiveness of sustainable urban development strategies in improving quality of life in large cities. What are the main challenges, and which solutions seem most practical?"
+        },
+        "answer_key": null,
+        "knowledge_points": [
+            "Complex Sentences",
+            "Noun Clauses",
+            "Academic Vocabulary",
+            "Connected Speech",
+            "Rhythm & Pacing",
+            "Self-Correction"
+        ]
+    }
+]

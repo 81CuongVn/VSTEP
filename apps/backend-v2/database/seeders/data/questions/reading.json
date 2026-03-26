@@ -1,0 +1,784 @@
+[
+    {
+        "skill": "reading",
+        "level": "A2",
+        "part": 1,
+        "topic": "Activity Cost",
+        "bloom_level": null,
+        "content": {
+            "stem": "How much does the activity cost?",
+            "options": {
+                "A": "It is free",
+                "B": "$5",
+                "C": "$10",
+                "D": "$20"
+            },
+            "passage": "Greenfield Primary School — Spring Fair\n\nDear Parents and Students,\n\nWe are delighted to announce our annual Spring Fair on Saturday, 15 March, from 10:00 AM to 3:00 PM at the school playground. The event is free for all families. There will be games, food stalls, a book sale, and a talent show. The principal, Mrs. Johnson, invites everyone to come and enjoy the day. If you would like to help or need more information, please send an email to springfair@greenfield.edu. We look forward to seeing you there!"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "A2",
+        "part": 1,
+        "topic": "Contact Method",
+        "bloom_level": null,
+        "content": {
+            "stem": "What should interested people do?",
+            "options": {
+                "A": "Call the office",
+                "B": "Send an email",
+                "C": "Visit the website",
+                "D": "Come to the school"
+            },
+            "passage": "Greenfield Primary School — Spring Fair\n\nDear Parents and Students,\n\nWe are delighted to announce our annual Spring Fair on Saturday, 15 March, from 10:00 AM to 3:00 PM at the school playground. The event is free for all families. There will be games, food stalls, a book sale, and a talent show. The principal, Mrs. Johnson, invites everyone to come and enjoy the day. If you would like to help or need more information, please send an email to springfair@greenfield.edu. We look forward to seeing you there!"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "A2",
+        "part": 1,
+        "topic": "Event Schedule",
+        "bloom_level": null,
+        "content": {
+            "stem": "According to the text, when does the event start?",
+            "options": {
+                "A": "Monday",
+                "B": "Wednesday",
+                "C": "Friday",
+                "D": "Saturday"
+            },
+            "passage": "Greenfield Primary School — Spring Fair\n\nDear Parents and Students,\n\nWe are delighted to announce our annual Spring Fair on Saturday, 15 March, from 10:00 AM to 3:00 PM at the school playground. The event is free for all families. There will be games, food stalls, a book sale, and a talent show. The principal, Mrs. Johnson, invites everyone to come and enjoy the day. If you would like to help or need more information, please send an email to springfair@greenfield.edu. We look forward to seeing you there!"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "D"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "A2",
+        "part": 1,
+        "topic": "Notice Author",
+        "bloom_level": null,
+        "content": {
+            "stem": "Who wrote this notice?",
+            "options": {
+                "A": "A student",
+                "B": "A teacher",
+                "C": "A parent",
+                "D": "The principal"
+            },
+            "passage": "Greenfield Primary School — Spring Fair\n\nDear Parents and Students,\n\nWe are delighted to announce our annual Spring Fair on Saturday, 15 March, from 10:00 AM to 3:00 PM at the school playground. The event is free for all families. There will be games, food stalls, a book sale, and a talent show. The principal, Mrs. Johnson, invites everyone to come and enjoy the day. If you would like to help or need more information, please send an email to springfair@greenfield.edu. We look forward to seeing you there!"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "D"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "A2",
+        "part": 1,
+        "topic": "Passage Main Idea",
+        "bloom_level": null,
+        "content": {
+            "stem": "What is the passage mainly about?",
+            "options": {
+                "A": "A family vacation",
+                "B": "A cooking recipe",
+                "C": "A school event",
+                "D": "A job advertisement"
+            },
+            "passage": "Greenfield Primary School — Spring Fair\n\nDear Parents and Students,\n\nWe are delighted to announce our annual Spring Fair on Saturday, 15 March, from 10:00 AM to 3:00 PM at the school playground. The event is free for all families. There will be games, food stalls, a book sale, and a talent show. The principal, Mrs. Johnson, invites everyone to come and enjoy the day. If you would like to help or need more information, please send an email to springfair@greenfield.edu. We look forward to seeing you there!"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "C"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "A2",
+        "part": 1,
+        "topic": "Vocabulary Delighted",
+        "bloom_level": null,
+        "content": {
+            "stem": "The word \"delighted\" in line 3 is closest in meaning to...",
+            "options": {
+                "A": "Sad",
+                "B": "Happy",
+                "C": "Angry",
+                "D": "Confused"
+            },
+            "passage": "Greenfield Primary School — Spring Fair\n\nDear Parents and Students,\n\nWe are delighted to announce our annual Spring Fair on Saturday, 15 March, from 10:00 AM to 3:00 PM at the school playground. The event is free for all families. There will be games, food stalls, a book sale, and a talent show. The principal, Mrs. Johnson, invites everyone to come and enjoy the day. If you would like to help or need more information, please send an email to springfair@greenfield.edu. We look forward to seeing you there!"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B1",
+        "part": 1,
+        "topic": "Author Purpose",
+        "bloom_level": null,
+        "content": {
+            "stem": "What is the author's main purpose?",
+            "options": {
+                "A": "To entertain readers",
+                "B": "To give advice on healthy eating",
+                "C": "To advertise a product",
+                "D": "To describe a scientific experiment"
+            },
+            "passage": "Eating Well on a Student Budget\n\nMany students struggle to eat healthily because of their busy schedules and limited budgets. However, making small changes can have a big impact on your health. According to nutritionists, the most important step is to reduce processed food and eat more fresh vegetables and fruits. Cooking simple meals at home is not only cheaper but also more nutritious than eating out. Some students believe that organic food can cure diseases, but this is not supported by scientific evidence. The detrimental effects of a poor diet include low energy, difficulty concentrating, and long-term health problems. Exercise and good sleep also play important roles in staying healthy. This advice comes from a popular health magazine aimed at young adults."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B1",
+        "part": 1,
+        "topic": "Diet Advice",
+        "bloom_level": null,
+        "content": {
+            "stem": "What does the author suggest readers do?",
+            "options": {
+                "A": "Avoid all sugar",
+                "B": "Eat more protein",
+                "C": "Reduce processed food",
+                "D": "Skip breakfast"
+            },
+            "passage": "Eating Well on a Student Budget\n\nMany students struggle to eat healthily because of their busy schedules and limited budgets. However, making small changes can have a big impact on your health. According to nutritionists, the most important step is to reduce processed food and eat more fresh vegetables and fruits. Cooking simple meals at home is not only cheaper but also more nutritious than eating out. Some students believe that organic food can cure diseases, but this is not supported by scientific evidence. The detrimental effects of a poor diet include low energy, difficulty concentrating, and long-term health problems. Exercise and good sleep also play important roles in staying healthy. This advice comes from a popular health magazine aimed at young adults."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "C"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B1",
+        "part": 1,
+        "topic": "Food Recommendation",
+        "bloom_level": null,
+        "content": {
+            "stem": "According to the passage, which food is recommended?",
+            "options": {
+                "A": "Fast food",
+                "B": "Processed snacks",
+                "C": "Fresh vegetables",
+                "D": "Canned soup"
+            },
+            "passage": "Eating Well on a Student Budget\n\nMany students struggle to eat healthily because of their busy schedules and limited budgets. However, making small changes can have a big impact on your health. According to nutritionists, the most important step is to reduce processed food and eat more fresh vegetables and fruits. Cooking simple meals at home is not only cheaper but also more nutritious than eating out. Some students believe that organic food can cure diseases, but this is not supported by scientific evidence. The detrimental effects of a poor diet include low energy, difficulty concentrating, and long-term health problems. Exercise and good sleep also play important roles in staying healthy. This advice comes from a popular health magazine aimed at young adults."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "C"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B1",
+        "part": 1,
+        "topic": "Text Source",
+        "bloom_level": null,
+        "content": {
+            "stem": "The passage is most likely from...",
+            "options": {
+                "A": "A novel",
+                "B": "A health magazine",
+                "C": "A textbook",
+                "D": "A research paper"
+            },
+            "passage": "Eating Well on a Student Budget\n\nMany students struggle to eat healthily because of their busy schedules and limited budgets. However, making small changes can have a big impact on your health. According to nutritionists, the most important step is to reduce processed food and eat more fresh vegetables and fruits. Cooking simple meals at home is not only cheaper but also more nutritious than eating out. Some students believe that organic food can cure diseases, but this is not supported by scientific evidence. The detrimental effects of a poor diet include low energy, difficulty concentrating, and long-term health problems. Exercise and good sleep also play important roles in staying healthy. This advice comes from a popular health magazine aimed at young adults."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B1",
+        "part": 1,
+        "topic": "Unsupported Claim",
+        "bloom_level": null,
+        "content": {
+            "stem": "Which statement is NOT supported by the text?",
+            "options": {
+                "A": "Vegetables are nutritious",
+                "B": "Exercise is important",
+                "C": "Sleep affects health",
+                "D": "Organic food cures diseases"
+            },
+            "passage": "Eating Well on a Student Budget\n\nMany students struggle to eat healthily because of their busy schedules and limited budgets. However, making small changes can have a big impact on your health. According to nutritionists, the most important step is to reduce processed food and eat more fresh vegetables and fruits. Cooking simple meals at home is not only cheaper but also more nutritious than eating out. Some students believe that organic food can cure diseases, but this is not supported by scientific evidence. The detrimental effects of a poor diet include low energy, difficulty concentrating, and long-term health problems. Exercise and good sleep also play important roles in staying healthy. This advice comes from a popular health magazine aimed at young adults."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "D"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B1",
+        "part": 1,
+        "topic": "Vocabulary Detrimental",
+        "bloom_level": null,
+        "content": {
+            "stem": "The word \"detrimental\" in paragraph 2 means...",
+            "options": {
+                "A": "Helpful",
+                "B": "Harmful",
+                "C": "Important",
+                "D": "Unusual"
+            },
+            "passage": "Eating Well on a Student Budget\n\nMany students struggle to eat healthily because of their busy schedules and limited budgets. However, making small changes can have a big impact on your health. According to nutritionists, the most important step is to reduce processed food and eat more fresh vegetables and fruits. Cooking simple meals at home is not only cheaper but also more nutritious than eating out. Some students believe that organic food can cure diseases, but this is not supported by scientific evidence. The detrimental effects of a poor diet include low energy, difficulty concentrating, and long-term health problems. Exercise and good sleep also play important roles in staying healthy. This advice comes from a popular health magazine aimed at young adults."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B1",
+        "part": 2,
+        "topic": "Author Attitude",
+        "bloom_level": null,
+        "content": {
+            "stem": "The author's attitude toward the current situation is...",
+            "options": {
+                "A": "Supportive",
+                "B": "Critical",
+                "C": "Neutral",
+                "D": "Humorous"
+            },
+            "passage": "Traffic Congestion in Modern Cities\n\nTraffic congestion has become one of the most serious problems affecting the quality of life in many cities. The primary cause is the rapid increase in car ownership, as more families can now afford private vehicles. The author takes a critical view of the current situation, arguing that governments have failed to act quickly enough. One promising solution is investing in public transport systems such as metro lines and bus rapid transit. Research shows that improving public transport can alleviate congestion by encouraging people to leave their cars at home. While no city has found a perfect solution, experts agree that the problem will only get worse without significant action. Some cities have already seen positive results from expanding their public transport networks."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B1",
+        "part": 2,
+        "topic": "Car Ownership",
+        "bloom_level": null,
+        "content": {
+            "stem": "According to the author, what is the primary cause?",
+            "options": {
+                "A": "Poor road design",
+                "B": "Increasing car ownership",
+                "C": "Lack of buses",
+                "D": "Bad weather"
+            },
+            "passage": "Traffic Congestion in Modern Cities\n\nTraffic congestion has become one of the most serious problems affecting the quality of life in many cities. The primary cause is the rapid increase in car ownership, as more families can now afford private vehicles. The author takes a critical view of the current situation, arguing that governments have failed to act quickly enough. One promising solution is investing in public transport systems such as metro lines and bus rapid transit. Research shows that improving public transport can alleviate congestion by encouraging people to leave their cars at home. While no city has found a perfect solution, experts agree that the problem will only get worse without significant action. Some cities have already seen positive results from expanding their public transport networks."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B1",
+        "part": 2,
+        "topic": "Implied Meaning",
+        "bloom_level": null,
+        "content": {
+            "stem": "Which is implied but not directly stated?",
+            "options": {
+                "A": "The problem will get worse without action",
+                "B": "People prefer buses to trains",
+                "C": "The government has enough money",
+                "D": "All cities have the same problem"
+            },
+            "passage": "Traffic Congestion in Modern Cities\n\nTraffic congestion has become one of the most serious problems affecting the quality of life in many cities. The primary cause is the rapid increase in car ownership, as more families can now afford private vehicles. The author takes a critical view of the current situation, arguing that governments have failed to act quickly enough. One promising solution is investing in public transport systems such as metro lines and bus rapid transit. Research shows that improving public transport can alleviate congestion by encouraging people to leave their cars at home. While no city has found a perfect solution, experts agree that the problem will only get worse without significant action. Some cities have already seen positive results from expanding their public transport networks."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B1",
+        "part": 2,
+        "topic": "Traffic Congestion",
+        "bloom_level": null,
+        "content": {
+            "stem": "What is the main idea of the passage?",
+            "options": {
+                "A": "Traffic congestion affects quality of life",
+                "B": "Public transport should be free",
+                "C": "Cars should be banned from cities",
+                "D": "Cycling is the best transport"
+            },
+            "passage": "Traffic Congestion in Modern Cities\n\nTraffic congestion has become one of the most serious problems affecting the quality of life in many cities. The primary cause is the rapid increase in car ownership, as more families can now afford private vehicles. The author takes a critical view of the current situation, arguing that governments have failed to act quickly enough. One promising solution is investing in public transport systems such as metro lines and bus rapid transit. Research shows that improving public transport can alleviate congestion by encouraging people to leave their cars at home. While no city has found a perfect solution, experts agree that the problem will only get worse without significant action. Some cities have already seen positive results from expanding their public transport networks."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B1",
+        "part": 2,
+        "topic": "Transport Solution",
+        "bloom_level": null,
+        "content": {
+            "stem": "What solution does the text propose?",
+            "options": {
+                "A": "Building more roads",
+                "B": "Investing in public transport",
+                "C": "Banning private cars",
+                "D": "Reducing speed limits"
+            },
+            "passage": "Traffic Congestion in Modern Cities\n\nTraffic congestion has become one of the most serious problems affecting the quality of life in many cities. The primary cause is the rapid increase in car ownership, as more families can now afford private vehicles. The author takes a critical view of the current situation, arguing that governments have failed to act quickly enough. One promising solution is investing in public transport systems such as metro lines and bus rapid transit. Research shows that improving public transport can alleviate congestion by encouraging people to leave their cars at home. While no city has found a perfect solution, experts agree that the problem will only get worse without significant action. Some cities have already seen positive results from expanding their public transport networks."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B1",
+        "part": 2,
+        "topic": "Vocabulary Alleviate",
+        "bloom_level": null,
+        "content": {
+            "stem": "The word \"alleviate\" is closest in meaning to...",
+            "options": {
+                "A": "Worsen",
+                "B": "Create",
+                "C": "Reduce",
+                "D": "Ignore"
+            },
+            "passage": "Traffic Congestion in Modern Cities\n\nTraffic congestion has become one of the most serious problems affecting the quality of life in many cities. The primary cause is the rapid increase in car ownership, as more families can now afford private vehicles. The author takes a critical view of the current situation, arguing that governments have failed to act quickly enough. One promising solution is investing in public transport systems such as metro lines and bus rapid transit. Research shows that improving public transport can alleviate congestion by encouraging people to leave their cars at home. While no city has found a perfect solution, experts agree that the problem will only get worse without significant action. Some cities have already seen positive results from expanding their public transport networks."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "C"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B2",
+        "part": 2,
+        "topic": "Double-Edged Sword",
+        "bloom_level": null,
+        "content": {
+            "stem": "The author uses the phrase \"double-edged sword\" to suggest that...",
+            "options": {
+                "A": "Remote work has both advantages and disadvantages",
+                "B": "Technology is unreliable",
+                "C": "Companies save money at employees' expense",
+                "D": "The trend will reverse"
+            },
+            "passage": "The Remote Work Revolution\n\nThe shift to remote work, accelerated by the global pandemic, has fundamentally transformed the modern workplace. Research cited by leading business schools indicates that remote workers generally report higher job satisfaction compared to their office-based counterparts, largely due to greater flexibility and reduced commuting time.\n\nHowever, the transition has proven to be a double-edged sword. While companies benefit from reduced overhead costs and access to a global talent pool, concerns about employee isolation and diminished team cohesion have emerged. Several studies acknowledge that remote work increases isolation, particularly for workers living alone.\n\nLooking ahead, most analysts predict that hybrid models will become standard, combining the flexibility of remote work with the collaborative benefits of office time. The word 'paramount' in describing work-life balance reflects its essential importance in this new paradigm. Organizations that fail to adapt risk losing their most talented employees to more progressive competitors."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B2",
+        "part": 2,
+        "topic": "Future of Work",
+        "bloom_level": null,
+        "content": {
+            "stem": "What can be inferred about the future of work?",
+            "options": {
+                "A": "All jobs will be remote",
+                "B": "Hybrid models will become standard",
+                "C": "Offices will disappear entirely",
+                "D": "Remote work is a temporary trend"
+            },
+            "passage": "The Remote Work Revolution\n\nThe shift to remote work, accelerated by the global pandemic, has fundamentally transformed the modern workplace. Research cited by leading business schools indicates that remote workers generally report higher job satisfaction compared to their office-based counterparts, largely due to greater flexibility and reduced commuting time.\n\nHowever, the transition has proven to be a double-edged sword. While companies benefit from reduced overhead costs and access to a global talent pool, concerns about employee isolation and diminished team cohesion have emerged. Several studies acknowledge that remote work increases isolation, particularly for workers living alone.\n\nLooking ahead, most analysts predict that hybrid models will become standard, combining the flexibility of remote work with the collaborative benefits of office time. The word 'paramount' in describing work-life balance reflects its essential importance in this new paradigm. Organizations that fail to adapt risk losing their most talented employees to more progressive competitors."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B2",
+        "part": 2,
+        "topic": "Remote Work Economy",
+        "bloom_level": null,
+        "content": {
+            "stem": "The passage primarily discusses...",
+            "options": {
+                "A": "The economic impact of remote work",
+                "B": "The history of telecommuting",
+                "C": "Management strategies for virtual teams",
+                "D": "Technology infrastructure requirements"
+            },
+            "passage": "The Remote Work Revolution\n\nThe shift to remote work, accelerated by the global pandemic, has fundamentally transformed the modern workplace. Research cited by leading business schools indicates that remote workers generally report higher job satisfaction compared to their office-based counterparts, largely due to greater flexibility and reduced commuting time.\n\nHowever, the transition has proven to be a double-edged sword. While companies benefit from reduced overhead costs and access to a global talent pool, concerns about employee isolation and diminished team cohesion have emerged. Several studies acknowledge that remote work increases isolation, particularly for workers living alone.\n\nLooking ahead, most analysts predict that hybrid models will become standard, combining the flexibility of remote work with the collaborative benefits of office time. The word 'paramount' in describing work-life balance reflects its essential importance in this new paradigm. Organizations that fail to adapt risk losing their most talented employees to more progressive competitors."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B2",
+        "part": 2,
+        "topic": "Remote Work Isolation",
+        "bloom_level": null,
+        "content": {
+            "stem": "Which counterargument does the author acknowledge?",
+            "options": {
+                "A": "Remote work increases isolation",
+                "B": "Technology costs are prohibitive",
+                "C": "Not all jobs can be done remotely",
+                "D": "Productivity always decreases"
+            },
+            "passage": "The Remote Work Revolution\n\nThe shift to remote work, accelerated by the global pandemic, has fundamentally transformed the modern workplace. Research cited by leading business schools indicates that remote workers generally report higher job satisfaction compared to their office-based counterparts, largely due to greater flexibility and reduced commuting time.\n\nHowever, the transition has proven to be a double-edged sword. While companies benefit from reduced overhead costs and access to a global talent pool, concerns about employee isolation and diminished team cohesion have emerged. Several studies acknowledge that remote work increases isolation, particularly for workers living alone.\n\nLooking ahead, most analysts predict that hybrid models will become standard, combining the flexibility of remote work with the collaborative benefits of office time. The word 'paramount' in describing work-life balance reflects its essential importance in this new paradigm. Organizations that fail to adapt risk losing their most talented employees to more progressive competitors."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B2",
+        "part": 2,
+        "topic": "Vocabulary Paramount",
+        "bloom_level": null,
+        "content": {
+            "stem": "The word \"paramount\" in paragraph 4 is closest in meaning to...",
+            "options": {
+                "A": "Optional",
+                "B": "Interesting",
+                "C": "Essential",
+                "D": "Difficult"
+            },
+            "passage": "The Remote Work Revolution\n\nThe shift to remote work, accelerated by the global pandemic, has fundamentally transformed the modern workplace. Research cited by leading business schools indicates that remote workers generally report higher job satisfaction compared to their office-based counterparts, largely due to greater flexibility and reduced commuting time.\n\nHowever, the transition has proven to be a double-edged sword. While companies benefit from reduced overhead costs and access to a global talent pool, concerns about employee isolation and diminished team cohesion have emerged. Several studies acknowledge that remote work increases isolation, particularly for workers living alone.\n\nLooking ahead, most analysts predict that hybrid models will become standard, combining the flexibility of remote work with the collaborative benefits of office time. The word 'paramount' in describing work-life balance reflects its essential importance in this new paradigm. Organizations that fail to adapt risk losing their most talented employees to more progressive competitors."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "C"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B2",
+        "part": 2,
+        "topic": "Worker Satisfaction",
+        "bloom_level": null,
+        "content": {
+            "stem": "According to the research cited, remote workers...",
+            "options": {
+                "A": "Are less productive than office workers",
+                "B": "Report higher job satisfaction",
+                "C": "Earn more than office counterparts",
+                "D": "Have fewer career advancement opportunities"
+            },
+            "passage": "The Remote Work Revolution\n\nThe shift to remote work, accelerated by the global pandemic, has fundamentally transformed the modern workplace. Research cited by leading business schools indicates that remote workers generally report higher job satisfaction compared to their office-based counterparts, largely due to greater flexibility and reduced commuting time.\n\nHowever, the transition has proven to be a double-edged sword. While companies benefit from reduced overhead costs and access to a global talent pool, concerns about employee isolation and diminished team cohesion have emerged. Several studies acknowledge that remote work increases isolation, particularly for workers living alone.\n\nLooking ahead, most analysts predict that hybrid models will become standard, combining the flexibility of remote work with the collaborative benefits of office time. The word 'paramount' in describing work-life balance reflects its essential importance in this new paradigm. Organizations that fail to adapt risk losing their most talented employees to more progressive competitors."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B2",
+        "part": 3,
+        "topic": "Finland Example",
+        "bloom_level": null,
+        "content": {
+            "stem": "The author uses the example of Finland to illustrate...",
+            "options": {
+                "A": "Economic growth",
+                "B": "Educational reform success",
+                "C": "Political stability",
+                "D": "Cultural diversity"
+            },
+            "passage": "Rethinking Education: Lessons from Finland\n\nFinland's education system has been widely praised as one of the most successful in the world. The author uses the example of Finland to illustrate how educational reform can lead to remarkable results without relying on standardized testing or excessive homework.\n\nThe passage suggests that standardized testing has significant limitations, as it often fails to measure creativity, critical thinking, and social skills — qualities that are equally important for success in life. Critics of the current system describe it as a 'one-size-fits-all approach' — a universal but inflexible solution that ignores the diverse needs and talents of individual students.\n\nThe fourth paragraph argues that balance is needed in policy-making: technology should complement traditional teaching, not replace it. The conclusion implies that more research is needed to understand how these principles can be adapted to different cultural and economic contexts."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B2",
+        "part": 3,
+        "topic": "One-Size-Fits-All",
+        "bloom_level": null,
+        "content": {
+            "stem": "What does the author mean by \"one-size-fits-all approach\"?",
+            "options": {
+                "A": "A flexible method",
+                "B": "A universal but inflexible solution",
+                "C": "A custom-made strategy",
+                "D": "An expensive program"
+            },
+            "passage": "Rethinking Education: Lessons from Finland\n\nFinland's education system has been widely praised as one of the most successful in the world. The author uses the example of Finland to illustrate how educational reform can lead to remarkable results without relying on standardized testing or excessive homework.\n\nThe passage suggests that standardized testing has significant limitations, as it often fails to measure creativity, critical thinking, and social skills — qualities that are equally important for success in life. Critics of the current system describe it as a 'one-size-fits-all approach' — a universal but inflexible solution that ignores the diverse needs and talents of individual students.\n\nThe fourth paragraph argues that balance is needed in policy-making: technology should complement traditional teaching, not replace it. The conclusion implies that more research is needed to understand how these principles can be adapted to different cultural and economic contexts."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B2",
+        "part": 3,
+        "topic": "Policy Balance",
+        "bloom_level": null,
+        "content": {
+            "stem": "Which statement best summarizes the fourth paragraph?",
+            "options": {
+                "A": "Technology solves all problems",
+                "B": "Balance is needed in policy-making",
+                "C": "Tradition is always better",
+                "D": "Research is unreliable"
+            },
+            "passage": "Rethinking Education: Lessons from Finland\n\nFinland's education system has been widely praised as one of the most successful in the world. The author uses the example of Finland to illustrate how educational reform can lead to remarkable results without relying on standardized testing or excessive homework.\n\nThe passage suggests that standardized testing has significant limitations, as it often fails to measure creativity, critical thinking, and social skills — qualities that are equally important for success in life. Critics of the current system describe it as a 'one-size-fits-all approach' — a universal but inflexible solution that ignores the diverse needs and talents of individual students.\n\nThe fourth paragraph argues that balance is needed in policy-making: technology should complement traditional teaching, not replace it. The conclusion implies that more research is needed to understand how these principles can be adapted to different cultural and economic contexts."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B2",
+        "part": 3,
+        "topic": "Research Needed",
+        "bloom_level": null,
+        "content": {
+            "stem": "The conclusion implies that...",
+            "options": {
+                "A": "More research is needed",
+                "B": "The current system works well",
+                "C": "Change is impossible",
+                "D": "Students don't care about education"
+            },
+            "passage": "Rethinking Education: Lessons from Finland\n\nFinland's education system has been widely praised as one of the most successful in the world. The author uses the example of Finland to illustrate how educational reform can lead to remarkable results without relying on standardized testing or excessive homework.\n\nThe passage suggests that standardized testing has significant limitations, as it often fails to measure creativity, critical thinking, and social skills — qualities that are equally important for success in life. Critics of the current system describe it as a 'one-size-fits-all approach' — a universal but inflexible solution that ignores the diverse needs and talents of individual students.\n\nThe fourth paragraph argues that balance is needed in policy-making: technology should complement traditional teaching, not replace it. The conclusion implies that more research is needed to understand how these principles can be adapted to different cultural and economic contexts."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "B2",
+        "part": 3,
+        "topic": "Testing Limitations",
+        "bloom_level": null,
+        "content": {
+            "stem": "The passage suggests that standardized testing...",
+            "options": {
+                "A": "Accurately measures intelligence",
+                "B": "Is the best assessment method",
+                "C": "Has significant limitations",
+                "D": "Should be abolished entirely"
+            },
+            "passage": "Rethinking Education: Lessons from Finland\n\nFinland's education system has been widely praised as one of the most successful in the world. The author uses the example of Finland to illustrate how educational reform can lead to remarkable results without relying on standardized testing or excessive homework.\n\nThe passage suggests that standardized testing has significant limitations, as it often fails to measure creativity, critical thinking, and social skills — qualities that are equally important for success in life. Critics of the current system describe it as a 'one-size-fits-all approach' — a universal but inflexible solution that ignores the diverse needs and talents of individual students.\n\nThe fourth paragraph argues that balance is needed in policy-making: technology should complement traditional teaching, not replace it. The conclusion implies that more research is needed to understand how these principles can be adapted to different cultural and economic contexts."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "C"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "C1",
+        "part": 4,
+        "topic": "Cross-Cultural Research",
+        "bloom_level": null,
+        "content": {
+            "stem": "The passage implies that future research should...",
+            "options": {
+                "A": "Replicate existing studies",
+                "B": "Explore cross-cultural dimensions more thoroughly",
+                "C": "Focus exclusively on economic outcomes",
+                "D": "Abandon qualitative approaches"
+            },
+            "passage": "Cross-Cultural Dimensions of Decision-Making\n\nThe researcher's primary argument is that cultural context shapes decision-making processes in ways that traditional economic models fail to capture. Drawing on interdisciplinary perspectives from psychology, anthropology, and behavioral economics, the study challenges the assumption that cognitive biases operate uniformly across populations.\n\nThe study's methodology has been criticized for relying on self-reported data, which may be subject to social desirability bias and cultural differences in response patterns. Nevertheless, the findings offer compelling evidence that what constitutes 'rational' decision-making varies significantly across cultures.\n\nThe term 'epistemic humility' as used in the text refers to acknowledging the limits of one's knowledge — a quality the author argues is essential for cross-cultural research. What distinguishes the author's approach from earlier studies is that it incorporates interdisciplinary perspectives, moving beyond the narrow lens of any single academic discipline.\n\nThe passage implies that future research should explore cross-cultural dimensions more thoroughly, particularly in non-Western contexts that remain underrepresented in the literature."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "C1",
+        "part": 4,
+        "topic": "Cultural Decision-Making",
+        "bloom_level": null,
+        "content": {
+            "stem": "The researcher's primary argument is that...",
+            "options": {
+                "A": "Cognitive biases are universal and unavoidable",
+                "B": "Cultural context shapes decision-making processes",
+                "C": "Economic models accurately predict behavior",
+                "D": "Individual differences are negligible"
+            },
+            "passage": "Cross-Cultural Dimensions of Decision-Making\n\nThe researcher's primary argument is that cultural context shapes decision-making processes in ways that traditional economic models fail to capture. Drawing on interdisciplinary perspectives from psychology, anthropology, and behavioral economics, the study challenges the assumption that cognitive biases operate uniformly across populations.\n\nThe study's methodology has been criticized for relying on self-reported data, which may be subject to social desirability bias and cultural differences in response patterns. Nevertheless, the findings offer compelling evidence that what constitutes 'rational' decision-making varies significantly across cultures.\n\nThe term 'epistemic humility' as used in the text refers to acknowledging the limits of one's knowledge — a quality the author argues is essential for cross-cultural research. What distinguishes the author's approach from earlier studies is that it incorporates interdisciplinary perspectives, moving beyond the narrow lens of any single academic discipline.\n\nThe passage implies that future research should explore cross-cultural dimensions more thoroughly, particularly in non-Western contexts that remain underrepresented in the literature."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "C1",
+        "part": 4,
+        "topic": "Epistemic Humility",
+        "bloom_level": null,
+        "content": {
+            "stem": "The term \"epistemic humility\" as used in the text refers to...",
+            "options": {
+                "A": "Acknowledging the limits of one's knowledge",
+                "B": "Being modest about achievements",
+                "C": "Questioning established theories",
+                "D": "Accepting criticism gracefully"
+            },
+            "passage": "Cross-Cultural Dimensions of Decision-Making\n\nThe researcher's primary argument is that cultural context shapes decision-making processes in ways that traditional economic models fail to capture. Drawing on interdisciplinary perspectives from psychology, anthropology, and behavioral economics, the study challenges the assumption that cognitive biases operate uniformly across populations.\n\nThe study's methodology has been criticized for relying on self-reported data, which may be subject to social desirability bias and cultural differences in response patterns. Nevertheless, the findings offer compelling evidence that what constitutes 'rational' decision-making varies significantly across cultures.\n\nThe term 'epistemic humility' as used in the text refers to acknowledging the limits of one's knowledge — a quality the author argues is essential for cross-cultural research. What distinguishes the author's approach from earlier studies is that it incorporates interdisciplinary perspectives, moving beyond the narrow lens of any single academic discipline.\n\nThe passage implies that future research should explore cross-cultural dimensions more thoroughly, particularly in non-Western contexts that remain underrepresented in the literature."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "C1",
+        "part": 4,
+        "topic": "Interdisciplinary Approach",
+        "bloom_level": null,
+        "content": {
+            "stem": "What distinguishes the author's approach from earlier studies?",
+            "options": {
+                "A": "It employs mixed methods",
+                "B": "It focuses on developing countries",
+                "C": "It uses a longitudinal design",
+                "D": "It incorporates interdisciplinary perspectives"
+            },
+            "passage": "Cross-Cultural Dimensions of Decision-Making\n\nThe researcher's primary argument is that cultural context shapes decision-making processes in ways that traditional economic models fail to capture. Drawing on interdisciplinary perspectives from psychology, anthropology, and behavioral economics, the study challenges the assumption that cognitive biases operate uniformly across populations.\n\nThe study's methodology has been criticized for relying on self-reported data, which may be subject to social desirability bias and cultural differences in response patterns. Nevertheless, the findings offer compelling evidence that what constitutes 'rational' decision-making varies significantly across cultures.\n\nThe term 'epistemic humility' as used in the text refers to acknowledging the limits of one's knowledge — a quality the author argues is essential for cross-cultural research. What distinguishes the author's approach from earlier studies is that it incorporates interdisciplinary perspectives, moving beyond the narrow lens of any single academic discipline.\n\nThe passage implies that future research should explore cross-cultural dimensions more thoroughly, particularly in non-Western contexts that remain underrepresented in the literature."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "D"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "reading",
+        "level": "C1",
+        "part": 4,
+        "topic": "Methodology Criticism",
+        "bloom_level": null,
+        "content": {
+            "stem": "The study's methodology has been criticized for...",
+            "options": {
+                "A": "Using too small a sample size",
+                "B": "Relying on self-reported data",
+                "C": "Ignoring demographic variables",
+                "D": "Not being replicable"
+            },
+            "passage": "Cross-Cultural Dimensions of Decision-Making\n\nThe researcher's primary argument is that cultural context shapes decision-making processes in ways that traditional economic models fail to capture. Drawing on interdisciplinary perspectives from psychology, anthropology, and behavioral economics, the study challenges the assumption that cognitive biases operate uniformly across populations.\n\nThe study's methodology has been criticized for relying on self-reported data, which may be subject to social desirability bias and cultural differences in response patterns. Nevertheless, the findings offer compelling evidence that what constitutes 'rational' decision-making varies significantly across cultures.\n\nThe term 'epistemic humility' as used in the text refers to acknowledging the limits of one's knowledge — a quality the author argues is essential for cross-cultural research. What distinguishes the author's approach from earlier studies is that it incorporates interdisciplinary perspectives, moving beyond the narrow lens of any single academic discipline.\n\nThe passage implies that future research should explore cross-cultural dimensions more thoroughly, particularly in non-Western contexts that remain underrepresented in the literature."
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    }
+]

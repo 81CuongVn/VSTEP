@@ -1,0 +1,2104 @@
+[
+    {
+        "skill": "listening",
+        "level": "A2",
+        "part": 1,
+        "topic": "Announcement Content",
+        "bloom_level": null,
+        "content": {
+            "stem": "What is being announced?",
+            "options": {
+                "A": "A schedule change",
+                "B": "A new product",
+                "C": "A weather warning",
+                "D": "A job opening"
+            },
+            "script": "Attention please. This is an announcement for all passengers at the airport. Flight BA two forty-five to London has been delayed by approximately twenty minutes. Please check the departure screen for updated information. The gift shop on the second floor will close at seven PM today instead of the usual time. This message is for hotel guests: breakfast will be served from six thirty to nine thirty. Thank you for your attention.",
+            "audio_path": "listening/a2_part1.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "A2",
+        "part": 1,
+        "topic": "Announcement Location",
+        "bloom_level": null,
+        "content": {
+            "stem": "Where is the announcement being made?",
+            "options": {
+                "A": "At a train station",
+                "B": "At an airport",
+                "C": "At a bus stop",
+                "D": "At a hospital"
+            },
+            "script": "Attention please. This is an announcement for all passengers at the airport. Flight BA two forty-five to London has been delayed by approximately twenty minutes. Please check the departure screen for updated information. The gift shop on the second floor will close at seven PM today instead of the usual time. This message is for hotel guests: breakfast will be served from six thirty to nine thirty. Thank you for your attention.",
+            "audio_path": "listening/a2_part1.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "A2",
+        "part": 1,
+        "topic": "Delay Duration",
+        "bloom_level": null,
+        "content": {
+            "stem": "How long will the delay be?",
+            "options": {
+                "A": "10 minutes",
+                "B": "20 minutes",
+                "C": "30 minutes",
+                "D": "1 hour"
+            },
+            "script": "Attention please. This is an announcement for all passengers at the airport. Flight BA two forty-five to London has been delayed by approximately twenty minutes. Please check the departure screen for updated information. The gift shop on the second floor will close at seven PM today instead of the usual time. This message is for hotel guests: breakfast will be served from six thirty to nine thirty. Thank you for your attention.",
+            "audio_path": "listening/a2_part1.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "A2",
+        "part": 1,
+        "topic": "Message Audience",
+        "bloom_level": null,
+        "content": {
+            "stem": "Who is the message for?",
+            "options": {
+                "A": "All employees",
+                "B": "New students",
+                "C": "Hotel guests",
+                "D": "Bus passengers"
+            },
+            "script": "Attention please. This is an announcement for all passengers at the airport. Flight BA two forty-five to London has been delayed by approximately twenty minutes. Please check the departure screen for updated information. The gift shop on the second floor will close at seven PM today instead of the usual time. This message is for hotel guests: breakfast will be served from six thirty to nine thirty. Thank you for your attention.",
+            "audio_path": "listening/a2_part1.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "C"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "A2",
+        "part": 1,
+        "topic": "Passenger Instructions",
+        "bloom_level": null,
+        "content": {
+            "stem": "What should passengers do?",
+            "options": {
+                "A": "Wait at gate 5",
+                "B": "Go to the information desk",
+                "C": "Check the screen",
+                "D": "Call the airline"
+            },
+            "script": "Attention please. This is an announcement for all passengers at the airport. Flight BA two forty-five to London has been delayed by approximately twenty minutes. Please check the departure screen for updated information. The gift shop on the second floor will close at seven PM today instead of the usual time. This message is for hotel guests: breakfast will be served from six thirty to nine thirty. Thank you for your attention.",
+            "audio_path": "listening/a2_part1.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "A2",
+        "part": 1,
+        "topic": "Store Closing Time",
+        "bloom_level": null,
+        "content": {
+            "stem": "What time does the store close today?",
+            "options": {
+                "A": "5:00 PM",
+                "B": "6:00 PM",
+                "C": "7:00 PM",
+                "D": "8:00 PM"
+            },
+            "script": "Attention please. This is an announcement for all passengers at the airport. Flight BA two forty-five to London has been delayed by approximately twenty minutes. Please check the departure screen for updated information. The gift shop on the second floor will close at seven PM today instead of the usual time. This message is for hotel guests: breakfast will be served from six thirty to nine thirty. Thank you for your attention.",
+            "audio_path": "listening/a2_part1.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "C"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "A2",
+        "part": 2,
+        "topic": "Commute Method",
+        "bloom_level": null,
+        "content": {
+            "stem": "How will the woman get to work?",
+            "options": {
+                "A": "By bus",
+                "B": "By car",
+                "C": "By bicycle",
+                "D": "On foot"
+            },
+            "script": [
+                {
+                    "speaker": "male",
+                    "text": "Hi Sarah! What are you doing this weekend? I was thinking about our holiday plan."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Oh, I'd love to go somewhere! But first, I need to figure out how to get to work tomorrow. I think I'll take the car."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Good idea. Hey, what should we do for dinner tonight? I suggest going to that new restaurant on Main Street."
+                },
+                {
+                    "speaker": "female",
+                    "text": "I'm a bit upset actually. I missed the bus this morning and was late for everything."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Oh no! Well, don't worry. Let me check the map for a better route for you."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Thanks! By the way, I need to go to the shop later. I want to buy some new shoes."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Sure. Shall we meet Tuesday afternoon to discuss the holiday details?"
+                },
+                {
+                    "speaker": "female",
+                    "text": "Perfect! Tuesday afternoon works for me."
+                }
+            ],
+            "audio_path": "listening/a2_part2.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "A2",
+        "part": 2,
+        "topic": "Conversation Topic",
+        "bloom_level": null,
+        "content": {
+            "stem": "What are the speakers talking about?",
+            "options": {
+                "A": "A holiday plan",
+                "B": "A school project",
+                "C": "A birthday party",
+                "D": "A shopping list"
+            },
+            "script": [
+                {
+                    "speaker": "male",
+                    "text": "Hi Sarah! What are you doing this weekend? I was thinking about our holiday plan."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Oh, I'd love to go somewhere! But first, I need to figure out how to get to work tomorrow. I think I'll take the car."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Good idea. Hey, what should we do for dinner tonight? I suggest going to that new restaurant on Main Street."
+                },
+                {
+                    "speaker": "female",
+                    "text": "I'm a bit upset actually. I missed the bus this morning and was late for everything."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Oh no! Well, don't worry. Let me check the map for a better route for you."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Thanks! By the way, I need to go to the shop later. I want to buy some new shoes."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Sure. Shall we meet Tuesday afternoon to discuss the holiday details?"
+                },
+                {
+                    "speaker": "female",
+                    "text": "Perfect! Tuesday afternoon works for me."
+                }
+            ],
+            "audio_path": "listening/a2_part2.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "A2",
+        "part": 2,
+        "topic": "Dinner Suggestion",
+        "bloom_level": null,
+        "content": {
+            "stem": "What does the man suggest?",
+            "options": {
+                "A": "Going to a restaurant",
+                "B": "Cooking at home",
+                "C": "Ordering delivery",
+                "D": "Skipping dinner"
+            },
+            "script": [
+                {
+                    "speaker": "male",
+                    "text": "Hi Sarah! What are you doing this weekend? I was thinking about our holiday plan."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Oh, I'd love to go somewhere! But first, I need to figure out how to get to work tomorrow. I think I'll take the car."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Good idea. Hey, what should we do for dinner tonight? I suggest going to that new restaurant on Main Street."
+                },
+                {
+                    "speaker": "female",
+                    "text": "I'm a bit upset actually. I missed the bus this morning and was late for everything."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Oh no! Well, don't worry. Let me check the map for a better route for you."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Thanks! By the way, I need to go to the shop later. I want to buy some new shoes."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Sure. Shall we meet Tuesday afternoon to discuss the holiday details?"
+                },
+                {
+                    "speaker": "female",
+                    "text": "Perfect! Tuesday afternoon works for me."
+                }
+            ],
+            "audio_path": "listening/a2_part2.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "A2",
+        "part": 2,
+        "topic": "Meeting Time",
+        "bloom_level": null,
+        "content": {
+            "stem": "When will they meet?",
+            "options": {
+                "A": "Monday morning",
+                "B": "Tuesday afternoon",
+                "C": "Wednesday evening",
+                "D": "Thursday night"
+            },
+            "script": [
+                {
+                    "speaker": "male",
+                    "text": "Hi Sarah! What are you doing this weekend? I was thinking about our holiday plan."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Oh, I'd love to go somewhere! But first, I need to figure out how to get to work tomorrow. I think I'll take the car."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Good idea. Hey, what should we do for dinner tonight? I suggest going to that new restaurant on Main Street."
+                },
+                {
+                    "speaker": "female",
+                    "text": "I'm a bit upset actually. I missed the bus this morning and was late for everything."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Oh no! Well, don't worry. Let me check the map for a better route for you."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Thanks! By the way, I need to go to the shop later. I want to buy some new shoes."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Sure. Shall we meet Tuesday afternoon to discuss the holiday details?"
+                },
+                {
+                    "speaker": "female",
+                    "text": "Perfect! Tuesday afternoon works for me."
+                }
+            ],
+            "audio_path": "listening/a2_part2.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "A2",
+        "part": 2,
+        "topic": "Next Action",
+        "bloom_level": null,
+        "content": {
+            "stem": "What will the man do next?",
+            "options": {
+                "A": "Call a taxi",
+                "B": "Check the map",
+                "C": "Ask for directions",
+                "D": "Wait at the station"
+            },
+            "script": [
+                {
+                    "speaker": "male",
+                    "text": "Hi Sarah! What are you doing this weekend? I was thinking about our holiday plan."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Oh, I'd love to go somewhere! But first, I need to figure out how to get to work tomorrow. I think I'll take the car."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Good idea. Hey, what should we do for dinner tonight? I suggest going to that new restaurant on Main Street."
+                },
+                {
+                    "speaker": "female",
+                    "text": "I'm a bit upset actually. I missed the bus this morning and was late for everything."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Oh no! Well, don't worry. Let me check the map for a better route for you."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Thanks! By the way, I need to go to the shop later. I want to buy some new shoes."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Sure. Shall we meet Tuesday afternoon to discuss the holiday details?"
+                },
+                {
+                    "speaker": "female",
+                    "text": "Perfect! Tuesday afternoon works for me."
+                }
+            ],
+            "audio_path": "listening/a2_part2.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "C"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "A2",
+        "part": 2,
+        "topic": "Reason for Upset",
+        "bloom_level": null,
+        "content": {
+            "stem": "Why is the woman upset?",
+            "options": {
+                "A": "She lost her phone",
+                "B": "She missed the bus",
+                "C": "She failed a test",
+                "D": "She forgot her wallet"
+            },
+            "script": [
+                {
+                    "speaker": "male",
+                    "text": "Hi Sarah! What are you doing this weekend? I was thinking about our holiday plan."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Oh, I'd love to go somewhere! But first, I need to figure out how to get to work tomorrow. I think I'll take the car."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Good idea. Hey, what should we do for dinner tonight? I suggest going to that new restaurant on Main Street."
+                },
+                {
+                    "speaker": "female",
+                    "text": "I'm a bit upset actually. I missed the bus this morning and was late for everything."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Oh no! Well, don't worry. Let me check the map for a better route for you."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Thanks! By the way, I need to go to the shop later. I want to buy some new shoes."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Sure. Shall we meet Tuesday afternoon to discuss the holiday details?"
+                },
+                {
+                    "speaker": "female",
+                    "text": "Perfect! Tuesday afternoon works for me."
+                }
+            ],
+            "audio_path": "listening/a2_part2.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "A2",
+        "part": 2,
+        "topic": "Shopping Item",
+        "bloom_level": null,
+        "content": {
+            "stem": "What does the woman want to buy?",
+            "options": {
+                "A": "A dress",
+                "B": "A book",
+                "C": "A phone",
+                "D": "Shoes"
+            },
+            "script": [
+                {
+                    "speaker": "male",
+                    "text": "Hi Sarah! What are you doing this weekend? I was thinking about our holiday plan."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Oh, I'd love to go somewhere! But first, I need to figure out how to get to work tomorrow. I think I'll take the car."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Good idea. Hey, what should we do for dinner tonight? I suggest going to that new restaurant on Main Street."
+                },
+                {
+                    "speaker": "female",
+                    "text": "I'm a bit upset actually. I missed the bus this morning and was late for everything."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Oh no! Well, don't worry. Let me check the map for a better route for you."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Thanks! By the way, I need to go to the shop later. I want to buy some new shoes."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Sure. Shall we meet Tuesday afternoon to discuss the holiday details?"
+                },
+                {
+                    "speaker": "female",
+                    "text": "Perfect! Tuesday afternoon works for me."
+                }
+            ],
+            "audio_path": "listening/a2_part2.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "D"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "A2",
+        "part": 2,
+        "topic": "Speaker Location",
+        "bloom_level": null,
+        "content": {
+            "stem": "Where are the speakers?",
+            "options": {
+                "A": "At a shop",
+                "B": "At school",
+                "C": "At a park",
+                "D": "At home"
+            },
+            "script": [
+                {
+                    "speaker": "male",
+                    "text": "Hi Sarah! What are you doing this weekend? I was thinking about our holiday plan."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Oh, I'd love to go somewhere! But first, I need to figure out how to get to work tomorrow. I think I'll take the car."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Good idea. Hey, what should we do for dinner tonight? I suggest going to that new restaurant on Main Street."
+                },
+                {
+                    "speaker": "female",
+                    "text": "I'm a bit upset actually. I missed the bus this morning and was late for everything."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Oh no! Well, don't worry. Let me check the map for a better route for you."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Thanks! By the way, I need to go to the shop later. I want to buy some new shoes."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Sure. Shall we meet Tuesday afternoon to discuss the holiday details?"
+                },
+                {
+                    "speaker": "female",
+                    "text": "Perfect! Tuesday afternoon works for me."
+                }
+            ],
+            "audio_path": "listening/a2_part2.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B1",
+        "part": 1,
+        "topic": "Announcement Purpose",
+        "bloom_level": null,
+        "content": {
+            "stem": "What is the purpose of the announcement?",
+            "options": {
+                "A": "To advertise a product",
+                "B": "To inform about a policy change",
+                "C": "To welcome visitors",
+                "D": "To give travel directions"
+            },
+            "script": "Good morning, everyone. Welcome to the annual technology conference. The purpose of this announcement is to inform you about a policy change regarding registration. All visitors should register at the reception desk before entering the main hall. Please note that the opening ceremony will begin in fifteen minutes. We would also like to announce that the conference schedule has changed. New opening hours for the exhibition area are from nine AM to six PM. Thank you for your cooperation.",
+            "audio_path": "listening/b1_part1.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B1",
+        "part": 1,
+        "topic": "Announcement Setting",
+        "bloom_level": null,
+        "content": {
+            "stem": "Where would you most likely hear this announcement?",
+            "options": {
+                "A": "In a library",
+                "B": "At a conference",
+                "C": "On a train",
+                "D": "In a restaurant"
+            },
+            "script": "Good morning, everyone. Welcome to the annual technology conference. The purpose of this announcement is to inform you about a policy change regarding registration. All visitors should register at the reception desk before entering the main hall. Please note that the opening ceremony will begin in fifteen minutes. We would also like to announce that the conference schedule has changed. New opening hours for the exhibition area are from nine AM to six PM. Thank you for your cooperation.",
+            "audio_path": "listening/b1_part1.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B1",
+        "part": 1,
+        "topic": "Event Start Time",
+        "bloom_level": null,
+        "content": {
+            "stem": "When will the event begin?",
+            "options": {
+                "A": "In 5 minutes",
+                "B": "In 15 minutes",
+                "C": "In 30 minutes",
+                "D": "In 1 hour"
+            },
+            "script": "Good morning, everyone. Welcome to the annual technology conference. The purpose of this announcement is to inform you about a policy change regarding registration. All visitors should register at the reception desk before entering the main hall. Please note that the opening ceremony will begin in fifteen minutes. We would also like to announce that the conference schedule has changed. New opening hours for the exhibition area are from nine AM to six PM. Thank you for your cooperation.",
+            "audio_path": "listening/b1_part1.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B1",
+        "part": 1,
+        "topic": "Schedule Change",
+        "bloom_level": null,
+        "content": {
+            "stem": "What change is being announced?",
+            "options": {
+                "A": "New opening hours",
+                "B": "A price increase",
+                "C": "A staff change",
+                "D": "Building renovation"
+            },
+            "script": "Good morning, everyone. Welcome to the annual technology conference. The purpose of this announcement is to inform you about a policy change regarding registration. All visitors should register at the reception desk before entering the main hall. Please note that the opening ceremony will begin in fifteen minutes. We would also like to announce that the conference schedule has changed. New opening hours for the exhibition area are from nine AM to six PM. Thank you for your cooperation.",
+            "audio_path": "listening/b1_part1.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B1",
+        "part": 1,
+        "topic": "Speaker Request",
+        "bloom_level": null,
+        "content": {
+            "stem": "What does the speaker ask people to do?",
+            "options": {
+                "A": "Leave the building",
+                "B": "Fill out a form",
+                "C": "Move to another room",
+                "D": "Wait for instructions"
+            },
+            "script": "Good morning, everyone. Welcome to the annual technology conference. The purpose of this announcement is to inform you about a policy change regarding registration. All visitors should register at the reception desk before entering the main hall. Please note that the opening ceremony will begin in fifteen minutes. We would also like to announce that the conference schedule has changed. New opening hours for the exhibition area are from nine AM to six PM. Thank you for your cooperation.",
+            "audio_path": "listening/b1_part1.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "D"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B1",
+        "part": 1,
+        "topic": "Visitor Instructions",
+        "bloom_level": null,
+        "content": {
+            "stem": "According to the speaker, what should visitors do first?",
+            "options": {
+                "A": "Register at reception",
+                "B": "Find their seats",
+                "C": "Turn off phones",
+                "D": "Read the brochure"
+            },
+            "script": "Good morning, everyone. Welcome to the annual technology conference. The purpose of this announcement is to inform you about a policy change regarding registration. All visitors should register at the reception desk before entering the main hall. Please note that the opening ceremony will begin in fifteen minutes. We would also like to announce that the conference schedule has changed. New opening hours for the exhibition area are from nine AM to six PM. Thank you for your cooperation.",
+            "audio_path": "listening/b1_part1.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B1",
+        "part": 2,
+        "topic": "Agreement Point",
+        "bloom_level": null,
+        "content": {
+            "stem": "What do the speakers agree on?",
+            "options": {
+                "A": "They need more data",
+                "B": "The plan is ready",
+                "C": "They should ask the manager",
+                "D": "The meeting was productive"
+            },
+            "script": [
+                {
+                    "speaker": "male",
+                    "text": "So, have you heard back from the job interview yet?"
+                },
+                {
+                    "speaker": "female",
+                    "text": "Not yet. I'm a new employee here, so I'm still learning the ropes."
+                },
+                {
+                    "speaker": "male",
+                    "text": "I see. By the way, about the Johnson project — it needs more funding if we want to finish on time."
+                },
+                {
+                    "speaker": "female",
+                    "text": "I know, that's my concern too. The deadline is too tight for the current budget."
+                },
+                {
+                    "speaker": "male",
+                    "text": "I disagree about hiring more people though. I think it's too expensive. We should find another way."
+                },
+                {
+                    "speaker": "female",
+                    "text": "What do you think we should do next then?"
+                },
+                {
+                    "speaker": "male",
+                    "text": "Let's check the schedule first and see where we can save time. I'm a bit skeptical about the new proposal, to be honest."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Fair enough. But we both agree we need more data before making any decisions, right?"
+                },
+                {
+                    "speaker": "male",
+                    "text": "Absolutely. Let's gather the numbers first."
+                }
+            ],
+            "audio_path": "listening/b1_part2.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B1",
+        "part": 2,
+        "topic": "Deadline Concern",
+        "bloom_level": null,
+        "content": {
+            "stem": "What is the woman's concern?",
+            "options": {
+                "A": "The deadline is too tight",
+                "B": "The budget is insufficient",
+                "C": "The team is too small",
+                "D": "The client is unhappy"
+            },
+            "script": [
+                {
+                    "speaker": "male",
+                    "text": "So, have you heard back from the job interview yet?"
+                },
+                {
+                    "speaker": "female",
+                    "text": "Not yet. I'm a new employee here, so I'm still learning the ropes."
+                },
+                {
+                    "speaker": "male",
+                    "text": "I see. By the way, about the Johnson project — it needs more funding if we want to finish on time."
+                },
+                {
+                    "speaker": "female",
+                    "text": "I know, that's my concern too. The deadline is too tight for the current budget."
+                },
+                {
+                    "speaker": "male",
+                    "text": "I disagree about hiring more people though. I think it's too expensive. We should find another way."
+                },
+                {
+                    "speaker": "female",
+                    "text": "What do you think we should do next then?"
+                },
+                {
+                    "speaker": "male",
+                    "text": "Let's check the schedule first and see where we can save time. I'm a bit skeptical about the new proposal, to be honest."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Fair enough. But we both agree we need more data before making any decisions, right?"
+                },
+                {
+                    "speaker": "male",
+                    "text": "Absolutely. Let's gather the numbers first."
+                }
+            ],
+            "audio_path": "listening/b1_part2.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B1",
+        "part": 2,
+        "topic": "Disagreement Reason",
+        "bloom_level": null,
+        "content": {
+            "stem": "Why does the man disagree with the woman?",
+            "options": {
+                "A": "He thinks it is too expensive",
+                "B": "He prefers another option",
+                "C": "He does not have time",
+                "D": "He already made plans"
+            },
+            "script": [
+                {
+                    "speaker": "male",
+                    "text": "So, have you heard back from the job interview yet?"
+                },
+                {
+                    "speaker": "female",
+                    "text": "Not yet. I'm a new employee here, so I'm still learning the ropes."
+                },
+                {
+                    "speaker": "male",
+                    "text": "I see. By the way, about the Johnson project — it needs more funding if we want to finish on time."
+                },
+                {
+                    "speaker": "female",
+                    "text": "I know, that's my concern too. The deadline is too tight for the current budget."
+                },
+                {
+                    "speaker": "male",
+                    "text": "I disagree about hiring more people though. I think it's too expensive. We should find another way."
+                },
+                {
+                    "speaker": "female",
+                    "text": "What do you think we should do next then?"
+                },
+                {
+                    "speaker": "male",
+                    "text": "Let's check the schedule first and see where we can save time. I'm a bit skeptical about the new proposal, to be honest."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Fair enough. But we both agree we need more data before making any decisions, right?"
+                },
+                {
+                    "speaker": "male",
+                    "text": "Absolutely. Let's gather the numbers first."
+                }
+            ],
+            "audio_path": "listening/b1_part2.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B1",
+        "part": 2,
+        "topic": "Job Interview",
+        "bloom_level": null,
+        "content": {
+            "stem": "What is the main topic of the conversation?",
+            "options": {
+                "A": "A vacation plan",
+                "B": "A job interview",
+                "C": "A health concern",
+                "D": "A class assignment"
+            },
+            "script": [
+                {
+                    "speaker": "male",
+                    "text": "So, have you heard back from the job interview yet?"
+                },
+                {
+                    "speaker": "female",
+                    "text": "Not yet. I'm a new employee here, so I'm still learning the ropes."
+                },
+                {
+                    "speaker": "male",
+                    "text": "I see. By the way, about the Johnson project — it needs more funding if we want to finish on time."
+                },
+                {
+                    "speaker": "female",
+                    "text": "I know, that's my concern too. The deadline is too tight for the current budget."
+                },
+                {
+                    "speaker": "male",
+                    "text": "I disagree about hiring more people though. I think it's too expensive. We should find another way."
+                },
+                {
+                    "speaker": "female",
+                    "text": "What do you think we should do next then?"
+                },
+                {
+                    "speaker": "male",
+                    "text": "Let's check the schedule first and see where we can save time. I'm a bit skeptical about the new proposal, to be honest."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Fair enough. But we both agree we need more data before making any decisions, right?"
+                },
+                {
+                    "speaker": "male",
+                    "text": "Absolutely. Let's gather the numbers first."
+                }
+            ],
+            "audio_path": "listening/b1_part2.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B1",
+        "part": 2,
+        "topic": "Next Step",
+        "bloom_level": null,
+        "content": {
+            "stem": "What will the speakers probably do next?",
+            "options": {
+                "A": "Go shopping",
+                "B": "Call a friend",
+                "C": "Check the schedule",
+                "D": "Leave the office"
+            },
+            "script": [
+                {
+                    "speaker": "male",
+                    "text": "So, have you heard back from the job interview yet?"
+                },
+                {
+                    "speaker": "female",
+                    "text": "Not yet. I'm a new employee here, so I'm still learning the ropes."
+                },
+                {
+                    "speaker": "male",
+                    "text": "I see. By the way, about the Johnson project — it needs more funding if we want to finish on time."
+                },
+                {
+                    "speaker": "female",
+                    "text": "I know, that's my concern too. The deadline is too tight for the current budget."
+                },
+                {
+                    "speaker": "male",
+                    "text": "I disagree about hiring more people though. I think it's too expensive. We should find another way."
+                },
+                {
+                    "speaker": "female",
+                    "text": "What do you think we should do next then?"
+                },
+                {
+                    "speaker": "male",
+                    "text": "Let's check the schedule first and see where we can save time. I'm a bit skeptical about the new proposal, to be honest."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Fair enough. But we both agree we need more data before making any decisions, right?"
+                },
+                {
+                    "speaker": "male",
+                    "text": "Absolutely. Let's gather the numbers first."
+                }
+            ],
+            "audio_path": "listening/b1_part2.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "C"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B1",
+        "part": 2,
+        "topic": "Project Status",
+        "bloom_level": null,
+        "content": {
+            "stem": "The man mentions that the project...",
+            "options": {
+                "A": "Is ahead of schedule",
+                "B": "Needs more funding",
+                "C": "Was just approved",
+                "D": "Has been cancelled"
+            },
+            "script": [
+                {
+                    "speaker": "male",
+                    "text": "So, have you heard back from the job interview yet?"
+                },
+                {
+                    "speaker": "female",
+                    "text": "Not yet. I'm a new employee here, so I'm still learning the ropes."
+                },
+                {
+                    "speaker": "male",
+                    "text": "I see. By the way, about the Johnson project — it needs more funding if we want to finish on time."
+                },
+                {
+                    "speaker": "female",
+                    "text": "I know, that's my concern too. The deadline is too tight for the current budget."
+                },
+                {
+                    "speaker": "male",
+                    "text": "I disagree about hiring more people though. I think it's too expensive. We should find another way."
+                },
+                {
+                    "speaker": "female",
+                    "text": "What do you think we should do next then?"
+                },
+                {
+                    "speaker": "male",
+                    "text": "Let's check the schedule first and see where we can save time. I'm a bit skeptical about the new proposal, to be honest."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Fair enough. But we both agree we need more data before making any decisions, right?"
+                },
+                {
+                    "speaker": "male",
+                    "text": "Absolutely. Let's gather the numbers first."
+                }
+            ],
+            "audio_path": "listening/b1_part2.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B1",
+        "part": 2,
+        "topic": "Proposal Reaction",
+        "bloom_level": null,
+        "content": {
+            "stem": "How does the man feel about the proposal?",
+            "options": {
+                "A": "Enthusiastic",
+                "B": "Skeptical",
+                "C": "Indifferent",
+                "D": "Confused"
+            },
+            "script": [
+                {
+                    "speaker": "male",
+                    "text": "So, have you heard back from the job interview yet?"
+                },
+                {
+                    "speaker": "female",
+                    "text": "Not yet. I'm a new employee here, so I'm still learning the ropes."
+                },
+                {
+                    "speaker": "male",
+                    "text": "I see. By the way, about the Johnson project — it needs more funding if we want to finish on time."
+                },
+                {
+                    "speaker": "female",
+                    "text": "I know, that's my concern too. The deadline is too tight for the current budget."
+                },
+                {
+                    "speaker": "male",
+                    "text": "I disagree about hiring more people though. I think it's too expensive. We should find another way."
+                },
+                {
+                    "speaker": "female",
+                    "text": "What do you think we should do next then?"
+                },
+                {
+                    "speaker": "male",
+                    "text": "Let's check the schedule first and see where we can save time. I'm a bit skeptical about the new proposal, to be honest."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Fair enough. But we both agree we need more data before making any decisions, right?"
+                },
+                {
+                    "speaker": "male",
+                    "text": "Absolutely. Let's gather the numbers first."
+                }
+            ],
+            "audio_path": "listening/b1_part2.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B1",
+        "part": 2,
+        "topic": "Woman Identity",
+        "bloom_level": null,
+        "content": {
+            "stem": "What can be inferred about the woman?",
+            "options": {
+                "A": "She is a new employee",
+                "B": "She is the man's boss",
+                "C": "She has visited before",
+                "D": "She is running late"
+            },
+            "script": [
+                {
+                    "speaker": "male",
+                    "text": "So, have you heard back from the job interview yet?"
+                },
+                {
+                    "speaker": "female",
+                    "text": "Not yet. I'm a new employee here, so I'm still learning the ropes."
+                },
+                {
+                    "speaker": "male",
+                    "text": "I see. By the way, about the Johnson project — it needs more funding if we want to finish on time."
+                },
+                {
+                    "speaker": "female",
+                    "text": "I know, that's my concern too. The deadline is too tight for the current budget."
+                },
+                {
+                    "speaker": "male",
+                    "text": "I disagree about hiring more people though. I think it's too expensive. We should find another way."
+                },
+                {
+                    "speaker": "female",
+                    "text": "What do you think we should do next then?"
+                },
+                {
+                    "speaker": "male",
+                    "text": "Let's check the schedule first and see where we can save time. I'm a bit skeptical about the new proposal, to be honest."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Fair enough. But we both agree we need more data before making any decisions, right?"
+                },
+                {
+                    "speaker": "male",
+                    "text": "Absolutely. Let's gather the numbers first."
+                }
+            ],
+            "audio_path": "listening/b1_part2.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B1",
+        "part": 3,
+        "topic": "EdTech Role",
+        "bloom_level": null,
+        "content": {
+            "stem": "According to the lecture, technology in education...",
+            "options": {
+                "A": "Should replace teachers",
+                "B": "Is a useful supplement",
+                "C": "Creates more problems",
+                "D": "Is too expensive"
+            },
+            "script": "Good afternoon, class. Today we'll be discussing modern education methods and how they are changing the way students learn around the world. According to research, the biggest challenge facing education systems today is the lack of trained teachers, particularly in developing countries. Let me give you an example. Finland is often mentioned as a model of educational reform. The Finnish system focuses on teacher quality rather than standardized testing. So what should be done? Many experts suggest we should invest in teacher training as the most effective way to improve education outcomes. My tone today is optimistic because I believe positive changes are happening. Now, regarding technology in education — it is best viewed as a useful supplement to traditional teaching, not a replacement for qualified teachers. Any questions?",
+            "audio_path": "listening/b1_part3.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B1",
+        "part": 3,
+        "topic": "Education Investment",
+        "bloom_level": null,
+        "content": {
+            "stem": "What does the speaker suggest should be done?",
+            "options": {
+                "A": "Increase school hours",
+                "B": "Invest in teacher training",
+                "C": "Reduce class sizes",
+                "D": "Use more technology"
+            },
+            "script": "Good afternoon, class. Today we'll be discussing modern education methods and how they are changing the way students learn around the world. According to research, the biggest challenge facing education systems today is the lack of trained teachers, particularly in developing countries. Let me give you an example. Finland is often mentioned as a model of educational reform. The Finnish system focuses on teacher quality rather than standardized testing. So what should be done? Many experts suggest we should invest in teacher training as the most effective way to improve education outcomes. My tone today is optimistic because I believe positive changes are happening. Now, regarding technology in education — it is best viewed as a useful supplement to traditional teaching, not a replacement for qualified teachers. Any questions?",
+            "audio_path": "listening/b1_part3.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B1",
+        "part": 3,
+        "topic": "Finland Education",
+        "bloom_level": null,
+        "content": {
+            "stem": "The speaker mentions Finland as an example of...",
+            "options": {
+                "A": "Economic growth",
+                "B": "Educational reform",
+                "C": "Political stability",
+                "D": "Environmental policy"
+            },
+            "script": "Good afternoon, class. Today we'll be discussing modern education methods and how they are changing the way students learn around the world. According to research, the biggest challenge facing education systems today is the lack of trained teachers, particularly in developing countries. Let me give you an example. Finland is often mentioned as a model of educational reform. The Finnish system focuses on teacher quality rather than standardized testing. So what should be done? Many experts suggest we should invest in teacher training as the most effective way to improve education outcomes. My tone today is optimistic because I believe positive changes are happening. Now, regarding technology in education — it is best viewed as a useful supplement to traditional teaching, not a replacement for qualified teachers. Any questions?",
+            "audio_path": "listening/b1_part3.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B1",
+        "part": 3,
+        "topic": "Modern Education",
+        "bloom_level": null,
+        "content": {
+            "stem": "What is the lecture mainly about?",
+            "options": {
+                "A": "The history of the internet",
+                "B": "Climate change effects",
+                "C": "Modern education methods",
+                "D": "Economic development in Asia"
+            },
+            "script": "Good afternoon, class. Today we'll be discussing modern education methods and how they are changing the way students learn around the world. According to research, the biggest challenge facing education systems today is the lack of trained teachers, particularly in developing countries. Let me give you an example. Finland is often mentioned as a model of educational reform. The Finnish system focuses on teacher quality rather than standardized testing. So what should be done? Many experts suggest we should invest in teacher training as the most effective way to improve education outcomes. My tone today is optimistic because I believe positive changes are happening. Now, regarding technology in education — it is best viewed as a useful supplement to traditional teaching, not a replacement for qualified teachers. Any questions?",
+            "audio_path": "listening/b1_part3.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "C"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B1",
+        "part": 3,
+        "topic": "Speaker Tone",
+        "bloom_level": null,
+        "content": {
+            "stem": "What is the speaker's tone?",
+            "options": {
+                "A": "Critical",
+                "B": "Optimistic",
+                "C": "Neutral",
+                "D": "Pessimistic"
+            },
+            "script": "Good afternoon, class. Today we'll be discussing modern education methods and how they are changing the way students learn around the world. According to research, the biggest challenge facing education systems today is the lack of trained teachers, particularly in developing countries. Let me give you an example. Finland is often mentioned as a model of educational reform. The Finnish system focuses on teacher quality rather than standardized testing. So what should be done? Many experts suggest we should invest in teacher training as the most effective way to improve education outcomes. My tone today is optimistic because I believe positive changes are happening. Now, regarding technology in education — it is best viewed as a useful supplement to traditional teaching, not a replacement for qualified teachers. Any questions?",
+            "audio_path": "listening/b1_part3.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B1",
+        "part": 3,
+        "topic": "Teacher Training",
+        "bloom_level": null,
+        "content": {
+            "stem": "According to the speaker, what is the biggest challenge?",
+            "options": {
+                "A": "Lack of funding",
+                "B": "Lack of trained teachers",
+                "C": "Student motivation",
+                "D": "Outdated curriculum"
+            },
+            "script": "Good afternoon, class. Today we'll be discussing modern education methods and how they are changing the way students learn around the world. According to research, the biggest challenge facing education systems today is the lack of trained teachers, particularly in developing countries. Let me give you an example. Finland is often mentioned as a model of educational reform. The Finnish system focuses on teacher quality rather than standardized testing. So what should be done? Many experts suggest we should invest in teacher training as the most effective way to improve education outcomes. My tone today is optimistic because I believe positive changes are happening. Now, regarding technology in education — it is best viewed as a useful supplement to traditional teaching, not a replacement for qualified teachers. Any questions?",
+            "audio_path": "listening/b1_part3.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B2",
+        "part": 1,
+        "topic": "Employee Action",
+        "bloom_level": null,
+        "content": {
+            "stem": "According to the announcement, employees should...",
+            "options": {
+                "A": "Submit reports by Friday",
+                "B": "Attend the meeting tomorrow",
+                "C": "Update their contact details",
+                "D": "Review the handbook"
+            },
+            "script": "This is an important announcement regarding a safety regulation update that will affect all departments. The new policy will require additional staff training on emergency procedures. We have been experiencing some technical difficulties with the building's fire alarm system, which our maintenance team is currently working to resolve. According to the updated guidelines, all employees should submit their safety compliance reports by Friday. As you may be aware, the organization is expanding rapidly, and these measures are essential to maintaining our safety standards. Further details will be provided in next week's departmental meetings.",
+            "audio_path": "listening/b2_part1.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B2",
+        "part": 1,
+        "topic": "New Policy Impact",
+        "bloom_level": null,
+        "content": {
+            "stem": "The speaker implies that the new policy will...",
+            "options": {
+                "A": "Reduce costs significantly",
+                "B": "Require additional staff training",
+                "C": "Take effect immediately",
+                "D": "Be reviewed next quarter"
+            },
+            "script": "This is an important announcement regarding a safety regulation update that will affect all departments. The new policy will require additional staff training on emergency procedures. We have been experiencing some technical difficulties with the building's fire alarm system, which our maintenance team is currently working to resolve. According to the updated guidelines, all employees should submit their safety compliance reports by Friday. As you may be aware, the organization is expanding rapidly, and these measures are essential to maintaining our safety standards. Further details will be provided in next week's departmental meetings.",
+            "audio_path": "listening/b2_part1.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B2",
+        "part": 1,
+        "topic": "Organization Inference",
+        "bloom_level": null,
+        "content": {
+            "stem": "What can be inferred about the organization?",
+            "options": {
+                "A": "It is expanding rapidly",
+                "B": "It recently merged with another company",
+                "C": "It is experiencing financial difficulties",
+                "D": "It has changed leadership"
+            },
+            "script": "This is an important announcement regarding a safety regulation update that will affect all departments. The new policy will require additional staff training on emergency procedures. We have been experiencing some technical difficulties with the building's fire alarm system, which our maintenance team is currently working to resolve. According to the updated guidelines, all employees should submit their safety compliance reports by Friday. As you may be aware, the organization is expanding rapidly, and these measures are essential to maintaining our safety standards. Further details will be provided in next week's departmental meetings.",
+            "audio_path": "listening/b2_part1.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B2",
+        "part": 1,
+        "topic": "Safety Regulation",
+        "bloom_level": null,
+        "content": {
+            "stem": "What is the main point of the announcement?",
+            "options": {
+                "A": "A safety regulation update",
+                "B": "An upcoming inspection",
+                "C": "A training schedule",
+                "D": "A holiday closure"
+            },
+            "script": "This is an important announcement regarding a safety regulation update that will affect all departments. The new policy will require additional staff training on emergency procedures. We have been experiencing some technical difficulties with the building's fire alarm system, which our maintenance team is currently working to resolve. According to the updated guidelines, all employees should submit their safety compliance reports by Friday. As you may be aware, the organization is expanding rapidly, and these measures are essential to maintaining our safety standards. Further details will be provided in next week's departmental meetings.",
+            "audio_path": "listening/b2_part1.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B2",
+        "part": 1,
+        "topic": "Technical Problem",
+        "bloom_level": null,
+        "content": {
+            "stem": "What problem does the speaker mention?",
+            "options": {
+                "A": "Budget constraints",
+                "B": "Staff shortages",
+                "C": "Technical difficulties",
+                "D": "Low attendance"
+            },
+            "script": "This is an important announcement regarding a safety regulation update that will affect all departments. The new policy will require additional staff training on emergency procedures. We have been experiencing some technical difficulties with the building's fire alarm system, which our maintenance team is currently working to resolve. According to the updated guidelines, all employees should submit their safety compliance reports by Friday. As you may be aware, the organization is expanding rapidly, and these measures are essential to maintaining our safety standards. Further details will be provided in next week's departmental meetings.",
+            "audio_path": "listening/b2_part1.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "C"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B2",
+        "part": 2,
+        "topic": "Company Research",
+        "bloom_level": null,
+        "content": {
+            "stem": "The woman suggests that the company should...",
+            "options": {
+                "A": "Hire external consultants",
+                "B": "Delay the project",
+                "C": "Conduct more research",
+                "D": "Increase the budget"
+            },
+            "script": [
+                {
+                    "speaker": "female",
+                    "text": "I've been reviewing the environmental impact assessment for the new policy. It's the primary concern we need to address."
+                },
+                {
+                    "speaker": "male",
+                    "text": "I agree. But what about the previous approach? I think it lacked proper planning, which is why it failed."
+                },
+                {
+                    "speaker": "female",
+                    "text": "That's true. I suggest we conduct more research before committing to any specific plan."
+                },
+                {
+                    "speaker": "male",
+                    "text": "The main challenge we're facing is internal disagreements about the direction we should take."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Well, I think the woman — I mean, I'm more optimistic than you about this. The data shows promise."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Perhaps. But we can conclude that we need a more unified approach. What should our next step be?"
+                },
+                {
+                    "speaker": "female",
+                    "text": "I think gathering stakeholder feedback is essential. We need to hear from everyone affected."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Agreed. Let's set up those meetings this week."
+                }
+            ],
+            "audio_path": "listening/b2_part2.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "C"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B2",
+        "part": 2,
+        "topic": "Discussion Conclusion",
+        "bloom_level": null,
+        "content": {
+            "stem": "What can be concluded from the discussion?",
+            "options": {
+                "A": "Both speakers support the initiative",
+                "B": "The woman is more optimistic than the man",
+                "C": "They disagree on the fundamental approach",
+                "D": "A decision has already been made"
+            },
+            "script": [
+                {
+                    "speaker": "female",
+                    "text": "I've been reviewing the environmental impact assessment for the new policy. It's the primary concern we need to address."
+                },
+                {
+                    "speaker": "male",
+                    "text": "I agree. But what about the previous approach? I think it lacked proper planning, which is why it failed."
+                },
+                {
+                    "speaker": "female",
+                    "text": "That's true. I suggest we conduct more research before committing to any specific plan."
+                },
+                {
+                    "speaker": "male",
+                    "text": "The main challenge we're facing is internal disagreements about the direction we should take."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Well, I think the woman — I mean, I'm more optimistic than you about this. The data shows promise."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Perhaps. But we can conclude that we need a more unified approach. What should our next step be?"
+                },
+                {
+                    "speaker": "female",
+                    "text": "I think gathering stakeholder feedback is essential. We need to hear from everyone affected."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Agreed. Let's set up those meetings this week."
+                }
+            ],
+            "audio_path": "listening/b2_part2.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B2",
+        "part": 2,
+        "topic": "Environmental Policy",
+        "bloom_level": null,
+        "content": {
+            "stem": "What is the primary concern discussed?",
+            "options": {
+                "A": "Environmental impact of new policy",
+                "B": "Cost of implementation",
+                "C": "Timeline for completion",
+                "D": "Staff resistance to change"
+            },
+            "script": [
+                {
+                    "speaker": "female",
+                    "text": "I've been reviewing the environmental impact assessment for the new policy. It's the primary concern we need to address."
+                },
+                {
+                    "speaker": "male",
+                    "text": "I agree. But what about the previous approach? I think it lacked proper planning, which is why it failed."
+                },
+                {
+                    "speaker": "female",
+                    "text": "That's true. I suggest we conduct more research before committing to any specific plan."
+                },
+                {
+                    "speaker": "male",
+                    "text": "The main challenge we're facing is internal disagreements about the direction we should take."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Well, I think the woman — I mean, I'm more optimistic than you about this. The data shows promise."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Perhaps. But we can conclude that we need a more unified approach. What should our next step be?"
+                },
+                {
+                    "speaker": "female",
+                    "text": "I think gathering stakeholder feedback is essential. We need to hear from everyone affected."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Agreed. Let's set up those meetings this week."
+                }
+            ],
+            "audio_path": "listening/b2_part2.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B2",
+        "part": 2,
+        "topic": "Main Challenge",
+        "bloom_level": null,
+        "content": {
+            "stem": "According to the conversation, the main challenge is...",
+            "options": {
+                "A": "Limited resources",
+                "B": "Changing regulations",
+                "C": "Market competition",
+                "D": "Internal disagreements"
+            },
+            "script": [
+                {
+                    "speaker": "female",
+                    "text": "I've been reviewing the environmental impact assessment for the new policy. It's the primary concern we need to address."
+                },
+                {
+                    "speaker": "male",
+                    "text": "I agree. But what about the previous approach? I think it lacked proper planning, which is why it failed."
+                },
+                {
+                    "speaker": "female",
+                    "text": "That's true. I suggest we conduct more research before committing to any specific plan."
+                },
+                {
+                    "speaker": "male",
+                    "text": "The main challenge we're facing is internal disagreements about the direction we should take."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Well, I think the woman — I mean, I'm more optimistic than you about this. The data shows promise."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Perhaps. But we can conclude that we need a more unified approach. What should our next step be?"
+                },
+                {
+                    "speaker": "female",
+                    "text": "I think gathering stakeholder feedback is essential. We need to hear from everyone affected."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Agreed. Let's set up those meetings this week."
+                }
+            ],
+            "audio_path": "listening/b2_part2.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "D"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B2",
+        "part": 2,
+        "topic": "Previous Approach",
+        "bloom_level": null,
+        "content": {
+            "stem": "What does the man imply about the previous approach?",
+            "options": {
+                "A": "It was too conservative",
+                "B": "It lacked proper planning",
+                "C": "It was ahead of its time",
+                "D": "It yielded unexpected results"
+            },
+            "script": [
+                {
+                    "speaker": "female",
+                    "text": "I've been reviewing the environmental impact assessment for the new policy. It's the primary concern we need to address."
+                },
+                {
+                    "speaker": "male",
+                    "text": "I agree. But what about the previous approach? I think it lacked proper planning, which is why it failed."
+                },
+                {
+                    "speaker": "female",
+                    "text": "That's true. I suggest we conduct more research before committing to any specific plan."
+                },
+                {
+                    "speaker": "male",
+                    "text": "The main challenge we're facing is internal disagreements about the direction we should take."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Well, I think the woman — I mean, I'm more optimistic than you about this. The data shows promise."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Perhaps. But we can conclude that we need a more unified approach. What should our next step be?"
+                },
+                {
+                    "speaker": "female",
+                    "text": "I think gathering stakeholder feedback is essential. We need to hear from everyone affected."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Agreed. Let's set up those meetings this week."
+                }
+            ],
+            "audio_path": "listening/b2_part2.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B2",
+        "part": 2,
+        "topic": "Stakeholder Feedback",
+        "bloom_level": null,
+        "content": {
+            "stem": "The speakers agree that the next step should be...",
+            "options": {
+                "A": "Presenting findings to the board",
+                "B": "Gathering stakeholder feedback",
+                "C": "Revising the timeline",
+                "D": "Allocating additional resources"
+            },
+            "script": [
+                {
+                    "speaker": "female",
+                    "text": "I've been reviewing the environmental impact assessment for the new policy. It's the primary concern we need to address."
+                },
+                {
+                    "speaker": "male",
+                    "text": "I agree. But what about the previous approach? I think it lacked proper planning, which is why it failed."
+                },
+                {
+                    "speaker": "female",
+                    "text": "That's true. I suggest we conduct more research before committing to any specific plan."
+                },
+                {
+                    "speaker": "male",
+                    "text": "The main challenge we're facing is internal disagreements about the direction we should take."
+                },
+                {
+                    "speaker": "female",
+                    "text": "Well, I think the woman — I mean, I'm more optimistic than you about this. The data shows promise."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Perhaps. But we can conclude that we need a more unified approach. What should our next step be?"
+                },
+                {
+                    "speaker": "female",
+                    "text": "I think gathering stakeholder feedback is essential. We need to hear from everyone affected."
+                },
+                {
+                    "speaker": "male",
+                    "text": "Agreed. Let's set up those meetings this week."
+                }
+            ],
+            "audio_path": "listening/b2_part2.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B2",
+        "part": 3,
+        "topic": "Green Space",
+        "bloom_level": null,
+        "content": {
+            "stem": "What recommendation does the speaker make?",
+            "options": {
+                "A": "Implementing green space requirements",
+                "B": "Limiting city population growth",
+                "C": "Investing in suburban development",
+                "D": "Reducing public transportation funding"
+            },
+            "script": "In today's lecture, we'll examine the relationship between urbanization and public health, a topic that has gained increasing attention in recent years. Research consistently shows that urbanization has led to increased mental health issues, particularly among young adults living in densely populated areas. According to the data presented in our textbook, population density and pollution show the strongest correlation among the variables studied. I want to criticize the current approach to urban planning because it focuses too much on short-term solutions rather than addressing the root causes of these health problems. My recommendation is implementing green space requirements in all new urban developments. A fascinating study mentioned in your reading materials found that access to parks reduces stress levels significantly — by up to forty percent in some populations. This has important implications for how we design our cities going forward.",
+            "audio_path": "listening/b2_part3.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B2",
+        "part": 3,
+        "topic": "Mental Health Impact",
+        "bloom_level": null,
+        "content": {
+            "stem": "The speaker argues that urbanization has led to...",
+            "options": {
+                "A": "Better healthcare access",
+                "B": "Increased mental health issues",
+                "C": "Lower crime rates",
+                "D": "Improved air quality"
+            },
+            "script": "In today's lecture, we'll examine the relationship between urbanization and public health, a topic that has gained increasing attention in recent years. Research consistently shows that urbanization has led to increased mental health issues, particularly among young adults living in densely populated areas. According to the data presented in our textbook, population density and pollution show the strongest correlation among the variables studied. I want to criticize the current approach to urban planning because it focuses too much on short-term solutions rather than addressing the root causes of these health problems. My recommendation is implementing green space requirements in all new urban developments. A fascinating study mentioned in your reading materials found that access to parks reduces stress levels significantly — by up to forty percent in some populations. This has important implications for how we design our cities going forward.",
+            "audio_path": "listening/b2_part3.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B2",
+        "part": 3,
+        "topic": "Parks and Stress",
+        "bloom_level": null,
+        "content": {
+            "stem": "The study mentioned in the lecture found that...",
+            "options": {
+                "A": "Urban residents exercise more than rural residents",
+                "B": "Access to parks reduces stress levels significantly",
+                "C": "City noise has no effect on sleep quality",
+                "D": "Pollution affects children more than adults"
+            },
+            "script": "In today's lecture, we'll examine the relationship between urbanization and public health, a topic that has gained increasing attention in recent years. Research consistently shows that urbanization has led to increased mental health issues, particularly among young adults living in densely populated areas. According to the data presented in our textbook, population density and pollution show the strongest correlation among the variables studied. I want to criticize the current approach to urban planning because it focuses too much on short-term solutions rather than addressing the root causes of these health problems. My recommendation is implementing green space requirements in all new urban developments. A fascinating study mentioned in your reading materials found that access to parks reduces stress levels significantly — by up to forty percent in some populations. This has important implications for how we design our cities going forward.",
+            "audio_path": "listening/b2_part3.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B2",
+        "part": 3,
+        "topic": "Pollution Correlation",
+        "bloom_level": null,
+        "content": {
+            "stem": "According to the data presented, which factor has the strongest correlation?",
+            "options": {
+                "A": "Income level and life expectancy",
+                "B": "Population density and pollution",
+                "C": "Education level and employment",
+                "D": "Housing cost and migration"
+            },
+            "script": "In today's lecture, we'll examine the relationship between urbanization and public health, a topic that has gained increasing attention in recent years. Research consistently shows that urbanization has led to increased mental health issues, particularly among young adults living in densely populated areas. According to the data presented in our textbook, population density and pollution show the strongest correlation among the variables studied. I want to criticize the current approach to urban planning because it focuses too much on short-term solutions rather than addressing the root causes of these health problems. My recommendation is implementing green space requirements in all new urban developments. A fascinating study mentioned in your reading materials found that access to parks reduces stress levels significantly — by up to forty percent in some populations. This has important implications for how we design our cities going forward.",
+            "audio_path": "listening/b2_part3.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B2",
+        "part": 3,
+        "topic": "Short-term Solutions",
+        "bloom_level": null,
+        "content": {
+            "stem": "The speaker criticizes the current approach because...",
+            "options": {
+                "A": "It focuses too much on short-term solutions",
+                "B": "It ignores rural communities",
+                "C": "It is based on outdated research",
+                "D": "It requires too much government spending"
+            },
+            "script": "In today's lecture, we'll examine the relationship between urbanization and public health, a topic that has gained increasing attention in recent years. Research consistently shows that urbanization has led to increased mental health issues, particularly among young adults living in densely populated areas. According to the data presented in our textbook, population density and pollution show the strongest correlation among the variables studied. I want to criticize the current approach to urban planning because it focuses too much on short-term solutions rather than addressing the root causes of these health problems. My recommendation is implementing green space requirements in all new urban developments. A fascinating study mentioned in your reading materials found that access to parks reduces stress levels significantly — by up to forty percent in some populations. This has important implications for how we design our cities going forward.",
+            "audio_path": "listening/b2_part3.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "B2",
+        "part": 3,
+        "topic": "Urbanization Health",
+        "bloom_level": null,
+        "content": {
+            "stem": "What is the primary focus of the lecture?",
+            "options": {
+                "A": "The relationship between urbanization and public health",
+                "B": "Modern architectural trends",
+                "C": "Transportation infrastructure",
+                "D": "Population growth statistics"
+            },
+            "script": "In today's lecture, we'll examine the relationship between urbanization and public health, a topic that has gained increasing attention in recent years. Research consistently shows that urbanization has led to increased mental health issues, particularly among young adults living in densely populated areas. According to the data presented in our textbook, population density and pollution show the strongest correlation among the variables studied. I want to criticize the current approach to urban planning because it focuses too much on short-term solutions rather than addressing the root causes of these health problems. My recommendation is implementing green space requirements in all new urban developments. A fascinating study mentioned in your reading materials found that access to parks reduces stress levels significantly — by up to forty percent in some populations. This has important implications for how we design our cities going forward.",
+            "audio_path": "listening/b2_part3.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "C1",
+        "part": 3,
+        "topic": "Cultural Identity",
+        "bloom_level": null,
+        "content": {
+            "stem": "The lecturer's main thesis is that...",
+            "options": {
+                "A": "Globalization has fundamentally altered cultural identity",
+                "B": "Economic integration benefits all nations equally",
+                "C": "Cultural homogenization is inevitable",
+                "D": "Local traditions are resistant to global influence"
+            },
+            "script": "Welcome to our seminar on globalization and cultural identity. My main thesis today is that globalization has fundamentally altered cultural identity in ways that are far more complex than simple homogenization theories suggest. Consider the concept of glocalization — this refers to global companies adapting products to local markets, creating hybrid cultural forms that are neither purely global nor purely local. Take Japanese cuisine as an example. It beautifully illustrates the adaptation of foreign elements into local traditions — ramen, originally Chinese, has become quintessentially Japanese. Now, I must raise a criticism about previous research in this field. Much of the earlier work generalized findings from limited samples, typically focusing on Western consumer cultures while ignoring the rich diversity of cultural responses in other parts of the world. The most significant implication of our analysis is the need for new theoretical frameworks that can accommodate the complexity of cultural exchange in the twenty-first century.",
+            "audio_path": "listening/c1_part3.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "C1",
+        "part": 3,
+        "topic": "Glocalization",
+        "bloom_level": null,
+        "content": {
+            "stem": "The concept of \"glocalization\" refers to...",
+            "options": {
+                "A": "Global companies adapting products to local markets",
+                "B": "Local businesses expanding internationally",
+                "C": "The rejection of foreign cultural influence",
+                "D": "Government policies protecting domestic industries"
+            },
+            "script": "Welcome to our seminar on globalization and cultural identity. My main thesis today is that globalization has fundamentally altered cultural identity in ways that are far more complex than simple homogenization theories suggest. Consider the concept of glocalization — this refers to global companies adapting products to local markets, creating hybrid cultural forms that are neither purely global nor purely local. Take Japanese cuisine as an example. It beautifully illustrates the adaptation of foreign elements into local traditions — ramen, originally Chinese, has become quintessentially Japanese. Now, I must raise a criticism about previous research in this field. Much of the earlier work generalized findings from limited samples, typically focusing on Western consumer cultures while ignoring the rich diversity of cultural responses in other parts of the world. The most significant implication of our analysis is the need for new theoretical frameworks that can accommodate the complexity of cultural exchange in the twenty-first century.",
+            "audio_path": "listening/c1_part3.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "C1",
+        "part": 3,
+        "topic": "Japanese Cuisine",
+        "bloom_level": null,
+        "content": {
+            "stem": "The speaker uses the example of Japanese cuisine to illustrate...",
+            "options": {
+                "A": "Cultural preservation efforts",
+                "B": "The adaptation of foreign elements into local traditions",
+                "C": "The decline of traditional cooking methods",
+                "D": "The economic value of food tourism"
+            },
+            "script": "Welcome to our seminar on globalization and cultural identity. My main thesis today is that globalization has fundamentally altered cultural identity in ways that are far more complex than simple homogenization theories suggest. Consider the concept of glocalization — this refers to global companies adapting products to local markets, creating hybrid cultural forms that are neither purely global nor purely local. Take Japanese cuisine as an example. It beautifully illustrates the adaptation of foreign elements into local traditions — ramen, originally Chinese, has become quintessentially Japanese. Now, I must raise a criticism about previous research in this field. Much of the earlier work generalized findings from limited samples, typically focusing on Western consumer cultures while ignoring the rich diversity of cultural responses in other parts of the world. The most significant implication of our analysis is the need for new theoretical frameworks that can accommodate the complexity of cultural exchange in the twenty-first century.",
+            "audio_path": "listening/c1_part3.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "B"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "C1",
+        "part": 3,
+        "topic": "Research Criticism",
+        "bloom_level": null,
+        "content": {
+            "stem": "What criticism does the speaker raise about previous research?",
+            "options": {
+                "A": "It relied too heavily on quantitative methods",
+                "B": "It failed to account for power dynamics",
+                "C": "It generalized findings from limited samples",
+                "D": "It ignored economic factors entirely"
+            },
+            "script": "Welcome to our seminar on globalization and cultural identity. My main thesis today is that globalization has fundamentally altered cultural identity in ways that are far more complex than simple homogenization theories suggest. Consider the concept of glocalization — this refers to global companies adapting products to local markets, creating hybrid cultural forms that are neither purely global nor purely local. Take Japanese cuisine as an example. It beautifully illustrates the adaptation of foreign elements into local traditions — ramen, originally Chinese, has become quintessentially Japanese. Now, I must raise a criticism about previous research in this field. Much of the earlier work generalized findings from limited samples, typically focusing on Western consumer cultures while ignoring the rich diversity of cultural responses in other parts of the world. The most significant implication of our analysis is the need for new theoretical frameworks that can accommodate the complexity of cultural exchange in the twenty-first century.",
+            "audio_path": "listening/c1_part3.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "C"
+            ]
+        },
+        "knowledge_points": []
+    },
+    {
+        "skill": "listening",
+        "level": "C1",
+        "part": 3,
+        "topic": "Theoretical Frameworks",
+        "bloom_level": null,
+        "content": {
+            "stem": "According to the lecturer, the most significant implication is...",
+            "options": {
+                "A": "The need for new theoretical frameworks",
+                "B": "The economic opportunity in cultural exchange",
+                "C": "The political consequences of cultural shift",
+                "D": "The educational reform required"
+            },
+            "script": "Welcome to our seminar on globalization and cultural identity. My main thesis today is that globalization has fundamentally altered cultural identity in ways that are far more complex than simple homogenization theories suggest. Consider the concept of glocalization — this refers to global companies adapting products to local markets, creating hybrid cultural forms that are neither purely global nor purely local. Take Japanese cuisine as an example. It beautifully illustrates the adaptation of foreign elements into local traditions — ramen, originally Chinese, has become quintessentially Japanese. Now, I must raise a criticism about previous research in this field. Much of the earlier work generalized findings from limited samples, typically focusing on Western consumer cultures while ignoring the rich diversity of cultural responses in other parts of the world. The most significant implication of our analysis is the need for new theoretical frameworks that can accommodate the complexity of cultural exchange in the twenty-first century.",
+            "audio_path": "listening/c1_part3.wav"
+        },
+        "answer_key": {
+            "correctAnswers": [
+                "A"
+            ]
+        },
+        "knowledge_points": []
+    }
+]
