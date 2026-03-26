@@ -17,6 +17,7 @@ use App\Services\NotificationService;
 use App\Services\ProgressService;
 use App\Services\PronunciationService;
 use App\Services\SessionService;
+use App\Services\WeakPointService;
 use App\Support\VstepScoring;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Collection;
@@ -63,8 +64,10 @@ class GradeSubmission implements ShouldQueue
 
         $knowledgeScope = $this->expandKnowledgeScope($submission->question->knowledgePoints, $submission->skill);
 
+        $pronunciationData = null;
         if ($submission->skill === Skill::Speaking) {
-            $result = $this->gradeSpeaking($submission, $rubric, $knowledgeScope, $pronunciation);
+            $pronunciationData = $pronunciation->assessPronunciation($submission->answer['audio_path']);
+            $result = $this->gradeSpeaking($submission, $rubric, $knowledgeScope, $pronunciationData);
         } else {
             $result = $this->gradeWriting($submission, $rubric, $knowledgeScope);
         }
@@ -84,18 +87,24 @@ class GradeSubmission implements ShouldQueue
         $enrichedGaps = KnowledgePoint::enrichGaps($validGaps);
 
         // Wrap finalization in transaction so progress + submission are atomic
-        DB::transaction(function () use ($submission, $status, $overall, $enrichedCriteria, $enrichedGaps, $confidence, $result, $progressService) {
+        DB::transaction(function () use ($submission, $status, $overall, $enrichedCriteria, $enrichedGaps, $confidence, $result, $pronunciationData, $progressService) {
+            $resultData = [
+                'type' => 'ai_agent',
+                'criteria' => $enrichedCriteria,
+                'knowledge_gaps' => $enrichedGaps,
+                'confidence' => $confidence,
+                'graded_at' => now()->toAtomString(),
+            ];
+
+            if ($pronunciationData) {
+                $resultData['pronunciation'] = $pronunciationData;
+            }
+
             $submission->update([
                 'status' => $status,
                 'score' => $overall,
                 'band' => VstepBand::fromScore($overall),
-                'result' => [
-                    'type' => 'ai_agent',
-                    'criteria' => $enrichedCriteria,
-                    'knowledge_gaps' => $enrichedGaps,
-                    'confidence' => $confidence,
-                    'graded_at' => now()->toAtomString(),
-                ],
+                'result' => $resultData,
                 'feedback' => $result['feedback'],
                 'completed_at' => $status === SubmissionStatus::Completed ? now() : null,
             ]);
@@ -119,6 +128,9 @@ class GradeSubmission implements ShouldQueue
 
         Log::info('graded', ['submission_id' => $submission->id, 'score' => $overall, 'confidence' => $confidence]);
 
+        // Record knowledge gaps for spaced repetition
+        app(WeakPointService::class)->recordFromSubmission($submission->fresh());
+
         if ($submission->session_id) {
             app(SessionService::class)->updateSubjectiveScores($submission);
         }
@@ -133,10 +145,8 @@ class GradeSubmission implements ShouldQueue
             ?? throw new RuntimeException('WritingGrader did not call SubmitWritingGrade tool.');
     }
 
-    protected function gradeSpeaking(Submission $submission, GradingRubric $rubric, $knowledgeScope, PronunciationService $pronunciation): array
+    protected function gradeSpeaking(Submission $submission, GradingRubric $rubric, $knowledgeScope, array $pronunciationData): array
     {
-        $pronunciationData = $pronunciation->assessPronunciation($submission->answer['audio_path']);
-
         $agent = new SpeakingGrader($submission, $rubric, $knowledgeScope, $pronunciationData);
         $agent->prompt($pronunciationData['transcript']);
 

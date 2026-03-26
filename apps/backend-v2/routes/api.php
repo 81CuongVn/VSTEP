@@ -134,8 +134,11 @@ Route::prefix('v1')->group(function () {
         Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead']);
 
         // Practice (adaptive)
-        Route::get('/practice/next', [PracticeController::class, 'next']);
-        Route::post('/practice/{question}/submit', [PracticeController::class, 'submit']);
+        Route::get('/practice/sessions', [PracticeController::class, 'index']);
+        Route::post('/practice/sessions', [PracticeController::class, 'start']);
+        Route::get('/practice/sessions/{session}', [PracticeController::class, 'show']);
+        Route::post('/practice/sessions/{session}/submit', [PracticeController::class, 'submit']);
+        Route::post('/practice/sessions/{session}/complete', [PracticeController::class, 'complete']);
 
         // AI proxy → grading service
         Route::post('/ai/{action}', function (Request $request, string $action) {
