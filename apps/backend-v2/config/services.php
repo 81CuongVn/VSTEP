@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'grading' => [
+        'url' => env('GRADING_SERVICE_URL', 'http://localhost:8001'),
+    ],
+
 ];

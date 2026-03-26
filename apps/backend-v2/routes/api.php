@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\V1\VocabularyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -129,6 +130,14 @@ Route::prefix('v1')->group(function () {
         // Practice (adaptive)
         Route::get('/practice/next', [PracticeController::class, 'next']);
         Route::post('/practice/{question}/submit', [PracticeController::class, 'submit']);
+
+        // AI proxy → grading service
+        Route::post('/ai/{action}', function (Request $request, string $action) {
+            $response = Http::timeout(30)
+                ->post(config('services.grading.url', 'http://localhost:8001')."/ai/{$action}", $request->all());
+
+            return response()->json($response->json(), $response->status());
+        })->where('action', 'paraphrase|explain');
 
         // Uploads
         Route::post('/uploads/audio', function (Request $request) {
