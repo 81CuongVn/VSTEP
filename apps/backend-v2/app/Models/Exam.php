@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Enums\ExamType;
 use App\Enums\Level;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(['title', 'level', 'type', 'duration_minutes', 'blueprint', 'description', 'is_active', 'created_by'])]
+#[Hidden(['created_by'])]
 class Exam extends BaseModel
 {
     protected function casts(): array

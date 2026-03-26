@@ -7,10 +7,10 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class LearningPathResource extends JsonResource
+class UserPlacementResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        return $this->resource;
+        return parent::toArray($request);
     }
 }

@@ -120,10 +120,13 @@ class VocabularyTopicResource extends JsonResource
 }
 ```
 
-- Do NOT manually list every field
+- Do NOT manually list every field — `parent::toArray()` is the default
 - Do NOT call `->toISOString()` or `->value` — model handles it
 - Use `whenCounted()` for counts, `whenLoaded()` for relations
-- Hide internal count fields via `#[Hidden(['words_count'])]` on model
+- Hide internal fields via `#[Hidden]` on model — REQUIRED for every model
+- Contextual hiding (e.g. answer_key for learners): `makeHidden()` in service before wrapping in Resource
+- Computed/derived fields (e.g. days_remaining): add in Resource via `...parent::toArray()` spread
+- Never return raw Eloquent models from controllers — always wrap in Resource
 
 ### Enums — domain logic belongs on enums
 

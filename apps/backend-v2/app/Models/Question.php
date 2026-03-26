@@ -7,10 +7,12 @@ namespace App\Models;
 use App\Enums\Level;
 use App\Enums\Skill;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 #[Fillable(['skill', 'level', 'part', 'topic', 'content', 'answer_key', 'explanation', 'is_active', 'created_by'])]
+#[Hidden(['created_by'])]
 class Question extends BaseModel
 {
     protected function casts(): array

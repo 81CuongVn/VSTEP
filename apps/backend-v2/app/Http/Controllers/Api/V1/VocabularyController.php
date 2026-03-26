@@ -48,6 +48,10 @@ class VocabularyController extends Controller
             $request->validated('known'),
         );
 
-        return response()->json(['data' => $record]);
+        return response()->json(['data' => [
+            'word_id' => $record->word_id,
+            'known' => $record->known,
+            'last_reviewed_at' => $record->last_reviewed_at,
+        ]]);
     }
 }

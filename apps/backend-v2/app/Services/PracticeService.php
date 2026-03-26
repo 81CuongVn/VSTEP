@@ -35,6 +35,8 @@ class PracticeService
             $isRepeat = $question !== null;
         }
 
+        $question?->makeHidden(['answer_key', 'explanation']);
+
         return [
             'question' => $question,
             'scaffold_level' => $progress->scaffold_level,

@@ -9,7 +9,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Progress\StoreGoalRequest;
 use App\Http\Requests\Progress\UpdateGoalRequest;
 use App\Http\Resources\GoalResource;
-use App\Http\Resources\LearningPathResource;
 use App\Http\Resources\SkillDetailResource;
 use App\Http\Resources\UserProgressResource;
 use App\Models\UserGoal;
@@ -62,9 +61,9 @@ class ProgressController extends Controller
 
     public function learningPath(Request $request)
     {
-        $skills = $this->service->learningPath($request->user()->id);
-
-        return new LearningPathResource($skills);
+        return response()->json([
+            'data' => $this->service->learningPath($request->user()->id),
+        ]);
     }
 
     public function storeGoal(StoreGoalRequest $request)

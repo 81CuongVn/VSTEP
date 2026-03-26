@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Onboarding\CompletePlacementRequest;
 use App\Http\Requests\Onboarding\SelfAssessRequest;
 use App\Http\Requests\Onboarding\SkipOnboardingRequest;
+use App\Http\Resources\UserPlacementResource;
 use App\Models\ExamSession;
 use App\Services\OnboardingService;
 use Illuminate\Http\Request;
@@ -32,7 +33,7 @@ class OnboardingController extends Controller
             $request->validated(),
         );
 
-        return response()->json(['data' => $placement], 201);
+        return (new UserPlacementResource($placement))->response()->setStatusCode(201);
     }
 
     public function placement(Request $request)
@@ -50,7 +51,7 @@ class OnboardingController extends Controller
             $request->validated(),
         );
 
-        return response()->json(['data' => $placement], 201);
+        return (new UserPlacementResource($placement))->response()->setStatusCode(201);
     }
 
     public function skip(SkipOnboardingRequest $request)
@@ -60,6 +61,6 @@ class OnboardingController extends Controller
             $request->validated(),
         );
 
-        return response()->json(['data' => $placement], 201);
+        return (new UserPlacementResource($placement))->response()->setStatusCode(201);
     }
 }
