@@ -6,17 +6,17 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PresignUploadRequest;
-use App\Services\UploadService;
+use App\Services\SpeakingUploadService;
 
-class UploadController extends Controller
+class SpeakingUploadController extends Controller
 {
     public function __construct(
-        private readonly UploadService $service,
+        private readonly SpeakingUploadService $service,
     ) {}
 
     public function presign(PresignUploadRequest $request)
     {
-        $data = $this->service->presign(
+        $data = $this->service->presignAudioUpload(
             $request->user()->id,
             $request->validated('content_type'),
         );

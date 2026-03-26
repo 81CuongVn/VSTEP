@@ -7,7 +7,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class UploadService
+class SpeakingUploadService
 {
     private const PRESIGN_EXPIRES_SECONDS = 900; // 15 minutes
 
@@ -21,7 +21,7 @@ class UploadService
 
     private const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
-    public function presign(string $userId, string $contentType): array
+    public function presignAudioUpload(string $userId, string $contentType): array
     {
         $ext = self::ALLOWED_TYPES[$contentType]
             ?? throw new \InvalidArgumentException("Unsupported content type: {$contentType}");
@@ -42,7 +42,7 @@ class UploadService
         ];
     }
 
-    public function verifyForSubmission(string $audioPath, string $userId): void
+    public function verifyAudioOwnership(string $audioPath, string $userId): void
     {
         if (! $this->isOwnedByUser($audioPath, $userId)) {
             throw new \InvalidArgumentException('Audio path does not belong to this user.');

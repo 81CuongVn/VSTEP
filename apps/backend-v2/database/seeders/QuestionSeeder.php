@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use App\Enums\Level;
 use App\Enums\Skill;
+use App\Models\KnowledgePoint;
 use App\Models\Question;
 use Illuminate\Database\Seeder;
 
@@ -175,6 +176,17 @@ class QuestionSeeder extends Seeder
 
     private function seedWriting(): void
     {
+        $kps = KnowledgePoint::pluck('id', 'name');
+
+        $kpMap = [
+            'A2:1' => ['Simple Sentences', 'Basic Tenses', 'General Vocabulary', 'Coherence'],
+            'B1:1' => ['Compound Sentences', 'Basic Tenses', 'Tense Consistency', 'General Vocabulary', 'Coherence', 'Paragraphing'],
+            'B1:2' => ['Compound Sentences', 'Subject-Verb Agreement', 'General Vocabulary', 'Linking Words & Transitions', 'Paragraphing', 'Topic Sentences'],
+            'B2:1' => ['Complex Sentences', 'Passive Voice', 'Topic-Specific Vocabulary', 'Register & Tone', 'Coherence'],
+            'B2:2' => ['Complex Sentences', 'Relative Clauses', 'Topic-Specific Vocabulary', 'Linking Words & Transitions', 'Essay Structure', 'Argument Development'],
+            'C1:2' => ['Complex Sentences', 'Participial Clauses', 'Academic Vocabulary', 'Essay Structure', 'Argument Development', 'Register & Tone'],
+        ];
+
         $tasks = [
             [Level::A2, 1, 'Write a short letter (80-100 words) to your friend inviting them to your birthday party. Include the date, time, place, and what you will do.'],
             [Level::B1, 1, 'Write an email (120-150 words) to your teacher explaining why you were absent from class last week and asking about the homework you missed.'],
@@ -188,14 +200,24 @@ class QuestionSeeder extends Seeder
         ];
 
         foreach ($tasks as [$level, $part, $prompt]) {
-            Question::create([
+            $question = Question::create([
                 'skill' => Skill::Writing,
                 'level' => $level,
                 'part' => $part,
                 'content' => ['prompt' => $prompt],
                 'answer_key' => null,
                 'is_active' => true,
+                'verified_at' => now(),
             ]);
+
+            $key = $level->value.':'.$part;
+            $kpIds = collect($kpMap[$key] ?? [])
+                ->map(fn (string $name) => $kps[$name] ?? null)
+                ->filter()
+                ->values()
+                ->all();
+
+            $question->knowledgePoints()->attach($kpIds);
         }
     }
 
@@ -203,6 +225,17 @@ class QuestionSeeder extends Seeder
 
     private function seedSpeaking(): void
     {
+        $kps = KnowledgePoint::pluck('id', 'name');
+
+        $kpMap = [
+            'A2:1' => ['Simple Sentences', 'Basic Tenses', 'General Vocabulary', 'Individual Sounds', 'Word Stress'],
+            'B1:1' => ['Compound Sentences', 'Basic Tenses', 'General Vocabulary', 'Word Stress', 'Sentence Stress', 'Self-Correction'],
+            'B1:2' => ['Compound Sentences', 'Comparatives & Superlatives', 'Linking Words & Transitions', 'Sentence Stress', 'Intonation', 'Paraphrasing'],
+            'B2:2' => ['Complex Sentences', 'Topic-Specific Vocabulary', 'Linking Words & Transitions', 'Intonation', 'Connected Speech', 'Elaboration'],
+            'B2:3' => ['Complex Sentences', 'Conditional Clauses', 'Topic-Specific Vocabulary', 'Connected Speech', 'Rhythm & Pacing', 'Elaboration'],
+            'C1:3' => ['Complex Sentences', 'Noun Clauses', 'Academic Vocabulary', 'Connected Speech', 'Rhythm & Pacing', 'Self-Correction'],
+        ];
+
         $tasks = [
             [Level::A2, 1, 'Tell me about your family. How many people are there? What do they do?'],
             [Level::A2, 1, 'Describe your daily routine. What do you do from morning to evening?'],
@@ -218,14 +251,24 @@ class QuestionSeeder extends Seeder
         ];
 
         foreach ($tasks as [$level, $part, $prompt]) {
-            Question::create([
+            $question = Question::create([
                 'skill' => Skill::Speaking,
                 'level' => $level,
                 'part' => $part,
                 'content' => ['prompt' => $prompt],
                 'answer_key' => null,
                 'is_active' => true,
+                'verified_at' => now(),
             ]);
+
+            $key = $level->value.':'.$part;
+            $kpIds = collect($kpMap[$key] ?? [])
+                ->map(fn (string $name) => $kps[$name] ?? null)
+                ->filter()
+                ->values()
+                ->all();
+
+            $question->knowledgePoints()->attach($kpIds);
         }
     }
 
@@ -251,6 +294,7 @@ class QuestionSeeder extends Seeder
                     'correctAnswers' => ['0' => $item[2]],
                 ],
                 'is_active' => true,
+                'verified_at' => now(),
             ]);
         }
     }

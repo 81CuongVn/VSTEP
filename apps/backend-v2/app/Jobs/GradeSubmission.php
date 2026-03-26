@@ -13,9 +13,10 @@ use App\Enums\VstepBand;
 use App\Models\GradingRubric;
 use App\Models\KnowledgePoint;
 use App\Models\Submission;
-use App\Services\AzureSpeechService;
 use App\Services\NotificationService;
 use App\Services\ProgressService;
+use App\Services\PronunciationService;
+use App\Services\SessionService;
 use App\Support\VstepScoring;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Collection;
@@ -41,23 +42,18 @@ class GradeSubmission implements ShouldQueue
     public function handle(
         ProgressService $progressService,
         NotificationService $notificationService,
-        AzureSpeechService $azureSpeech,
+        PronunciationService $pronunciation,
     ): void {
-        // Atomic lock: only one job can grade this submission
-        $submission = Submission::with('question.knowledgePoints')->findOrFail($this->submissionId);
-
-        if (in_array($submission->status, [SubmissionStatus::Completed, SubmissionStatus::ReviewPending])) {
-            return;
-        }
-
-        // Atomically claim this submission for grading
+        // Atomically claim: only one job can grade this submission
         $claimed = Submission::where('id', $this->submissionId)
-            ->where('status', SubmissionStatus::Processing)
+            ->where('status', SubmissionStatus::Pending)
             ->update(['status' => SubmissionStatus::Processing]);
 
         if (! $claimed) {
             return;
         }
+
+        $submission = Submission::with('question.knowledgePoints')->findOrFail($this->submissionId);
 
         $rubric = GradingRubric::with('criteria')
             ->where('skill', $submission->skill)
@@ -65,10 +61,10 @@ class GradeSubmission implements ShouldQueue
             ->where('is_active', true)
             ->firstOrFail();
 
-        $knowledgeScope = $this->expandKnowledgeScope($submission->question->knowledgePoints);
+        $knowledgeScope = $this->expandKnowledgeScope($submission->question->knowledgePoints, $submission->skill);
 
         if ($submission->skill === Skill::Speaking) {
-            $result = $this->gradeSpeaking($submission, $rubric, $knowledgeScope, $azureSpeech);
+            $result = $this->gradeSpeaking($submission, $rubric, $knowledgeScope, $pronunciation);
         } else {
             $result = $this->gradeWriting($submission, $rubric, $knowledgeScope);
         }
@@ -85,7 +81,7 @@ class GradeSubmission implements ShouldQueue
             : SubmissionStatus::Completed;
 
         $enrichedCriteria = $this->enrichCriteria($rubric, $criteriaScores);
-        $enrichedGaps = $this->enrichGaps($validGaps);
+        $enrichedGaps = KnowledgePoint::enrichGaps($validGaps);
 
         // Wrap finalization in transaction so progress + submission are atomic
         DB::transaction(function () use ($submission, $status, $overall, $enrichedCriteria, $enrichedGaps, $confidence, $result, $progressService) {
@@ -123,13 +119,12 @@ class GradeSubmission implements ShouldQueue
 
         Log::info('graded', ['submission_id' => $submission->id, 'score' => $overall, 'confidence' => $confidence]);
 
-        // If this submission belongs to an exam session, update session scores
         if ($submission->session_id) {
-            $this->updateSessionScores($submission);
+            app(SessionService::class)->updateSubjectiveScores($submission);
         }
     }
 
-    private function gradeWriting(Submission $submission, GradingRubric $rubric, $knowledgeScope): array
+    protected function gradeWriting(Submission $submission, GradingRubric $rubric, $knowledgeScope): array
     {
         $agent = new WritingGrader($submission, $rubric, $knowledgeScope);
         $agent->prompt($submission->answer['text'] ?? '');
@@ -138,9 +133,9 @@ class GradeSubmission implements ShouldQueue
             ?? throw new RuntimeException('WritingGrader did not call SubmitWritingGrade tool.');
     }
 
-    private function gradeSpeaking(Submission $submission, GradingRubric $rubric, $knowledgeScope, AzureSpeechService $azureSpeech): array
+    protected function gradeSpeaking(Submission $submission, GradingRubric $rubric, $knowledgeScope, PronunciationService $pronunciation): array
     {
-        $pronunciationData = $azureSpeech->assess($submission->answer['audio_path']);
+        $pronunciationData = $pronunciation->assessPronunciation($submission->answer['audio_path']);
 
         $agent = new SpeakingGrader($submission, $rubric, $knowledgeScope, $pronunciationData);
         $agent->prompt($pronunciationData['transcript']);
@@ -152,12 +147,12 @@ class GradeSubmission implements ShouldQueue
     /**
      * Expand question's knowledge points by 1 hop (parents + children + related).
      */
-    private function expandKnowledgeScope($linkedKnowledgePoints): Collection
+    private function expandKnowledgeScope($linkedKnowledgePoints, Skill $skill): Collection
     {
         $ids = $linkedKnowledgePoints->pluck('id')->toArray();
 
         if (empty($ids)) {
-            return new Collection;
+            return $this->fallbackKnowledgeScope($skill);
         }
 
         $expandedIds = collect($ids);
@@ -171,6 +166,17 @@ class GradeSubmission implements ShouldQueue
         }
 
         return KnowledgePoint::whereIn('id', $expandedIds->unique())->get();
+    }
+
+    private function fallbackKnowledgeScope(Skill $skill): Collection
+    {
+        $categories = match ($skill) {
+            Skill::Writing => ['grammar', 'vocabulary', 'discourse', 'strategy'],
+            Skill::Speaking => ['grammar', 'vocabulary', 'pronunciation', 'strategy'],
+            default => [],
+        };
+
+        return KnowledgePoint::whereIn('category', $categories)->get();
     }
 
     /**
@@ -197,12 +203,9 @@ class GradeSubmission implements ShouldQueue
         }
     }
 
-    /**
-     * Round all scores to nearest 0.5 increment.
-     */
     private function normalizeScores(array $scores): array
     {
-        return array_map(fn ($score) => round($score * 2) / 2, $scores);
+        return array_map(fn ($score) => VstepScoring::round((float) $score), $scores);
     }
 
     /**
@@ -226,18 +229,14 @@ class GradeSubmission implements ShouldQueue
         return VstepScoring::round($weightedSum / $totalWeight);
     }
 
-    /**
-     * Filter knowledge gaps to only valid names from the injected scope.
-     * Case-insensitive trim matching.
-     */
     private function validateGaps(array $gaps, $knowledgeScope): array
     {
-        $validNames = $knowledgeScope->pluck('name')
-            ->map(fn ($n) => mb_strtolower(trim($n)))
-            ->toArray();
+        $normalizedGaps = array_map(fn ($g) => mb_strtolower(trim(
+            preg_replace('/\s*\([^)]*\)\s*$/', '', $g),
+        )), $gaps);
 
         return $knowledgeScope->pluck('name')
-            ->filter(fn ($name) => in_array(mb_strtolower(trim($name)), array_map(fn ($g) => mb_strtolower(trim($g)), $gaps)))
+            ->filter(fn ($name) => in_array(mb_strtolower(trim($name)), $normalizedGaps))
             ->values()
             ->toArray();
     }
@@ -282,108 +281,12 @@ class GradeSubmission implements ShouldQueue
         return '';
     }
 
-    /**
-     * Enrich knowledge gaps with graph path and metadata for FE.
-     */
-    private function enrichGaps(array $gapNames): array
-    {
-        return collect($gapNames)->map(function ($name) {
-            $kp = KnowledgePoint::with('parents')->where('name', $name)->first();
-            if (! $kp) {
-                return null;
-            }
-
-            return [
-                'name' => $kp->name,
-                'category' => $kp->category->value,
-                'description' => $kp->description,
-                'path' => $this->buildAncestorPath($kp),
-            ];
-        })->filter()->values()->toArray();
-    }
-
-    private function buildAncestorPath(KnowledgePoint $kp): array
-    {
-        $path = [$kp->name];
-        $current = $kp;
-        $seen = [$kp->id];
-
-        while ($parent = $current->parents->first(fn ($p) => $p->category->value === $kp->category->value && ! in_array($p->id, $seen))) {
-            $path[] = $parent->name;
-            $seen[] = $parent->id;
-            $current = KnowledgePoint::with('parents')->find($parent->id);
-        }
-
-        return array_reverse($path);
-    }
-
-    /**
-     * After grading a submission linked to an exam session,
-     * check if all subjective submissions are graded and update session scores.
-     *
-     * Writing: (Task1 + Task2 × 2) / 3
-     * Speaking: average(Part1, Part2, Part3)
-     */
-    private function updateSessionScores(Submission $submission): void
-    {
-        $sessionSubmissions = Submission::with('question')
-            ->where('session_id', $submission->session_id)
-            ->where('skill', $submission->skill)
-            ->get();
-
-        // All must be completed or review_pending (scored)
-        if ($sessionSubmissions->contains(fn ($s) => $s->score === null)) {
-            return;
-        }
-
-        $session = $submission->session;
-
-        if ($submission->skill === Skill::Writing) {
-            $task1 = $sessionSubmissions->first(fn ($s) => $s->question->part === 1);
-            $task2 = $sessionSubmissions->first(fn ($s) => $s->question->part === 2);
-
-            if ($task1?->score !== null && $task2?->score !== null) {
-                $session->update([
-                    'writing_score' => VstepScoring::writingOverall($task1->score, $task2->score),
-                ]);
-            } elseif ($sessionSubmissions->count() === 1) {
-                // Single task practice within exam — just use that score
-                $session->update(['writing_score' => $sessionSubmissions->first()->score]);
-            }
-        }
-
-        if ($submission->skill === Skill::Speaking) {
-            $partScores = $sessionSubmissions->pluck('score')->filter()->toArray();
-
-            if (! empty($partScores)) {
-                $session->update([
-                    'speaking_score' => VstepScoring::speakingOverall(...$partScores),
-                ]);
-            }
-        }
-
-        // Recalculate overall if all skill scores are available
-        $session->refresh();
-        $scores = array_filter([
-            $session->listening_score,
-            $session->reading_score,
-            $session->writing_score,
-            $session->speaking_score,
-        ], fn ($v) => $v !== null);
-
-        if (count($scores) > 0) {
-            $overall = VstepScoring::round(array_sum($scores) / count($scores));
-            $session->update([
-                'overall_score' => $overall,
-                'overall_band' => VstepBand::fromScore($overall),
-            ]);
-        }
-    }
-
     public function failed(\Throwable $e): void
     {
         $submission = Submission::find($this->submissionId);
-        $submission?->update(['status' => SubmissionStatus::Failed]);
+        if ($submission && $submission->status === SubmissionStatus::Processing) {
+            $submission->update(['status' => SubmissionStatus::Failed]);
+        }
 
         if ($submission) {
             app(NotificationService::class)->send(

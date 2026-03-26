@@ -10,8 +10,8 @@ use App\Http\Controllers\Api\V1\PracticeController;
 use App\Http\Controllers\Api\V1\ProgressController;
 use App\Http\Controllers\Api\V1\QuestionController;
 use App\Http\Controllers\Api\V1\SessionController;
+use App\Http\Controllers\Api\V1\SpeakingUploadController;
 use App\Http\Controllers\Api\V1\SubmissionController;
-use App\Http\Controllers\Api\V1\UploadController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\VocabularyController;
 use Illuminate\Http\Request;
@@ -82,7 +82,7 @@ Route::prefix('v1')->group(function () {
 
         // Uploads (rate limited: 10/min)
         Route::middleware('throttle:10,1')->group(function () {
-            Route::post('/uploads/presign', [UploadController::class, 'presign']);
+            Route::post('/uploads/presign', [SpeakingUploadController::class, 'presign']);
         });
 
         // Submissions

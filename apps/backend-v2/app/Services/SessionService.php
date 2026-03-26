@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Enums\SessionStatus;
 use App\Enums\Skill;
 use App\Enums\SubmissionStatus;
+use App\Enums\VstepBand;
 use App\Jobs\GradeSubmission;
 use App\Models\Exam;
 use App\Models\ExamAnswer;
@@ -173,7 +174,7 @@ class SessionService
                 'question_id' => $question->id,
                 'skill' => $question->skill,
                 'answer' => $answer->answer,
-                'status' => SubmissionStatus::Processing,
+                'status' => SubmissionStatus::Pending,
             ]);
 
             GradeSubmission::dispatch($submission->id);
@@ -285,6 +286,63 @@ class SessionService
             $session->update(['status' => SessionStatus::Abandoned, 'completed_at' => now()]);
 
             throw ValidationException::withMessages(['session' => ['Session has expired.']]);
+        }
+    }
+
+    /**
+     * Recalculate subjective skill scores after a submission is graded.
+     * Called by GradeSubmission job when submission belongs to a session.
+     */
+    public function updateSubjectiveScores(Submission $submission): void
+    {
+        $sessionSubmissions = Submission::with('question')
+            ->where('session_id', $submission->session_id)
+            ->where('skill', $submission->skill)
+            ->get();
+
+        if ($sessionSubmissions->contains(fn ($s) => $s->score === null)) {
+            return;
+        }
+
+        $session = $submission->session;
+
+        if ($submission->skill === Skill::Writing) {
+            $task1 = $sessionSubmissions->first(fn ($s) => $s->question->part === 1);
+            $task2 = $sessionSubmissions->first(fn ($s) => $s->question->part === 2);
+
+            if ($task1?->score !== null && $task2?->score !== null) {
+                $session->update([
+                    'writing_score' => VstepScoring::writingOverall($task1->score, $task2->score),
+                ]);
+            } elseif ($sessionSubmissions->count() === 1) {
+                $session->update(['writing_score' => $sessionSubmissions->first()->score]);
+            }
+        }
+
+        if ($submission->skill === Skill::Speaking) {
+            $partScores = $sessionSubmissions->pluck('score')->filter()->toArray();
+
+            if (! empty($partScores)) {
+                $session->update([
+                    'speaking_score' => VstepScoring::speakingOverall(...$partScores),
+                ]);
+            }
+        }
+
+        $session->refresh();
+        $scores = array_filter([
+            $session->listening_score,
+            $session->reading_score,
+            $session->writing_score,
+            $session->speaking_score,
+        ], fn ($v) => $v !== null);
+
+        if (count($scores) > 0) {
+            $overall = VstepScoring::round(array_sum($scores) / count($scores));
+            $session->update([
+                'overall_score' => $overall,
+                'overall_band' => VstepBand::fromScore($overall),
+            ]);
         }
     }
 

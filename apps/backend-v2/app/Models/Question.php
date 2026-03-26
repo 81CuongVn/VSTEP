@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\BloomLevel;
 use App\Enums\Level;
 use App\Enums\Skill;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-#[Fillable(['skill', 'level', 'part', 'topic', 'content', 'answer_key', 'explanation', 'is_active', 'created_by'])]
+#[Fillable(['skill', 'level', 'part', 'topic', 'bloom_level', 'content', 'answer_key', 'explanation', 'is_active', 'verified_at', 'created_by'])]
 #[Hidden(['created_by'])]
 class Question extends BaseModel
 {
@@ -20,9 +21,11 @@ class Question extends BaseModel
         return [
             'skill' => Skill::class,
             'level' => Level::class,
+            'bloom_level' => BloomLevel::class,
             'content' => 'array',
             'answer_key' => 'array',
             'is_active' => 'boolean',
+            'verified_at' => 'datetime',
         ];
     }
 

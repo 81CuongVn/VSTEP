@@ -51,7 +51,6 @@ class SubmissionService
             if ($question->skill->isObjective()) {
                 $this->autoGrade($submission, $question);
             } else {
-                $submission->update(['status' => SubmissionStatus::Processing]);
                 GradeSubmission::dispatch($submission->id);
             }
 

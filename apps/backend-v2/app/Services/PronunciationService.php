@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 
-class AzureSpeechService
+class PronunciationService
 {
     private string $key;
 
@@ -34,7 +34,7 @@ class AzureSpeechService
      *
      * @return array{transcript: string, accuracy_score: float, fluency_score: float, prosody_score: float, word_errors: array}
      */
-    public function assess(string $audioPath): array
+    public function assessPronunciation(string $audioPath): array
     {
         $audioContent = Storage::disk('s3')->get($audioPath);
 
@@ -72,7 +72,7 @@ class AzureSpeechService
             ->post($endpoint);
 
         if ($response->failed()) {
-            Log::error('azure_speech_failed', [
+            Log::error('pronunciation_assessment_failed', [
                 'status' => $response->status(),
                 'audio_path' => $audioPath,
             ]);
@@ -85,25 +85,24 @@ class AzureSpeechService
     private function parseResponse(array $data): array
     {
         $nBest = $data['NBest'][0] ?? [];
-        $assessment = $nBest['PronunciationAssessment'] ?? [];
 
         $wordErrors = [];
         foreach ($nBest['Words'] ?? [] as $word) {
-            $wa = $word['PronunciationAssessment'] ?? [];
-            if (($wa['ErrorType'] ?? 'None') !== 'None') {
+            $errorType = $word['ErrorType'] ?? $word['PronunciationAssessment']['ErrorType'] ?? 'None';
+            if ($errorType !== 'None') {
                 $wordErrors[] = [
                     'word' => $word['Word'] ?? '',
-                    'error_type' => $wa['ErrorType'] ?? 'Unknown',
-                    'accuracy_score' => $wa['AccuracyScore'] ?? 0,
+                    'error_type' => $errorType,
+                    'accuracy_score' => $word['AccuracyScore'] ?? $word['PronunciationAssessment']['AccuracyScore'] ?? 0,
                 ];
             }
         }
 
         return [
             'transcript' => $nBest['Display'] ?? $data['DisplayText'] ?? '',
-            'accuracy_score' => $assessment['AccuracyScore'] ?? 0.0,
-            'fluency_score' => $assessment['FluencyScore'] ?? 0.0,
-            'prosody_score' => $assessment['ProsodyScore'] ?? 0.0,
+            'accuracy_score' => (float) ($nBest['AccuracyScore'] ?? $nBest['PronunciationAssessment']['AccuracyScore'] ?? 0),
+            'fluency_score' => (float) ($nBest['FluencyScore'] ?? $nBest['PronunciationAssessment']['FluencyScore'] ?? 0),
+            'prosody_score' => (float) ($nBest['ProsodyScore'] ?? $nBest['PronunciationAssessment']['ProsodyScore'] ?? 0),
             'word_errors' => $wordErrors,
         ];
     }
