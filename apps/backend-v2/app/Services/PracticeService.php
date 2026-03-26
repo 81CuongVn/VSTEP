@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Contracts\PracticeModeHandler;
 use App\Enums\Level;
 use App\Enums\PracticeMode;
 use App\Enums\Skill;
@@ -16,6 +15,7 @@ use App\Models\UserProgress;
 use App\Services\PracticeHandlers\DrillHandler;
 use App\Services\PracticeHandlers\FreeModeHandler;
 use App\Services\PracticeHandlers\GuidedHandler;
+use App\Services\PracticeHandlers\PracticeModeHandler;
 use App\Services\PracticeHandlers\ShadowingHandler;
 use App\Support\VstepScoring;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;

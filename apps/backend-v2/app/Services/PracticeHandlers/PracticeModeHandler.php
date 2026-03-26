@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Contracts;
+namespace App\Services\PracticeHandlers;
 
 use App\Models\Question;
 use App\Models\Submission;

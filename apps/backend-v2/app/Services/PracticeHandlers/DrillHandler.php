@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Services\PracticeHandlers;
 
-use App\Contracts\PracticeModeHandler;
 use App\Enums\SubmissionStatus;
 use App\Models\Question;
 use App\Models\Submission;
