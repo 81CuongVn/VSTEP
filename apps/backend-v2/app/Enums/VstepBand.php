@@ -19,21 +19,6 @@ enum VstepBand: string
         };
     }
 
-    /**
-     * VSTEP official rounding: <0.25 → floor, ≥0.25 → 0.5, ≥0.75 → ceil.
-     */
-    public static function roundScore(float $score): float
-    {
-        $integer = (int) $score;
-        $decimal = $score - $integer;
-
-        return match (true) {
-            $decimal >= 0.75 => $integer + 1.0,
-            $decimal >= 0.25 => $integer + 0.5,
-            default => (float) $integer,
-        };
-    }
-
     public static function fromScore(float $overall): ?self
     {
         return match (true) {

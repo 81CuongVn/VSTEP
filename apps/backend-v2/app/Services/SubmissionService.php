@@ -10,6 +10,7 @@ use App\Enums\SubmissionStatus;
 use App\Models\Question;
 use App\Models\Submission;
 use App\Models\User;
+use App\Support\VstepScoring;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -90,14 +91,16 @@ class SubmissionService
             return;
         }
 
+        $score = VstepScoring::score($result['raw_ratio']);
+
         $submission->update([
             'status' => SubmissionStatus::Completed,
-            'score' => $result['score'],
+            'score' => $score,
             'result' => [
                 'type' => 'auto',
                 'correct_count' => $result['correct'],
                 'total_count' => $result['total'],
-                'score' => $result['score'],
+                'score' => $score,
                 'graded_at' => now()->toAtomString(),
             ],
             'completed_at' => now(),

@@ -6,11 +6,11 @@ namespace App\Services;
 
 use App\Enums\SessionStatus;
 use App\Enums\Skill;
-use App\Enums\VstepBand;
 use App\Models\Exam;
 use App\Models\ExamAnswer;
 use App\Models\ExamSession;
 use App\Models\Question;
+use App\Support\VstepScoring;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -218,8 +218,7 @@ class SessionService
 
             $correct = $skillAnswers->where('is_correct', true)->count();
             $total = $skillAnswers->count();
-            $raw = $total > 0 ? ($correct / $total) * 10 : 0.0;
-            $update[$column] = VstepBand::roundScore($raw);
+            $update[$column] = $total > 0 ? VstepScoring::score($correct / $total) : 0.0;
         }
 
         $scores = array_filter([
@@ -231,8 +230,8 @@ class SessionService
 
         if (count($scores) > 0) {
             $overall = array_sum($scores) / count($scores);
-            $update['overall_score'] = VstepBand::roundScore($overall);
-            $update['overall_band'] = VstepBand::fromScore($update['overall_score']);
+            $update['overall_score'] = VstepScoring::round($overall);
+            $update['overall_band'] = VstepScoring::band($update['overall_score']);
         }
 
         if (! empty($update)) {
