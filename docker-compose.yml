@@ -85,10 +85,10 @@ services:
         - action: rebuild
           path: ./apps/backend-v2/composer.json
 
-  # Grading results consumer
-  grading-consumer:
+  # Laravel queue worker — processes grading results
+  queue:
     build: ./apps/backend-v2
-    command: php artisan grading:consume
+    command: php artisan queue:work redis --sleep=3 --tries=3
     environment:
       APP_ENV: local
       DB_CONNECTION: pgsql
@@ -97,6 +97,7 @@ services:
       DB_DATABASE: vstep
       DB_USERNAME: user
       DB_PASSWORD: password
+      QUEUE_CONNECTION: redis
       CACHE_STORE: redis
       REDIS_CLIENT: phpredis
       REDIS_HOST: redis

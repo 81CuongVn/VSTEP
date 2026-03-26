@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Enums\NotificationType;
 use App\Enums\Role;
 use App\Enums\SubmissionStatus;
+use App\Jobs\ProcessGradingResult;
 use App\Models\Question;
 use App\Models\Submission;
 use App\Models\User;
@@ -20,7 +21,6 @@ class SubmissionService
     public function __construct(
         private readonly ProgressService $progressService,
         private readonly NotificationService $notificationService,
-        private readonly GradingDispatcher $gradingDispatcher,
     ) {}
 
     public function list(User $user, array $filters = []): LengthAwarePaginator
@@ -51,7 +51,8 @@ class SubmissionService
             if ($question->skill->isObjective()) {
                 $this->autoGrade($submission, $question);
             } else {
-                $this->gradingDispatcher->dispatch($submission);
+                $submission->update(['status' => SubmissionStatus::Processing]);
+                ProcessGradingResult::dispatch($submission->id);
             }
 
             return $submission;

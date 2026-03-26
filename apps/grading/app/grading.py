@@ -1,9 +1,12 @@
 import httpx
+from fastapi import APIRouter
 from pydantic import ValidationError
 from redis.asyncio import Redis
 
 from app import speaking, writing
 from app.models import PermanentError, Result, Task
+
+grade_router = APIRouter()
 
 
 async def grade(task: Task, redis: Redis) -> Result:
@@ -17,3 +20,11 @@ async def grade(task: Task, redis: Redis) -> Result:
         if e.response.status_code < 500:
             raise PermanentError(f"audio download failed: {e}") from e
         raise
+
+
+@grade_router.post("/grade", response_model=Result)
+async def grade_http(task: Task):
+    from app.main import get_redis
+
+    redis = await get_redis()
+    return await grade(task, redis)

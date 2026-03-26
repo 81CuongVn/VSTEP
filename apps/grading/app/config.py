@@ -26,6 +26,8 @@ class Settings(BaseSettings):
     grading_queue: str = "grading:tasks"
     max_retries: int = 3
 
+    backend_webhook_url: str = "http://localhost:8000/api/internal/grading-result"
+
     log_level: str = "INFO"
 
 

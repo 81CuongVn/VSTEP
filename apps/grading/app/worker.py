@@ -1,6 +1,7 @@
 import asyncio
 import json
 
+import httpx
 from redis.asyncio import Redis
 
 from app.config import settings
@@ -10,7 +11,6 @@ from app.models import PermanentError, Task
 
 
 TASKS_STREAM = settings.grading_queue
-RESULTS_STREAM = "grading:results"
 GROUP = "grading"
 CONSUMER = "grading-1"
 
@@ -23,31 +23,30 @@ async def ensure_groups(redis: Redis):
             raise
 
 
+async def send_result(payload: dict):
+    async with httpx.AsyncClient(timeout=30) as client:
+        response = await client.post(settings.backend_webhook_url, json=payload)
+        response.raise_for_status()
+
+
 async def process(task: Task, redis: Redis) -> bool:
-    """Process a single task. Returns True on success."""
     for attempt in range(settings.max_retries):
         try:
             result = await grade(task, redis)
             result_dict = json.loads(result.model_dump_json(by_alias=True))
             result_dict["submissionId"] = task.submission_id
-            await redis.xadd(RESULTS_STREAM, {"payload": json.dumps(result_dict)})
+            await send_result(result_dict)
 
             logger.info("graded", submission_id=task.submission_id, score=result.overall_score)
             return True
         except PermanentError:
             logger.error("permanent_failure", submission_id=task.submission_id)
-            await redis.xadd(RESULTS_STREAM, {"payload": json.dumps({
-                "submissionId": task.submission_id,
-                "failed": True,
-            })})
-            return True  # Acknowledged, don't retry
+            await send_result({"submissionId": task.submission_id, "failed": True})
+            return True
         except Exception as e:
             if attempt == settings.max_retries - 1:
                 logger.error("exhausted_retries", submission_id=task.submission_id, error=str(e))
-                await redis.xadd(RESULTS_STREAM, {"payload": json.dumps({
-                    "submissionId": task.submission_id,
-                    "failed": True,
-                })})
+                await send_result({"submissionId": task.submission_id, "failed": True})
                 return True
             await asyncio.sleep(2**attempt)
     return False
