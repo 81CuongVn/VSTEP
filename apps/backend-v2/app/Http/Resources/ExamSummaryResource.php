@@ -16,6 +16,24 @@ class ExamSummaryResource extends JsonResource
             'title' => $this->title,
             'level' => $this->level,
             'type' => $this->type,
+            'duration_minutes' => $this->duration_minutes,
+            'sections' => collect($this->blueprint ?? [])
+                ->filter(fn (mixed $section) => is_array($section) && array_key_exists('question_ids', $section))
+                ->values()
+                ->map(function (array $section, int $index): array {
+                    $questionIds = $section['question_ids'] ?? [];
+
+                    return [
+                        'skill' => $section['skill'] ?? null,
+                        'part' => $section['part'] ?? $index + 1,
+                        'title' => $section['title'] ?? null,
+                        'instructions' => $section['instructions'] ?? null,
+                        'question_count' => count($questionIds),
+                        'question_ids' => $questionIds,
+                        'order' => $section['order'] ?? $index + 1,
+                    ];
+                })
+                ->all(),
         ];
     }
 }

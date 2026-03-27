@@ -18,72 +18,96 @@ class ExamSeeder extends Seeder
     {
         $admin = User::where('email', 'admin@vstep.local')->first();
 
-        $listeningIds = Question::where('skill', Skill::Listening)->pluck('id', 'level');
-        $readingIds = Question::where('skill', Skill::Reading)->pluck('id', 'level');
+        // Group question IDs by skill → level
+        $bySkillLevel = [];
+        foreach (Skill::cases() as $skill) {
+            $bySkillLevel[$skill->value] = Question::where('skill', $skill)
+                ->where('is_active', true)
+                ->get()
+                ->groupBy(fn ($q) => $q->level->value)
+                ->map(fn ($qs) => $qs->pluck('id')->all());
+        }
 
-        // Group question IDs by skill for blueprint
-        $listeningByLevel = Question::where('skill', Skill::Listening)
-            ->get()
-            ->groupBy(fn ($q) => $q->level->value)
-            ->map(fn ($qs) => $qs->pluck('id')->all());
+        // ── Practice exams per level (listening + reading only) ──
 
-        $readingByLevel = Question::where('skill', Skill::Reading)
-            ->get()
-            ->groupBy(fn ($q) => $q->level->value)
-            ->map(fn ($qs) => $qs->pluck('id')->all());
-
-        // Practice exams per level
         foreach (Level::cases() as $level) {
-            $blueprint = [];
-            $lIds = $listeningByLevel->get($level->value, []);
-            $rIds = $readingByLevel->get($level->value, []);
+            $sections = [];
 
-            if ($lIds) {
-                $blueprint['listening'] = ['skill' => 'listening', 'question_ids' => $lIds];
-            }
-            if ($rIds) {
-                $blueprint['reading'] = ['skill' => 'reading', 'question_ids' => $rIds];
+            foreach ([Skill::Listening, Skill::Reading] as $skill) {
+                $ids = $bySkillLevel[$skill->value]->get($level->value, []);
+                if ($ids) {
+                    $sections[] = ['skill' => $skill->value, 'question_ids' => $ids];
+                }
             }
 
-            if (empty($blueprint)) {
+            if (empty($sections)) {
                 continue;
             }
 
-            Exam::create([
-                'title' => "VSTEP Practice {$level->value}",
-                'level' => $level,
-                'type' => ExamType::Practice,
-                'duration_minutes' => 60,
-                'blueprint' => array_values($blueprint),
-                'description' => "Đề luyện tập VSTEP trình độ {$level->value} — Listening & Reading",
-                'is_active' => true,
-                'created_by' => $admin?->id,
-            ]);
+            Exam::updateOrCreate(
+                ['title' => "VSTEP Practice {$level->value}", 'type' => ExamType::Practice],
+                [
+                    'level' => $level,
+                    'duration_minutes' => 60,
+                    'blueprint' => $sections,
+                    'description' => "Đề luyện tập VSTEP trình độ {$level->value} — Listening & Reading",
+                    'is_active' => true,
+                    'created_by' => $admin?->id,
+                ],
+            );
         }
 
-        // Placement exam — mix A2+B1+B2 questions
-        $placementBlueprint = [];
-        $allListening = $listeningByLevel->flatten()->all();
-        $allReading = $readingByLevel->flatten()->all();
+        // ── Mock exams per level (full 4 skills) ──
 
-        if ($allListening) {
-            $placementBlueprint[] = ['skill' => 'listening', 'question_ids' => $allListening];
-        }
-        if ($allReading) {
-            $placementBlueprint[] = ['skill' => 'reading', 'question_ids' => $allReading];
+        foreach ([Level::B1, Level::B2] as $level) {
+            $sections = [];
+
+            foreach (Skill::cases() as $skill) {
+                $ids = $bySkillLevel[$skill->value]->get($level->value, []);
+                if ($ids) {
+                    $sections[] = ['skill' => $skill->value, 'question_ids' => $ids];
+                }
+            }
+
+            if (count($sections) < 2) {
+                continue;
+            }
+
+            Exam::updateOrCreate(
+                ['title' => "VSTEP Mock {$level->value}", 'type' => ExamType::Mock],
+                [
+                    'level' => $level,
+                    'duration_minutes' => 180,
+                    'blueprint' => $sections,
+                    'description' => "Đề thi thử VSTEP trình độ {$level->value} — 4 kỹ năng",
+                    'is_active' => true,
+                    'created_by' => $admin?->id,
+                ],
+            );
         }
 
-        if ($placementBlueprint) {
-            Exam::create([
-                'title' => 'VSTEP Placement Test',
-                'level' => Level::B1,
-                'type' => ExamType::Placement,
-                'duration_minutes' => 45,
-                'blueprint' => $placementBlueprint,
-                'description' => 'Bài test xếp lớp — đánh giá trình độ Listening & Reading',
-                'is_active' => true,
-                'created_by' => $admin?->id,
-            ]);
+        // ── Placement exam (mix levels) ──
+
+        $placementSections = [];
+        foreach ([Skill::Listening, Skill::Reading] as $skill) {
+            $allIds = $bySkillLevel[$skill->value]->flatten()->all();
+            if ($allIds) {
+                $placementSections[] = ['skill' => $skill->value, 'question_ids' => $allIds];
+            }
+        }
+
+        if ($placementSections) {
+            Exam::updateOrCreate(
+                ['title' => 'VSTEP Placement Test', 'type' => ExamType::Placement],
+                [
+                    'level' => Level::B1,
+                    'duration_minutes' => 45,
+                    'blueprint' => $placementSections,
+                    'description' => 'Bài test xếp lớp — đánh giá trình độ Listening & Reading',
+                    'is_active' => true,
+                    'created_by' => $admin?->id,
+                ],
+            );
         }
     }
 }

@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(['title', 'level', 'type', 'duration_minutes', 'blueprint', 'description', 'is_active', 'created_by'])]
-#[Hidden(['created_by'])]
+#[Hidden(['created_by', 'blueprint'])]
 class Exam extends BaseModel
 {
     protected function casts(): array

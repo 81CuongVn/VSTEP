@@ -6,7 +6,15 @@
         "topic": "Apology for Missing a Meeting",
         "bloom_level": "remember",
         "content": {
-            "prompt": "Write a short email (80-100 words) to your teacher apologizing for missing a meeting. Include why you could not come, how you feel about it, and when you would like to meet again."
+            "prompt": "Write a short email (80-100 words) to your teacher apologizing for missing a meeting. Include why you could not come, how you feel about it, and when you would like to meet again.",
+            "taskType": "letter",
+            "minWords": 80,
+            "instructions": [],
+            "requiredPoints": [
+                "why you could not come",
+                "how you feel about it",
+                "when you would like to meet again"
+            ]
         },
         "answer_key": null,
         "knowledge_points": [
@@ -23,7 +31,16 @@
         "topic": "Birthday Party Invitation",
         "bloom_level": null,
         "content": {
-            "prompt": "Write a short letter (80-100 words) to your friend inviting them to your birthday party. Include the date, time, place, and what you will do."
+            "prompt": "Write a short letter (80-100 words) to your friend inviting them to your birthday party. Include the date, time, place, and what you will do.",
+            "taskType": "letter",
+            "minWords": 80,
+            "instructions": [],
+            "requiredPoints": [
+                "the date",
+                "time",
+                "place",
+                "what you will do"
+            ]
         },
         "answer_key": null,
         "knowledge_points": [
@@ -40,7 +57,16 @@
         "topic": "Invitation to Visit Your Hometown",
         "bloom_level": "understand",
         "content": {
-            "prompt": "Write a short letter (80-100 words) to your friend inviting him\/her to visit your hometown. Include when your friend can come, how he\/she can travel there, where your friend can stay, and what you will do together."
+            "prompt": "Write a short letter (80-100 words) to your friend inviting him/her to visit your hometown. Include when your friend can come, how he/she can travel there, where your friend can stay, and what you will do together.",
+            "taskType": "letter",
+            "minWords": 80,
+            "instructions": [],
+            "requiredPoints": [
+                "when your friend can come",
+                "how he/she can travel there",
+                "where your friend can stay",
+                "what you will do together"
+            ]
         },
         "answer_key": null,
         "knowledge_points": [
@@ -57,7 +83,16 @@
         "topic": "Letter to Ask About an English Club",
         "bloom_level": "understand",
         "content": {
-            "prompt": "Write a short letter (80-100 words) to the leader of an English club to ask for information. Include where the club meets, when the meetings are, what activities members do, and how you can join."
+            "prompt": "Write a short letter (80-100 words) to the leader of an English club to ask for information. Include where the club meets, when the meetings are, what activities members do, and how you can join.",
+            "taskType": "letter",
+            "minWords": 80,
+            "instructions": [],
+            "requiredPoints": [
+                "where the club meets",
+                "when the meetings are",
+                "what activities members do",
+                "how you can join"
+            ]
         },
         "answer_key": null,
         "knowledge_points": [
@@ -74,7 +109,16 @@
         "topic": "Thank-You Email for a Gift",
         "bloom_level": "remember",
         "content": {
-            "prompt": "Write a short email (80-100 words) to your friend to thank him\/her for a gift you received. Include what the gift is, when you received it, why you like it, and how you will use it."
+            "prompt": "Write a short email (80-100 words) to your friend to thank him/her for a gift you received. Include what the gift is, when you received it, why you like it, and how you will use it.",
+            "taskType": "letter",
+            "minWords": 80,
+            "instructions": [],
+            "requiredPoints": [
+                "what the gift is",
+                "when you received it",
+                "why you like it",
+                "how you will use it"
+            ]
         },
         "answer_key": null,
         "knowledge_points": [
@@ -91,7 +135,11 @@
         "topic": "Absence Email",
         "bloom_level": null,
         "content": {
-            "prompt": "Write an email (120-150 words) to your teacher explaining why you were absent from class last week and asking about the homework you missed."
+            "prompt": "Write an email (120-150 words) to your teacher explaining why you were absent from class last week and asking about the homework you missed.",
+            "taskType": "letter",
+            "minWords": 120,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -110,7 +158,11 @@
         "topic": "Birthday Invitation Reply",
         "bloom_level": "understand",
         "content": {
-            "prompt": "Write an email (120-150 words) to your cousin replying to his birthday party invitation. Explain whether you can attend, give a reason, and ask for some details about the party."
+            "prompt": "Write an email (120-150 words) to your cousin replying to his birthday party invitation. Explain whether you can attend, give a reason, and ask for some details about the party.",
+            "taskType": "letter",
+            "minWords": 120,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -129,7 +181,11 @@
         "topic": "Library Membership",
         "bloom_level": "apply",
         "content": {
-            "prompt": "You have just joined a new library at your university. Write a letter (120-150 words) to your friend describing the library facilities and explaining how it will help you with your studies."
+            "prompt": "You have just joined a new library at your university. Write a letter (120-150 words) to your friend describing the library facilities and explaining how it will help you with your studies.",
+            "taskType": "letter",
+            "minWords": 120,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -148,7 +204,11 @@
         "topic": "New City",
         "bloom_level": null,
         "content": {
-            "prompt": "You recently moved to a new city. Write a letter (120-150 words) to your friend describing your new neighborhood and your feelings about the move."
+            "prompt": "You recently moved to a new city. Write a letter (120-150 words) to your friend describing your new neighborhood and your feelings about the move.",
+            "taskType": "letter",
+            "minWords": 120,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -167,7 +227,11 @@
         "topic": "Weekend Visit",
         "bloom_level": "analyze",
         "content": {
-            "prompt": "Your English-speaking friend plans to visit your hometown next weekend. Write an email (120-150 words) suggesting some places to visit, explaining why they are interesting, and giving advice about the best way to travel around the town."
+            "prompt": "Your English-speaking friend plans to visit your hometown next weekend. Write an email (120-150 words) suggesting some places to visit, explaining why they are interesting, and giving advice about the best way to travel around the town.",
+            "taskType": "letter",
+            "minWords": 120,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -186,7 +250,11 @@
         "topic": "Living in the City",
         "bloom_level": "understand",
         "content": {
-            "prompt": "Some people think living in a big city is better than living in the countryside. Others disagree. Write an essay (150-180 words) giving your opinion with reasons."
+            "prompt": "Some people think living in a big city is better than living in the countryside. Others disagree. Write an essay (150-180 words) giving your opinion with reasons.",
+            "taskType": "essay",
+            "minWords": 150,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -205,7 +273,11 @@
         "topic": "Online Learning",
         "bloom_level": "analyze",
         "content": {
-            "prompt": "Some people think online learning is better than learning in the classroom. Others disagree. Write an essay (150-180 words) giving your opinion with reasons."
+            "prompt": "Some people think online learning is better than learning in the classroom. Others disagree. Write an essay (150-180 words) giving your opinion with reasons.",
+            "taskType": "essay",
+            "minWords": 150,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -224,7 +296,11 @@
         "topic": "Part-Time Jobs for Students",
         "bloom_level": "apply",
         "content": {
-            "prompt": "Some people think university students should do part-time jobs while studying. Others disagree. Write an essay (150-180 words) giving your opinion with reasons."
+            "prompt": "Some people think university students should do part-time jobs while studying. Others disagree. Write an essay (150-180 words) giving your opinion with reasons.",
+            "taskType": "essay",
+            "minWords": 150,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -243,7 +319,11 @@
         "topic": "School Uniforms",
         "bloom_level": null,
         "content": {
-            "prompt": "Some people think students should wear uniforms at school. Others disagree. Write an essay (150-180 words) giving your opinion with reasons."
+            "prompt": "Some people think students should wear uniforms at school. Others disagree. Write an essay (150-180 words) giving your opinion with reasons.",
+            "taskType": "essay",
+            "minWords": 150,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -262,7 +342,11 @@
         "topic": "Using Smartphones in Class",
         "bloom_level": "apply",
         "content": {
-            "prompt": "Some people think students should be allowed to use smartphones in class. Others disagree. Write an essay (150-180 words) giving your opinion with reasons."
+            "prompt": "Some people think students should be allowed to use smartphones in class. Others disagree. Write an essay (150-180 words) giving your opinion with reasons.",
+            "taskType": "essay",
+            "minWords": 150,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -281,7 +365,11 @@
         "topic": "Campus Event Proposal",
         "bloom_level": "apply",
         "content": {
-            "prompt": "Write a formal letter (150-180 words) to your university student affairs office proposing a career workshop for final-year students. Describe the purpose of the event, suggest the main activities, and explain how students would benefit from attending."
+            "prompt": "Write a formal letter (150-180 words) to your university student affairs office proposing a career workshop for final-year students. Describe the purpose of the event, suggest the main activities, and explain how students would benefit from attending.",
+            "taskType": "letter",
+            "minWords": 150,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -299,7 +387,11 @@
         "topic": "Course Change Request",
         "bloom_level": "evaluate",
         "content": {
-            "prompt": "Write a formal email (150-180 words) to the head of your department requesting permission to change one of your current courses. Explain why the course is not suitable for you, evaluate an alternative course you would like to take, and give reasons for your request."
+            "prompt": "Write a formal email (150-180 words) to the head of your department requesting permission to change one of your current courses. Explain why the course is not suitable for you, evaluate an alternative course you would like to take, and give reasons for your request.",
+            "taskType": "letter",
+            "minWords": 150,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -317,7 +409,11 @@
         "topic": "Internship Application",
         "bloom_level": null,
         "content": {
-            "prompt": "Write a formal letter (150-180 words) to a company applying for a summer internship. Describe your qualifications and why you are interested."
+            "prompt": "Write a formal letter (150-180 words) to a company applying for a summer internship. Describe your qualifications and why you are interested.",
+            "taskType": "letter",
+            "minWords": 150,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -335,7 +431,11 @@
         "topic": "Library Facilities Complaint",
         "bloom_level": "analyze",
         "content": {
-            "prompt": "Write a formal letter (150-180 words) to the manager of your university library about several problems with the study facilities. Describe the issues, explain how they affect students, and suggest possible solutions to improve the situation."
+            "prompt": "Write a formal letter (150-180 words) to the manager of your university library about several problems with the study facilities. Describe the issues, explain how they affect students, and suggest possible solutions to improve the situation.",
+            "taskType": "letter",
+            "minWords": 150,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -353,7 +453,11 @@
         "topic": "Scholarship Request",
         "bloom_level": "apply",
         "content": {
-            "prompt": "Write a formal email (150-180 words) to your university scholarship committee requesting financial support for the next semester. Explain your academic achievements, describe your current financial difficulties, and state how the scholarship would help you continue your studies."
+            "prompt": "Write a formal email (150-180 words) to your university scholarship committee requesting financial support for the next semester. Explain your academic achievements, describe your current financial difficulties, and state how the scholarship would help you continue your studies.",
+            "taskType": "letter",
+            "minWords": 150,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -371,7 +475,11 @@
         "topic": "City and Country Life",
         "bloom_level": "evaluate",
         "content": {
-            "prompt": "Some people prefer living in a big city, while others believe that life in the countryside is better. Discuss both views and give your opinion (250 words)."
+            "prompt": "Some people prefer living in a big city, while others believe that life in the countryside is better. Discuss both views and give your opinion (250 words).",
+            "taskType": "essay",
+            "minWords": 250,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -390,7 +498,11 @@
         "topic": "Online Learning",
         "bloom_level": "analyze",
         "content": {
-            "prompt": "Write an essay (250 words) discussing the advantages and disadvantages of online learning for university students. Give specific examples to support your points."
+            "prompt": "Write an essay (250 words) discussing the advantages and disadvantages of online learning for university students. Give specific examples to support your points.",
+            "taskType": "essay",
+            "minWords": 250,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -409,7 +521,11 @@
         "topic": "Part-time Jobs",
         "bloom_level": "apply",
         "content": {
-            "prompt": "Many students choose to do part-time jobs while studying at university. Write an essay (250 words) discussing the benefits and drawbacks of this trend. Give reasons and examples to support your answer."
+            "prompt": "Many students choose to do part-time jobs while studying at university. Write an essay (250 words) discussing the benefits and drawbacks of this trend. Give reasons and examples to support your answer.",
+            "taskType": "essay",
+            "minWords": 250,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -428,7 +544,11 @@
         "topic": "Social Media",
         "bloom_level": null,
         "content": {
-            "prompt": "Write an essay (250 words) discussing the advantages and disadvantages of social media for young people. Give specific examples to support your points."
+            "prompt": "Write an essay (250 words) discussing the advantages and disadvantages of social media for young people. Give specific examples to support your points.",
+            "taskType": "essay",
+            "minWords": 250,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -447,7 +567,11 @@
         "topic": "Technology Impact",
         "bloom_level": null,
         "content": {
-            "prompt": "Some people believe that technology has made life easier, while others think it has created new problems. Discuss both views and give your opinion (250 words)."
+            "prompt": "Some people believe that technology has made life easier, while others think it has created new problems. Discuss both views and give your opinion (250 words).",
+            "taskType": "essay",
+            "minWords": 250,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -466,7 +590,11 @@
         "topic": "AI Regulation",
         "bloom_level": null,
         "content": {
-            "prompt": "To what extent should governments regulate artificial intelligence? Discuss the ethical, economic, and social implications in a well-structured essay (300 words)."
+            "prompt": "To what extent should governments regulate artificial intelligence? Discuss the ethical, economic, and social implications in a well-structured essay (300 words).",
+            "taskType": "essay",
+            "minWords": 300,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -485,7 +613,11 @@
         "topic": "Globalization",
         "bloom_level": null,
         "content": {
-            "prompt": "Critically evaluate the claim that globalization has done more harm than good for developing nations. Support your argument with specific examples (300 words)."
+            "prompt": "Critically evaluate the claim that globalization has done more harm than good for developing nations. Support your argument with specific examples (300 words).",
+            "taskType": "essay",
+            "minWords": 300,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -504,7 +636,11 @@
         "topic": "Remote Work",
         "bloom_level": "analyze",
         "content": {
-            "prompt": "Analyze the extent to which remote work has transformed employees’ productivity, work-life balance, and sense of professional connection. Support your discussion with relevant examples in a well-structured essay (300 words)."
+            "prompt": "Analyze the extent to which remote work has transformed employees’ productivity, work-life balance, and sense of professional connection. Support your discussion with relevant examples in a well-structured essay (300 words).",
+            "taskType": "essay",
+            "minWords": 300,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -523,7 +659,11 @@
         "topic": "Social Media and Interpersonal Communication",
         "bloom_level": "evaluate",
         "content": {
-            "prompt": "Critically evaluate the impact of social media on the quality of interpersonal communication among young adults. Support your argument with specific examples (300 words)."
+            "prompt": "Critically evaluate the impact of social media on the quality of interpersonal communication among young adults. Support your argument with specific examples (300 words).",
+            "taskType": "essay",
+            "minWords": 300,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [
@@ -542,7 +682,11 @@
         "topic": "Sustainable University Campuses",
         "bloom_level": "create",
         "content": {
-            "prompt": "Propose how universities can become more sustainable while still meeting students’ academic and social needs. Discuss practical measures and their potential benefits in a well-structured essay (300 words)."
+            "prompt": "Propose how universities can become more sustainable while still meeting students’ academic and social needs. Discuss practical measures and their potential benefits in a well-structured essay (300 words).",
+            "taskType": "essay",
+            "minWords": 300,
+            "instructions": [],
+            "requiredPoints": []
         },
         "answer_key": null,
         "knowledge_points": [

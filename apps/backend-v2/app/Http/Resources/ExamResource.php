@@ -11,6 +11,11 @@ class ExamResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        $summary = (new ExamSummaryResource($this->resource))->toArray($request);
+
+        return [
+            ...parent::toArray($request),
+            'sections' => $summary['sections'],
+        ];
     }
 }
