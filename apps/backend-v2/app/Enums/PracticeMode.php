@@ -20,10 +20,10 @@ enum PracticeMode: string
         };
     }
 
-    public function defaultItemsCount(): int
+    public function defaultItemsCount(?Skill $skill = null): int
     {
         return match ($this) {
-            self::Free => 5,
+            self::Free => $skill?->isObjective() ? 2 : 5,
             self::Shadowing => 8,
             self::Drill => 10,
             self::Guided => 3,

@@ -16,7 +16,16 @@ class DrillHandler extends AbstractPronunciationHandler
     public function enrichItem(Question $question): array
     {
         return [
-            'target_text' => $question->content['prompt'] ?? '',
+            'target_text' => self::extractText($question->content),
         ];
+    }
+
+    private static function extractText(array $content): string
+    {
+        return $content['prompt']
+            ?? $content['topics'][0]['questions'][0]
+            ?? $content['situation']
+            ?? $content['centralIdea']
+            ?? '';
     }
 }

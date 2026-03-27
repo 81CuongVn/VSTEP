@@ -16,8 +16,17 @@ class ShadowingHandler extends AbstractPronunciationHandler
     public function enrichItem(Question $question): array
     {
         return [
-            'reference_text' => $question->content['prompt'] ?? '',
+            'reference_text' => self::extractText($question->content),
             'reference_audio_path' => $question->content['reference_audio_path'] ?? null,
         ];
+    }
+
+    private static function extractText(array $content): string
+    {
+        return $content['prompt']
+            ?? $content['topics'][0]['questions'][0]
+            ?? $content['situation']
+            ?? $content['centralIdea']
+            ?? '';
     }
 }

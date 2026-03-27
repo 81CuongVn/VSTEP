@@ -39,7 +39,7 @@ class PracticeService
 
         $progress = UserProgress::findOrInitialize($userId, $skill);
         $level = isset($options['level']) ? Level::from($options['level']) : $progress->current_level;
-        $itemsCount = $options['items_count'] ?? $mode->defaultItemsCount();
+        $itemsCount = $options['items_count'] ?? $mode->defaultItemsCount($skill);
 
         // Auto-complete stale sessions of same skill+mode (older than 2 hours)
         PracticeSession::forUser($userId)
