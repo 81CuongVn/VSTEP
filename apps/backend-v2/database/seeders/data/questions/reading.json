@@ -318,7 +318,7 @@
         "topic": "Rethinking Education: Lessons from Finland",
         "bloom_level": null,
         "content": {
-            "passage": "Rethinking Education: Lessons from Finland\n\nFinland's education system has been widely praised as one of the most successful in the world. The author uses the example of Finland to illustrate how educational reform can lead to remarkable results without relying on standardized testing or excessive homework.\n\nThe passage suggests that standardized testing has significant limitations, as it often fails to measure creativity, critical thinking, and social skills — qualities that are equally important for success in life. Critics of the current system describe it as a 'one-size-fits-all approach' — a universal but inflexible solution that ignores the diverse needs and talents of individual students.\n\nThe fourth paragraph argues that balance is needed in policy-making: technology should complement traditional teaching, not replace it. The conclusion implies that more research is needed to understand how these principles can be adapted to different cultural and economic contexts.",
+            "passage": "Rethinking Education: Lessons from Finland\n\nFinland's education system has been widely praised as one of the most successful in the world. Unlike many countries that rely heavily on standardized testing, Finland takes a fundamentally different approach. Students rarely take exams before the age of sixteen, and homework is kept to a minimum. Instead, the emphasis is on collaborative learning, creative thinking, and student well-being.\n\nCritics of the traditional testing model argue that standardized assessments have significant limitations. These tests often fail to measure creativity, critical thinking, and social skills — qualities that are equally important for success in life. In many education systems, the pressure to perform well on exams has led to a narrow curriculum focused on test preparation rather than genuine learning.\n\nSome education experts describe the conventional approach as a \"one-size-fits-all\" method — a universal but inflexible solution that ignores the diverse needs and talents of individual students. Finland's success suggests that when teachers are given more autonomy and students are trusted to take responsibility for their own learning, outcomes improve dramatically.\n\nHowever, implementing such reforms requires significant investment in teacher training and a cultural shift in how society views education. Technology should complement traditional teaching methods, not replace them entirely. While Finland's model offers valuable insights, more research is needed to understand how these principles can be adapted to different cultural and economic contexts.",
             "title": "Rethinking Education: Lessons from Finland",
             "items": [
                 {
@@ -340,7 +340,7 @@
                     ]
                 },
                 {
-                    "stem": "Which statement best summarizes the fourth paragraph?",
+                    "stem": "Which statement best summarizes the final paragraph?",
                     "options": [
                         "Technology solves all problems",
                         "Balance is needed in policy-making",
