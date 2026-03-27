@@ -33,12 +33,28 @@ function toSnakeCase(obj: unknown): unknown {
 }
 
 // Unwrap Laravel's { data: ... } wrapper for single-resource responses.
-// Paginated responses ({ data: [...], meta, links }) are kept as-is.
+// Paginated responses ({ data: [...], meta, links }) are kept as-is but meta is normalized.
 function unwrapData(obj: unknown): unknown {
 	if (obj && typeof obj === "object" && !Array.isArray(obj)) {
-		const keys = Object.keys(obj)
+		const rec = obj as Record<string, unknown>
+		const keys = Object.keys(rec)
+
+		// Single-resource: { data: ... } → unwrap
 		if (keys.length === 1 && keys[0] === "data") {
-			return (obj as Record<string, unknown>).data
+			return rec.data
+		}
+
+		// Paginated: { data: [...], meta: { current_page, per_page, ... }, links }
+		// Normalize Laravel meta → FE PaginationMeta { page, limit, total, totalPages }
+		if (Array.isArray(rec.data) && rec.meta && typeof rec.meta === "object") {
+			const m = rec.meta as Record<string, unknown>
+			rec.meta = {
+				page: m.current_page ?? m.page,
+				limit: m.per_page ?? m.limit,
+				total: m.total,
+				totalPages: m.last_page ?? m.totalPages,
+			}
+			delete rec.links
 		}
 	}
 	return obj
