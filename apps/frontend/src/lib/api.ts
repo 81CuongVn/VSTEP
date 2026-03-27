@@ -143,10 +143,17 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
 	if (!res.ok) {
 		const errorBody = await res.json().catch(() => ({}))
+		const serverMessage: string | undefined = errorBody?.error?.message ?? errorBody?.message
+
+		// Backend returns 500 "Route [login] not defined" when unauthenticated (missing 401 handler)
+		// Treat as 401 so the refresh/redirect logic kicks in
+		if (res.status === 500 && serverMessage && /route \[login\] not defined/i.test(serverMessage)) {
+			throw new ApiError(401, STATUS_MESSAGES[401])
+		}
+
 		const validation = parseLaravelErrors(errorBody)
 		if (validation) throw new ApiError(res.status, validation)
 		const fallback = STATUS_MESSAGES[res.status] ?? "Đã có lỗi xảy ra"
-		const serverMessage: string | undefined = errorBody?.error?.message ?? errorBody?.message
 		const translated = serverMessage ? (ERROR_TRANSLATIONS[serverMessage] ?? fallback) : fallback
 		throw new ApiError(res.status, translated)
 	}
