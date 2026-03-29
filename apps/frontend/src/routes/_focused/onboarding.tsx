@@ -1,13 +1,20 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { api } from "@/lib/api"
 import { cn } from "@/lib/utils"
-import type { PlacementStarted, VstepBand } from "@/types/api"
+import type { ExamSession, PlacementStarted, VstepBand } from "@/types/api"
+
+interface OnboardingSearch {
+	session?: string
+}
 
 export const Route = createFileRoute("/_focused/onboarding")({
 	component: OnboardingPage,
+	validateSearch: (search: Record<string, unknown>): OnboardingSearch => ({
+		session: typeof search.session === "string" ? search.session : undefined,
+	}),
 })
 
 const LEVELS = [
@@ -51,13 +58,81 @@ const DAILY_TIMES = [
 	{ label: "Tuỳ tôi", minutes: undefined },
 ] as const
 
+// ---------------------------------------------------------------------------
+// Goal constraints: realistic deadline & daily-time based on level gap
+// ---------------------------------------------------------------------------
+
+const LEVEL_ORDER: Record<string, number> = { A2: 0, B1: 1, B2: 2, C1: 3 }
+
+/**
+ * Each level jump requires ~3 months at 30 min/day minimum.
+ * Shorter deadline → must increase daily study time proportionally.
+ * "Không giới hạn" and "Tuỳ tôi" are always allowed.
+ */
+function getGoalConstraints(
+	currentLevel: string | null,
+	targetBand: VstepBand,
+): {
+	minDeadlineMonths: number
+	minDailyMinutes: number
+	hint: string | null
+} {
+	const current = LEVEL_ORDER[currentLevel ?? "A2"] ?? 0
+	const target = LEVEL_ORDER[targetBand] ?? 0
+	const gap = Math.max(0, target - current)
+
+	if (gap === 0) {
+		return { minDeadlineMonths: 1, minDailyMinutes: 15, hint: null }
+	}
+
+	// gap=1 → 3 months / 15 min, gap=2 → 6 months / 30 min, gap=3 → 12 months / 60 min
+	const minDeadlineMonths = gap === 1 ? 3 : gap === 2 ? 6 : 12
+	const minDailyMinutes = gap === 1 ? 15 : gap === 2 ? 30 : 60
+
+	const hint =
+		gap >= 3
+			? `Từ ${currentLevel} lên ${targetBand} cần ít nhất 12 tháng và 1 giờ/ngày`
+			: gap === 2
+				? `Từ ${currentLevel} lên ${targetBand} cần ít nhất 6 tháng và 30 phút/ngày`
+				: `Từ ${currentLevel} lên ${targetBand} cần ít nhất 3 tháng và 15 phút/ngày`
+
+	return { minDeadlineMonths, minDailyMinutes, hint }
+}
+
+function isDeadlineAllowed(months: number | undefined, minDeadlineMonths: number): boolean {
+	if (months === undefined) return true // "Không giới hạn" always ok
+	return months >= minDeadlineMonths
+}
+
+function isDailyTimeAllowed(minutes: number | undefined, minDailyMinutes: number): boolean {
+	if (minutes === undefined) return true // "Tuỳ tôi" always ok
+	return minutes >= minDailyMinutes
+}
+
+// ---------------------------------------------------------------------------
+// Derive level from VSTEP 10-point score (mirrors backend Level::fromScore)
+// ---------------------------------------------------------------------------
+
+function levelFromScore(score: number | null): string {
+	if (score === null) return "A2"
+	if (score >= 8.5) return "C1"
+	if (score >= 6.0) return "B2"
+	if (score >= 4.0) return "B1"
+	return "A2"
+}
+
 function OnboardingPage() {
 	const navigate = useNavigate()
-	const [step, setStep] = useState<"welcome" | "self-assess" | "quiz" | "goal" | "skip">("welcome")
+	const { session: placementSessionId } = Route.useSearch()
+
+	const [step, setStep] = useState<
+		"welcome" | "self-assess" | "quiz" | "goal" | "skip" | "placement-result"
+	>("welcome")
 	const [selectedLevel, setSelectedLevel] = useState<string | null>(null)
 	const [targetBand, setTargetBand] = useState<VstepBand>("B2")
 	const [deadlineMonths, setDeadlineMonths] = useState<number | undefined>(3)
 	const [dailyMinutes, setDailyMinutes] = useState<number | undefined>(30)
+	const [placementSource, setPlacementSource] = useState<"self" | "quiz" | "placement">("self")
 
 	// Quiz state
 	const [quizIndex, setQuizIndex] = useState(0)
@@ -65,6 +140,40 @@ function OnboardingPage() {
 		Array(QUIZ_QUESTIONS.length).fill(null),
 	)
 	const [quizDone, setQuizDone] = useState(false)
+
+	// Placement session data — fetch when returning from placement test
+	const placementSession = useQuery({
+		queryKey: ["exam-sessions", placementSessionId],
+		queryFn: async () => {
+			const raw = await api.get<{ session: ExamSession }>(`/api/sessions/${placementSessionId}`)
+			// BE returns { session: {...}, exam: {...}, ... } — extract session
+			return (raw as { session: ExamSession }).session ?? (raw as unknown as ExamSession)
+		},
+		enabled: !!placementSessionId,
+	})
+
+	// Auto-navigate to placement-result step when session data arrives
+	useEffect(() => {
+		if (placementSession.data && placementSession.data.status === "completed") {
+			const s = placementSession.data
+			// Derive level from the best objective score
+			const scores = [s.listeningScore, s.readingScore].filter((v): v is number => v !== null)
+			const avgScore = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0
+			const derived = levelFromScore(avgScore)
+			setSelectedLevel(derived)
+			setPlacementSource("placement")
+
+			// Auto-adjust target band
+			const currentIdx = LEVEL_ORDER[derived] ?? 0
+			const targetIdx = LEVEL_ORDER[targetBand] ?? 0
+			if (targetIdx <= currentIdx) {
+				const nextBand = currentIdx === 0 ? "B1" : currentIdx === 1 ? "B2" : "C1"
+				setTargetBand(nextBand)
+			}
+
+			setStep("placement-result")
+		}
+	}, [placementSession.data, targetBand])
 
 	const selfAssess = useMutation({
 		mutationFn: (body: {
@@ -76,6 +185,18 @@ function OnboardingPage() {
 			deadline?: string
 			dailyStudyTimeMinutes?: number
 		}) => api.post("/api/onboarding/self-assess", body),
+		onSuccess: () => {
+			localStorage.setItem("vstep_onboarding_done", "1")
+			navigate({ to: "/progress" })
+		},
+	})
+
+	const completePlacement = useMutation({
+		mutationFn: (body: {
+			targetBand: VstepBand
+			deadline?: string
+			dailyStudyTimeMinutes?: number
+		}) => api.post(`/api/onboarding/sessions/${placementSessionId}/complete-placement`, body),
 		onSuccess: () => {
 			localStorage.setItem("vstep_onboarding_done", "1")
 			navigate({ to: "/progress" })
@@ -105,8 +226,18 @@ function OnboardingPage() {
 
 	function handleSelectLevel(band: string) {
 		setSelectedLevel(band)
+		setPlacementSource("self")
+		// Auto-adjust target band to be at least one level above current
+		const currentIdx = LEVEL_ORDER[band] ?? 0
+		const targetIdx = LEVEL_ORDER[targetBand] ?? 0
+		if (targetIdx <= currentIdx) {
+			const nextBand = currentIdx === 0 ? "B1" : currentIdx === 1 ? "B2" : "C1"
+			setTargetBand(nextBand)
+		}
 		setStep("goal")
 	}
+
+	const isSubmitting = selfAssess.isPending || completePlacement.isPending
 
 	function handleSubmit() {
 		const deadline =
@@ -114,24 +245,63 @@ function OnboardingPage() {
 				? new Date(Date.now() + deadlineMonths * 30 * 24 * 60 * 60 * 1000).toISOString()
 				: undefined
 
+		// Placement test path — call complete-placement API
+		if (placementSource === "placement" && placementSessionId) {
+			completePlacement.mutate({ targetBand, deadline, dailyStudyTimeMinutes: dailyMinutes })
+			return
+		}
+
+		// Self-assess / quiz path
+		if (!selectedLevel) return
 		selfAssess.mutate({
-			listening: selectedLevel!,
-			reading: selectedLevel!,
-			writing: selectedLevel!,
-			speaking: selectedLevel!,
+			listening: selectedLevel,
+			reading: selectedLevel,
+			writing: selectedLevel,
+			speaking: selectedLevel,
 			targetBand,
 			deadline,
 			dailyStudyTimeMinutes: dailyMinutes,
 		})
 	}
 
-	const toggleBtnClass = (active: boolean) =>
+	const toggleBtnClass = (active: boolean, disabled?: boolean) =>
 		cn(
 			"rounded-xl border px-5 py-2.5 text-sm font-medium transition-colors",
+			disabled && "cursor-not-allowed opacity-40",
 			active
 				? "border-primary bg-primary/10 text-primary"
-				: "border-border hover:border-primary/50",
+				: disabled
+					? "border-border"
+					: "border-border hover:border-primary/50",
 		)
+
+	const constraints = useMemo(
+		() => getGoalConstraints(selectedLevel, targetBand),
+		[selectedLevel, targetBand],
+	)
+
+	// Auto-adjust deadline & daily time when they become invalid due to target change
+	const adjustedDeadlineMonths = useMemo(() => {
+		if (!isDeadlineAllowed(deadlineMonths, constraints.minDeadlineMonths)) {
+			return constraints.minDeadlineMonths
+		}
+		return deadlineMonths
+	}, [deadlineMonths, constraints.minDeadlineMonths])
+
+	const adjustedDailyMinutes = useMemo(() => {
+		if (!isDailyTimeAllowed(dailyMinutes, constraints.minDailyMinutes)) {
+			return constraints.minDailyMinutes
+		}
+		return dailyMinutes
+	}, [dailyMinutes, constraints.minDailyMinutes])
+
+	// Sync state when auto-adjusted
+	if (adjustedDeadlineMonths !== deadlineMonths) {
+		setDeadlineMonths(adjustedDeadlineMonths)
+	}
+	if (adjustedDailyMinutes !== dailyMinutes) {
+		setDailyMinutes(adjustedDailyMinutes)
+	}
 
 	const handleQuizAnswer = useCallback(
 		(optionIndex: number) => {
@@ -298,7 +468,22 @@ function OnboardingPage() {
 								>
 									Làm lại
 								</Button>
-								<Button className="rounded-xl" onClick={() => setStep("goal")}>
+								<Button
+									className="rounded-xl"
+									onClick={() => {
+										setPlacementSource("quiz")
+										// Auto-adjust target band for quiz-derived level
+										if (quizLevel) {
+											const currentIdx = LEVEL_ORDER[quizLevel] ?? 0
+											const targetIdx = LEVEL_ORDER[targetBand] ?? 0
+											if (targetIdx <= currentIdx) {
+												const nextBand = currentIdx === 0 ? "B1" : currentIdx === 1 ? "B2" : "C1"
+												setTargetBand(nextBand)
+											}
+										}
+										setStep("goal")
+									}}
+								>
 									Tiếp tục thiết lập mục tiêu
 								</Button>
 							</div>
@@ -306,6 +491,28 @@ function OnboardingPage() {
 					)}
 				</div>
 			)}
+			{/* Step: Placement Result */}
+			{step === "placement-result" && placementSession.data && (
+				<PlacementResultView
+					session={placementSession.data}
+					derivedLevel={selectedLevel ?? "A2"}
+					onContinue={() => setStep("goal")}
+				/>
+			)}
+			{step === "placement-result" && placementSession.isLoading && (
+				<div className="flex items-center justify-center py-20">
+					<p className="text-muted-foreground">Đang tải kết quả...</p>
+				</div>
+			)}
+			{step === "placement-result" && placementSession.isError && (
+				<div className="space-y-4 text-center">
+					<p className="text-destructive">Không thể tải kết quả bài test. Vui lòng thử lại.</p>
+					<Button variant="outline" onClick={() => setStep("welcome")}>
+						← Quay lại
+					</Button>
+				</div>
+			)}
+
 			{/* Step 2: Goal */}
 			{step === "goal" && (
 				<div className="space-y-6">
@@ -316,52 +523,82 @@ function OnboardingPage() {
 						</p>
 					</div>
 
+					{constraints.hint && (
+						<div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/50 dark:text-amber-200">
+							{constraints.hint}
+						</div>
+					)}
+
 					<div className="space-y-5 rounded-2xl border border-border bg-background p-6">
 						<div className="space-y-2.5">
 							<p className="text-sm font-medium">Band mục tiêu</p>
 							<div className="flex gap-2">
-								{TARGET_BANDS.map((b) => (
-									<button
-										key={b}
-										type="button"
-										onClick={() => setTargetBand(b)}
-										className={toggleBtnClass(targetBand === b)}
-									>
-										{b}
-									</button>
-								))}
+								{TARGET_BANDS.map((b) => {
+									const targetDisabled =
+										(LEVEL_ORDER[b] ?? 0) <= (LEVEL_ORDER[selectedLevel ?? "A2"] ?? 0)
+									return (
+										<button
+											key={b}
+											type="button"
+											disabled={targetDisabled}
+											onClick={() => {
+												if (!targetDisabled) setTargetBand(b)
+											}}
+											className={toggleBtnClass(targetBand === b, targetDisabled)}
+										>
+											{b}
+										</button>
+									)
+								})}
 							</div>
+							{(LEVEL_ORDER[selectedLevel ?? "A2"] ?? 0) > 0 && (
+								<p className="text-xs text-muted-foreground">
+									Mục tiêu phải cao hơn trình độ hiện tại ({selectedLevel})
+								</p>
+							)}
 						</div>
 
 						<div className="space-y-2.5">
 							<p className="text-sm font-medium">Thời hạn</p>
 							<div className="flex flex-wrap gap-2">
-								{DEADLINES.map((d) => (
-									<button
-										key={d.label}
-										type="button"
-										onClick={() => setDeadlineMonths(d.months)}
-										className={toggleBtnClass(deadlineMonths === d.months)}
-									>
-										{d.label}
-									</button>
-								))}
+								{DEADLINES.map((d) => {
+									const disabled = !isDeadlineAllowed(d.months, constraints.minDeadlineMonths)
+									return (
+										<button
+											key={d.label}
+											type="button"
+											disabled={disabled}
+											onClick={() => {
+												if (!disabled) setDeadlineMonths(d.months)
+											}}
+											className={toggleBtnClass(deadlineMonths === d.months, disabled)}
+										>
+											{d.label}
+										</button>
+									)
+								})}
 							</div>
 						</div>
 
 						<div className="space-y-2.5">
 							<p className="text-sm font-medium">Thời gian học mỗi ngày</p>
 							<div className="flex flex-wrap gap-2">
-								{DAILY_TIMES.map((t) => (
-									<button
-										key={t.label}
-										type="button"
-										onClick={() => setDailyMinutes(t.minutes)}
-										className={toggleBtnClass(dailyMinutes === t.minutes)}
-									>
-										{t.label}
-									</button>
-								))}
+								{DAILY_TIMES.map((t) => {
+									const disabled = !isDailyTimeAllowed(t.minutes, constraints.minDailyMinutes)
+									return (
+										<button
+											key={t.label}
+											type="button"
+											disabled={disabled}
+											onClick={() => {
+												if (!disabled) setDailyMinutes(t.minutes)
+											}}
+											className={toggleBtnClass(dailyMinutes === t.minutes, disabled)}
+										>
+											{t.label}
+										</button>
+									)
+								})}
 							</div>
 						</div>
 					</div>
@@ -369,17 +606,21 @@ function OnboardingPage() {
 					<div className="flex gap-3">
 						<Button
 							variant="outline"
-							onClick={() => setStep(selectedLevel && quizDone ? "quiz" : "self-assess")}
+							onClick={() =>
+								setStep(
+									placementSource === "placement"
+										? "placement-result"
+										: quizDone
+											? "quiz"
+											: "self-assess",
+								)
+							}
 							className="rounded-xl"
 						>
 							← Quay lại
 						</Button>
-						<Button
-							onClick={handleSubmit}
-							disabled={selfAssess.isPending}
-							className="flex-1 rounded-xl"
-						>
-							{selfAssess.isPending ? "Đang xử lý..." : "Bắt đầu luyện tập"}
+						<Button onClick={handleSubmit} disabled={isSubmitting} className="flex-1 rounded-xl">
+							{isSubmitting ? "Đang xử lý..." : "Bắt đầu luyện tập"}
 						</Button>
 					</div>
 				</div>
@@ -393,6 +634,73 @@ function OnboardingPage() {
 					onBack={() => setStep("welcome")}
 				/>
 			)}
+		</div>
+	)
+}
+
+// ---------------------------------------------------------------------------
+// Placement result component
+// ---------------------------------------------------------------------------
+
+function PlacementResultView({
+	session,
+	derivedLevel,
+	onContinue,
+}: {
+	session: ExamSession
+	derivedLevel: string
+	onContinue: () => void
+}) {
+	const levelInfo = LEVELS.find((l) => l.band === derivedLevel)
+
+	return (
+		<div className="space-y-6">
+			<div className="text-center">
+				<h1 className="text-2xl font-bold">Kết quả bài test đánh giá</h1>
+				<p className="mt-2 text-muted-foreground">
+					Dựa trên bài test Listening & Reading, trình độ ước tính của bạn là
+				</p>
+			</div>
+
+			<div className="mx-auto w-fit rounded-2xl border-2 border-primary bg-primary/10 px-12 py-6 text-center">
+				<p className="text-4xl font-bold text-primary">{derivedLevel}</p>
+				{levelInfo && <p className="mt-1 text-sm text-muted-foreground">{levelInfo.title}</p>}
+			</div>
+
+			<div className="space-y-3 rounded-2xl border border-border bg-background p-6">
+				<p className="text-sm font-medium text-muted-foreground">Điểm chi tiết</p>
+				<div className="grid grid-cols-2 gap-4">
+					<div className="rounded-xl bg-muted/50 p-4 text-center">
+						<p className="text-2xl font-bold">
+							{session.listeningScore !== null ? session.listeningScore.toFixed(1) : "—"}
+						</p>
+						<p className="mt-1 text-xs text-muted-foreground">Listening</p>
+						{session.listeningScore !== null && (
+							<p className="mt-0.5 text-xs font-medium text-primary">
+								{levelFromScore(session.listeningScore)}
+							</p>
+						)}
+					</div>
+					<div className="rounded-xl bg-muted/50 p-4 text-center">
+						<p className="text-2xl font-bold">
+							{session.readingScore !== null ? session.readingScore.toFixed(1) : "—"}
+						</p>
+						<p className="mt-1 text-xs text-muted-foreground">Reading</p>
+						{session.readingScore !== null && (
+							<p className="mt-0.5 text-xs font-medium text-primary">
+								{levelFromScore(session.readingScore)}
+							</p>
+						)}
+					</div>
+				</div>
+				<p className="text-center text-xs text-muted-foreground">
+					Writing & Speaking sẽ được ước tính từ điểm trung bình
+				</p>
+			</div>
+
+			<Button onClick={onContinue} className="w-full rounded-xl">
+				Tiếp tục thiết lập mục tiêu
+			</Button>
 		</div>
 	)
 }
