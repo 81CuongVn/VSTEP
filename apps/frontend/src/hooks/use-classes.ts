@@ -244,6 +244,7 @@ interface ClassAssignmentSubmission {
 	score: string | null
 	feedback: string | null
 	submittedAt: string | null
+	lateMinutes: number | null
 	createdAt: string
 	examSession?: ExamSessionSummary
 }

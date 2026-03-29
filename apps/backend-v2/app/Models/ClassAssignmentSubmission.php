@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use App\Models\ExamSession;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['assignment_id', 'user_id', 'exam_session_id', 'answer', 'status', 'score', 'feedback', 'submitted_at'])]
+#[Fillable(['assignment_id', 'user_id', 'exam_session_id', 'answer', 'status', 'score', 'feedback', 'submitted_at', 'late_minutes'])]
 #[Hidden(['updated_at'])]
 class ClassAssignmentSubmission extends BaseModel
 {

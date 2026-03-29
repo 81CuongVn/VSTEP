@@ -90,6 +90,21 @@ class ClassroomService
             'user_id' => $user->id,
         ]);
 
+        // Create pending submissions for all existing assignments
+        $assignments = $classroom->assignments()->pluck('id');
+        $rows = $assignments->map(fn ($assignmentId) => [
+            'id' => (string) Str::uuid(),
+            'assignment_id' => $assignmentId,
+            'user_id' => $user->id,
+            'status' => AssignmentSubmissionStatus::Pending->value,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ])->all();
+
+        if (count($rows) > 0) {
+            ClassAssignmentSubmission::insert($rows);
+        }
+
         return $classroom;
     }
 
@@ -242,10 +257,16 @@ class ClassroomService
             ->where('user_id', $user->id)
             ->firstOrFail();
 
+        $lateMinutes = null;
+        if ($assignment->due_date && now()->gt($assignment->due_date)) {
+            $lateMinutes = (int) $assignment->due_date->diffInMinutes(now());
+        }
+
         $submission->update([
             'answer' => $answer,
             'status' => AssignmentSubmissionStatus::Submitted,
             'submitted_at' => now(),
+            'late_minutes' => $lateMinutes,
         ]);
 
         return $submission;

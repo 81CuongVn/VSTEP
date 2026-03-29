@@ -10,6 +10,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { useQueryClient } from "@tanstack/react-query"
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { useState } from "react"
+import { toast } from "sonner"
 import { AudioRecorder } from "@/components/features/assignments/AudioRecorder"
 import { MCQAnswerForm } from "@/components/features/assignments/MCQAnswerForm"
 import { type AssignmentContent, isMCQContent, parseContent } from "@/components/features/assignments/types"
@@ -55,10 +56,12 @@ const SKILL_LABELS: Record<string, string> = {
 }
 
 function formatDate(dateStr: string): string {
-	return new Date(dateStr).toLocaleDateString("vi-VN", {
+	return new Date(dateStr).toLocaleString("vi-VN", {
 		day: "2-digit",
 		month: "2-digit",
 		year: "numeric",
+		hour: "2-digit",
+		minute: "2-digit",
 	})
 }
 
@@ -206,6 +209,13 @@ function LearnerAssignmentsTab({
 
 		if (!answerStr) return
 
+		// Warn if past due
+		if (asg.dueDate && new Date(asg.dueDate) < new Date()) {
+			const lateMs = Date.now() - new Date(asg.dueDate).getTime()
+			const lateMins = Math.ceil(lateMs / 60000)
+			if (!confirm(`Bài tập đã quá hạn ${lateMins} phút. Bạn vẫn muốn nộp?`)) return
+		}
+
 		submitAnswer.mutate(
 			{ classId, assignmentId: asg.id, answer: answerStr },
 			{
@@ -214,6 +224,10 @@ function LearnerAssignmentsTab({
 					setEssayAnswer("")
 					setMcqAnswers([])
 					setAudioBlob(null)
+					toast.success("Nộp bài thành công!")
+				},
+				onError: (err) => {
+					toast.error(err instanceof Error ? err.message : "Không thể nộp bài. Vui lòng thử lại.")
 				},
 			},
 		)
@@ -288,10 +302,17 @@ function LearnerAssignmentsTab({
 										)}
 									</>
 								) : mySub?.status === "submitted" ? (
-									<Badge className="bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
-										<HugeiconsIcon icon={Clock01Icon} className="size-3" />
-										Đã nộp — chờ chấm
-									</Badge>
+									<>
+										<Badge className="bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
+											<HugeiconsIcon icon={Clock01Icon} className="size-3" />
+											Đã nộp — chờ chấm
+										</Badge>
+										{mySub.lateMinutes != null && mySub.lateMinutes > 0 && (
+											<Badge variant="destructive" className="text-[10px]">
+												Trễ {mySub.lateMinutes >= 60 ? `${Math.floor(mySub.lateMinutes / 60)}h${mySub.lateMinutes % 60 > 0 ? `${mySub.lateMinutes % 60}p` : ""}` : `${mySub.lateMinutes} phút`}
+											</Badge>
+										)}
+									</>
 								) : hasContent ? (
 									<Button
 										size="sm"
