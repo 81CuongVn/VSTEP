@@ -26,11 +26,7 @@ function getEnglishVoice(): SpeechSynthesisVoice | null {
 	}
 
 	// Fallback: any en-US, then any en-*
-	return (
-		enVoices.find((v) => v.lang === "en-US") ??
-		enVoices[0] ??
-		null
-	)
+	return enVoices.find((v) => v.lang === "en-US") ?? enVoices[0] ?? null
 }
 
 export function usePronounce() {

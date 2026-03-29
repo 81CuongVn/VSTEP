@@ -144,6 +144,9 @@ class SessionService
             ]);
 
             $this->applyScoresToProgress($session);
+
+            // Auto-update assignment submission if linked
+            app(ClassroomService::class)->onExamSessionCompleted($session);
         });
 
         return $session->fresh();
