@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import type { Exam } from "@/types/api"
-import { getDuration, getTotalQuestions } from "./ExamListItem"
+import { getDuration, getSkillQuestionCount, getTotalQuestions } from "./ExamListItem"
 import { getBlueprint, SKILL_ORDER, skillColor, skillMeta } from "./skill-meta"
 
 function ExamDetail({
@@ -56,8 +56,7 @@ function ExamDetail({
 				<p className="text-sm font-medium">Cấu trúc đề</p>
 				<div className="grid gap-2 sm:grid-cols-2">
 					{SKILL_ORDER.map((skill) => {
-						const section = bp[skill]
-						const count = section?.questionIds.length ?? 0
+						const count = getSkillQuestionCount(bp, skill)
 						if (count === 0) return null
 
 						return (
@@ -67,7 +66,7 @@ function ExamDetail({
 							>
 								<HugeiconsIcon icon={skillMeta[skill].icon} className="size-5" />
 								<span className="text-sm font-medium">{skillMeta[skill].label}</span>
-								<span className="ml-auto text-sm font-bold tabular-nums">{count} câu</span>
+								<span className="ml-auto shrink-0 text-sm font-bold tabular-nums">{count} câu</span>
 							</div>
 						)
 					})}
