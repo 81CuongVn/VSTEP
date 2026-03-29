@@ -285,7 +285,7 @@ interface WritingAnswer {
 }
 
 interface SpeakingAnswer {
-	audioUrl: string
+	audioPath: string
 	durationSeconds: number
 	transcript?: string
 }
