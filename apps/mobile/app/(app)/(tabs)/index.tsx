@@ -54,10 +54,15 @@ export default function HomeScreen() {
   const goal = progress.data?.goal;
   const totalAttempts = skills.reduce((sum, s) => sum + s.attemptCount, 0);
 
-  const currentAvg =
-    skills.length > 0
-      ? skills.map((s) => s.currentLevel).filter(Boolean).join(", ") || "—"
-      : "—";
+  const currentAvg = (() => {
+    if (skills.length === 0) return "—";
+    const levelScores: Record<string, number> = { A2: 1, B1: 2, B2: 3, C1: 4 };
+    const scoreBands: [number, string][] = [[3.5, "C1"], [2.5, "B2"], [1.5, "B1"], [0, "A2"]];
+    const levels = skills.map((s) => s.currentLevel).filter(Boolean);
+    if (levels.length === 0) return "—";
+    const avg = levels.reduce((sum, l) => sum + (levelScores[l] ?? 1), 0) / levels.length;
+    return scoreBands.find(([min]) => avg >= min)?.[1] ?? "A2";
+  })();
 
   const quickActions: QuickAction[] = [
     { title: "Luyện tập", icon: "school", color: c.primary, onPress: () => router.push("/(app)/practice") },
@@ -153,7 +158,7 @@ export default function HomeScreen() {
               <Text style={styles.statEmoji}>⏱</Text>
               <Text style={[styles.statLabel, { color: c.mutedForeground }]}>Tổng thời lượng</Text>
               <Text style={[styles.statValue, { color: c.primary }]}>
-                {activityLoading ? "—" : (activityData?.totalStudyTimeMinutes ?? 0) >= 60 ? `${Math.round((activityData?.totalStudyTimeMinutes ?? 0) / 60 * 10) / 10} giờ` : `${activityData?.totalStudyTimeMinutes ?? 0} phút`}
+                {activityLoading ? "—" : (activityData?.totalStudyTimeMinutes ?? 0) >= 60 ? `${Math.round((activityData?.totalStudyTimeMinutes ?? 0) / 60 * 10) / 10} giờ` : `${Math.round(activityData?.totalStudyTimeMinutes ?? 0)} phút`}
               </Text>
             </View>
             <View style={[styles.statCard, { borderColor: c.border }]}>

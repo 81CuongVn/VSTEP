@@ -206,6 +206,7 @@ async function authRequest<T>(path: string, options: RequestInit = {}): Promise<
         })
         .catch(async () => {
           await clearTokens();
+          refreshPromise = null;
           throw new ApiError(401, "Phiên đăng nhập hết hạn");
         })
         .finally(() => {
@@ -213,9 +214,18 @@ async function authRequest<T>(path: string, options: RequestInit = {}): Promise<
         });
     }
 
-    await refreshPromise;
+    try {
+      await refreshPromise;
+    } catch {
+      throw new ApiError(401, "Phiên đăng nhập hết hạn");
+    }
 
     const newToken = await getAccessToken();
+    if (!newToken) {
+      await clearTokens();
+      throw new ApiError(401, "Phiên đăng nhập hết hạn");
+    }
+
     return request<T>(path, {
       ...options,
       headers: { ...options.headers, Authorization: `Bearer ${newToken}` },

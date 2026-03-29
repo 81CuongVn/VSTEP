@@ -500,21 +500,21 @@ export interface ClassItem {
   name: string;
   description: string | null;
   inviteCode: string;
-  createdBy: string;
-  maxMembers: number | null;
-  isActive: boolean;
+  instructorId: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface ClassMember {
+  id: string;
   userId: string;
-  role: string;
+  fullName: string | null;
+  email: string;
   joinedAt: string;
-  user?: { id: string; fullName: string | null; email: string };
 }
 
-export interface ClassDetail extends ClassItem {
+export interface ClassDetail extends Omit<ClassItem, "inviteCode"> {
+  inviteCode: string | null;
   members: ClassMember[];
   memberCount: number;
 }
@@ -522,8 +522,55 @@ export interface ClassDetail extends ClassItem {
 export interface ClassFeedback {
   id: string;
   classId: string;
-  userId: string;
-  instructorId: string;
+  fromUserId: string;
+  fromUserName: string | null;
+  toUserId: string;
+  toUserName: string | null;
   content: string;
+  skill: string | null;
+  submissionId: string | null;
   createdAt: string;
+  updatedAt: string;
+}
+
+export interface ClassAssignment {
+  id: string;
+  classroomId: string;
+  title: string;
+  description: string | null;
+  content: string | null;
+  skill: string | null;
+  type: "practice" | "exam";
+  dueDate: string | null;
+  allowRetry: boolean;
+  createdAt: string;
+  submissionCount?: number;
+  gradedCount?: number;
+  submittedCount?: number;
+  pendingCount?: number;
+  submissions?: ClassAssignmentSubmission[];
+}
+
+export interface ClassAssignmentSubmission {
+  id: string;
+  assignmentId: string;
+  userId: string;
+  fullName: string | null;
+  email: string | null;
+  answer: string | null;
+  status: "pending" | "submitted" | "graded";
+  score: string | null;
+  feedback: string | null;
+  submittedAt: string | null;
+  lateMinutes: number | null;
+  createdAt: string;
+}
+
+export interface LeaderboardEntry {
+  rank: number;
+  userId: string;
+  fullName: string;
+  avgScore: number;
+  totalAttempts: number;
+  streak: number;
 }
