@@ -15,6 +15,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { useQueryClient } from "@tanstack/react-query"
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { Fragment, useState } from "react"
+import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -81,10 +82,12 @@ const SKILL_LABELS: Record<string, string> = {
 }
 
 function formatDate(dateStr: string): string {
-	return new Date(dateStr).toLocaleDateString("vi-VN", {
+	return new Date(dateStr).toLocaleString("vi-VN", {
 		day: "2-digit",
 		month: "2-digit",
 		year: "numeric",
+		hour: "2-digit",
+		minute: "2-digit",
 	})
 }
 
@@ -148,19 +151,29 @@ function ClassDetailPage() {
 
 	function handleEdit() {
 		if (!cls) return
+		if (!editName.trim()) { toast.error("Tên lớp không được để trống"); return }
 		updateClass.mutate(
 			{ id: cls.id, name: editName.trim(), description: editDesc.trim() || undefined },
-			{ onSuccess: () => setShowEdit(false) },
+			{
+				onSuccess: () => { setShowEdit(false); toast.success("Đã cập nhật lớp học") },
+				onError: () => toast.error("Không thể cập nhật lớp học"),
+			},
 		)
 	}
 
 	function handleRotateCode() {
-		rotateCode.mutate(classId)
+		rotateCode.mutate(classId, {
+			onSuccess: () => toast.success("Đã đổi mã mời"),
+			onError: () => toast.error("Không thể đổi mã mời"),
+		})
 	}
 
 	function handleRemoveMember(userId: string) {
 		if (confirm("Bạn có chắc muốn xóa thành viên này?")) {
-			removeMember.mutate({ classId, userId })
+			removeMember.mutate({ classId, userId }, {
+				onSuccess: () => toast.success("Đã xóa thành viên"),
+				onError: () => toast.error("Không thể xóa thành viên"),
+			})
 		}
 	}
 
@@ -171,10 +184,13 @@ function ClassDetailPage() {
 	}
 
 	function handleSendFeedback() {
-		if (!feedbackContent.trim()) return
+		if (!feedbackContent.trim()) { toast.error("Vui lòng nhập nội dung nhận xét"); return }
 		sendFeedback.mutate(
 			{ classId, toUserId: feedbackUserId, content: feedbackContent.trim() },
-			{ onSuccess: () => setShowFeedback(false) },
+			{
+				onSuccess: () => { setShowFeedback(false); toast.success("Đã gửi nhận xét") },
+				onError: () => toast.error("Không thể gửi nhận xét"),
+			},
 		)
 	}
 
@@ -211,7 +227,7 @@ function ClassDetailPage() {
 					<button
 						type="button"
 						className="text-muted-foreground hover:text-foreground"
-						onClick={() => navigator.clipboard.writeText(cls.inviteCode ?? "")}
+						onClick={() => navigator.clipboard.writeText(cls.inviteCode ?? "").then(() => toast.success("Đã sao chép mã mời")).catch(() => toast.error("Không thể sao chép"))}
 					>
 						<HugeiconsIcon icon={Copy01Icon} className="size-4" />
 					</button>
@@ -380,8 +396,31 @@ function AssignmentsTab({
 		return undefined
 	}
 
+	function validateCreate(): string | null {
+		if (!title.trim()) return "Vui lòng nhập tiêu đề"
+		if (!skill) return "Vui lòng chọn kỹ năng"
+		if (skill === "listening" && !audioUrl.trim()) return "Vui lòng nhập link audio"
+		if (skill === "reading" && !passage.trim()) return "Vui lòng nhập đoạn văn"
+		if (skill === "writing" && !prompt.trim()) return "Vui lòng nhập đề bài"
+		if (skill === "speaking" && !prompt.trim()) return "Vui lòng nhập chủ đề"
+		if ((skill === "listening" || skill === "reading") && questions.length === 0)
+			return "Vui lòng thêm ít nhất 1 câu hỏi"
+		if (
+			(skill === "listening" || skill === "reading") &&
+			questions.some((q) => !q.question.trim() || q.options.some((o) => !o.trim()))
+		)
+			return "Vui lòng điền đầy đủ nội dung và đáp án cho tất cả câu hỏi"
+		if (dueDate && new Date(dueDate) <= new Date())
+			return "Hạn nộp phải là thời điểm trong tương lai"
+		return null
+	}
+
 	function handleCreate() {
-		if (!title.trim()) return
+		const error = validateCreate()
+		if (error) {
+			toast.error(error)
+			return
+		}
 		createAssignment.mutate(
 			{
 				classId,
@@ -389,7 +428,7 @@ function AssignmentsTab({
 				description: description.trim() || undefined,
 				content: buildContent(),
 				skill: skill || undefined,
-				dueDate: dueDate || undefined,
+				dueDate: dueDate ? new Date(dueDate).toISOString() : undefined,
 				allowRetry,
 			},
 			{
@@ -404,14 +443,23 @@ function AssignmentsTab({
 					setQuestions([])
 					setDueDate("")
 					setAllowRetry(false)
+					toast.success("Tạo bài tập thành công")
 				},
+				onError: () => toast.error("Không thể tạo bài tập. Vui lòng thử lại."),
 			},
 		)
 	}
 
 	function handleGrade() {
 		const score = Number.parseFloat(gradeScore)
-		if (!gradeSubId || Number.isNaN(score)) return
+		if (!gradeSubId || Number.isNaN(score)) {
+			toast.error("Vui lòng nhập điểm hợp lệ")
+			return
+		}
+		if (score < 0 || score > 10) {
+			toast.error("Điểm phải từ 0 đến 10")
+			return
+		}
 		gradeSubmission.mutate(
 			{
 				classId,
@@ -424,7 +472,9 @@ function AssignmentsTab({
 					setGradeSubId("")
 					setGradeScore("")
 					setGradeFeedback("")
+					toast.success("Đã chấm điểm thành công")
 				},
+				onError: () => toast.error("Không thể chấm điểm. Vui lòng thử lại."),
 			},
 		)
 	}
@@ -477,6 +527,11 @@ function AssignmentsTab({
 												? "Đã nộp"
 												: "Chưa nộp"}
 									</Badge>
+									{sub.lateMinutes != null && sub.lateMinutes > 0 && (
+										<Badge variant="destructive" className="ml-1 text-[10px]">
+											Trễ {sub.lateMinutes >= 60 ? `${Math.floor(sub.lateMinutes / 60)}h${sub.lateMinutes % 60 > 0 ? `${sub.lateMinutes % 60}p` : ""}` : `${sub.lateMinutes} phút`}
+										</Badge>
+									)}
 								</TableCell>
 								<TableCell>
 									{sub.score != null ? (
@@ -693,7 +748,10 @@ function AssignmentsTab({
 									className="text-destructive hover:text-destructive"
 									onClick={() => {
 										if (confirm("Xóa bài tập này?")) {
-											deleteAssignment.mutate({ classId, assignmentId: asg.id })
+											deleteAssignment.mutate({ classId, assignmentId: asg.id }, {
+												onSuccess: () => toast.success("Đã xóa bài tập"),
+												onError: () => toast.error("Không thể xóa bài tập"),
+											})
 										}
 									}}
 								>

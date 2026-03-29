@@ -1,6 +1,7 @@
 import { Mic01Icon, StopIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useCallback, useRef, useState } from "react"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 
 interface AudioRecorderProps {
@@ -41,7 +42,7 @@ export function AudioRecorder({ onRecorded, disabled }: AudioRecorderProps) {
 			setAudioUrl(null)
 			timerRef.current = setInterval(() => setDuration((d) => d + 1), 1000)
 		} catch {
-			// Mic not available
+			toast.error("Không thể truy cập microphone. Vui lòng kiểm tra quyền truy cập.")
 		}
 	}, [onRecorded])
 

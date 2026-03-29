@@ -8,6 +8,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { useState } from "react"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import {
 	Dialog,
@@ -46,7 +47,7 @@ function InstructorView() {
 	const [description, setDescription] = useState("")
 
 	function handleCreate() {
-		if (!name.trim()) return
+		if (!name.trim()) { toast.error("Vui lòng nhập tên lớp"); return }
 		createClass.mutate(
 			{ name: name.trim(), description: description.trim() || undefined },
 			{
@@ -54,7 +55,9 @@ function InstructorView() {
 					setShowCreate(false)
 					setName("")
 					setDescription("")
+					toast.success("Tạo lớp học thành công")
 				},
+				onError: () => toast.error("Không thể tạo lớp học. Vui lòng thử lại."),
 			},
 		)
 	}
@@ -62,13 +65,18 @@ function InstructorView() {
 	function handleDelete(e: React.MouseEvent, id: string) {
 		e.preventDefault()
 		if (confirm("Bạn có chắc muốn xóa lớp học này?")) {
-			deleteClass.mutate(id)
+			deleteClass.mutate(id, {
+				onSuccess: () => toast.success("Đã xóa lớp học"),
+				onError: () => toast.error("Không thể xóa lớp học"),
+			})
 		}
 	}
 
 	function handleCopyCode(e: React.MouseEvent, code: string) {
 		e.preventDefault()
 		navigator.clipboard.writeText(code)
+			.then(() => toast.success("Đã sao chép mã mời"))
+			.catch(() => toast.error("Không thể sao chép"))
 	}
 
 	return (
@@ -203,7 +211,7 @@ function LearnerView() {
 	const [joinError, setJoinError] = useState("")
 
 	function handleJoin() {
-		if (!inviteCode.trim()) return
+		if (!inviteCode.trim()) { toast.error("Vui lòng nhập mã mời"); return }
 		setJoinError("")
 		joinClass.mutate(
 			{ inviteCode: inviteCode.trim() },
@@ -211,9 +219,12 @@ function LearnerView() {
 				onSuccess: () => {
 					setShowJoin(false)
 					setInviteCode("")
+					toast.success("Tham gia lớp học thành công!")
 				},
 				onError: (err) => {
-					setJoinError(err instanceof Error ? err.message : "Mã mời không hợp lệ")
+					const msg = err instanceof Error ? err.message : "Mã mời không hợp lệ"
+					setJoinError(msg)
+					toast.error(msg)
 				},
 			},
 		)
