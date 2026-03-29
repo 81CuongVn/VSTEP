@@ -11,6 +11,7 @@ import { createFileRoute, Link } from "@tanstack/react-router"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import { usePronounce } from "@/hooks/use-pronounce"
 import { useTopicProgress, useVocabularyTopic } from "@/hooks/use-vocabulary"
 import { cn } from "@/lib/utils"
 import type { VocabularyWord } from "@/types/api"
@@ -40,6 +41,8 @@ interface WordCardProps {
 }
 
 function WordCard({ word }: WordCardProps) {
+	const { speak, supported } = usePronounce()
+
 	return (
 		<div className="space-y-4 rounded-2xl bg-muted/50 p-6 shadow-sm">
 			<div className="flex items-start justify-between gap-3">
@@ -57,9 +60,16 @@ function WordCard({ word }: WordCardProps) {
 					>
 						{posLabels[word.partOfSpeech] ?? word.partOfSpeech}
 					</Badge>
-					<Button variant="ghost" size="icon-sm" aria-label="Phát âm">
-						<HugeiconsIcon icon={VolumeHighIcon} className="size-4" />
-					</Button>
+					{supported && (
+						<Button
+							variant="ghost"
+							size="icon-sm"
+							aria-label="Phát âm"
+							onClick={() => speak(word.word)}
+						>
+							<HugeiconsIcon icon={VolumeHighIcon} className="size-4" />
+						</Button>
+					)}
 				</div>
 			</div>
 
