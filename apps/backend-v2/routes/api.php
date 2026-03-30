@@ -146,6 +146,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead']);
 
         // Practice (adaptive)
+        Route::get('/practice/questions', [PracticeController::class, 'questions']);
         Route::get('/practice/sessions', [PracticeController::class, 'index']);
         Route::post('/practice/sessions', [PracticeController::class, 'start']);
         Route::get('/practice/sessions/{practiceSession}', [PracticeController::class, 'show']);

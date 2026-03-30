@@ -9,8 +9,10 @@ use App\Enums\PracticeMode;
 use App\Enums\Skill;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PracticeSessionResource;
+use App\Http\Resources\QuestionResource;
 use App\Models\PracticeSession;
 use App\Services\PracticeService;
+use App\Services\QuestionService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Attributes\Controllers\Authorize;
 use Illuminate\Validation\Rule;
@@ -19,7 +21,24 @@ class PracticeController extends Controller
 {
     public function __construct(
         private readonly PracticeService $service,
+        private readonly QuestionService $questionService,
     ) {}
+
+    /**
+     * List active questions for learners (answer_key & explanation hidden).
+     * GET /practice/questions?skill=writing&level=B1&part=1&topic=...
+     */
+    public function questions(Request $request)
+    {
+        $filters = $request->only(['skill', 'level', 'part', 'topic', 'search']);
+        $filters['is_active'] = true;
+
+        $questions = $this->questionService->list($filters);
+
+        $questions->getCollection()->each->makeHidden(['answer_key', 'explanation']);
+
+        return QuestionResource::collection($questions);
+    }
 
     public function start(Request $request)
     {
