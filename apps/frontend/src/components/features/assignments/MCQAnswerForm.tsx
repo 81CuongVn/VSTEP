@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils"
 import type { MCQContent } from "@/components/features/assignments/types"
+import { cn } from "@/lib/utils"
 
 interface MCQAnswerFormProps {
 	content: MCQContent

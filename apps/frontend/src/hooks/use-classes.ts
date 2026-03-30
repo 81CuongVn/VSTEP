@@ -260,8 +260,7 @@ function useAssignments(classId: string) {
 function useAssignment(classId: string, assignmentId: string) {
 	return useQuery({
 		queryKey: ["classes", classId, "assignments", assignmentId],
-		queryFn: () =>
-			api.get<ClassAssignment>(`/api/classes/${classId}/assignments/${assignmentId}`),
+		queryFn: () => api.get<ClassAssignment>(`/api/classes/${classId}/assignments/${assignmentId}`),
 		enabled: !!classId && !!assignmentId,
 	})
 }
@@ -340,9 +339,7 @@ function useShowSubmission(classId: string, submissionId: string) {
 	return useQuery({
 		queryKey: ["classes", classId, "submissions", submissionId],
 		queryFn: () =>
-			api.get<ClassAssignmentSubmission>(
-				`/api/classes/${classId}/submissions/${submissionId}`,
-			),
+			api.get<ClassAssignmentSubmission>(`/api/classes/${classId}/submissions/${submissionId}`),
 		enabled: !!classId && !!submissionId,
 	})
 }

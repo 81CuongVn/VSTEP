@@ -1,5 +1,6 @@
 import { Add01Icon, Delete02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import type { MCQQuestion } from "@/components/features/assignments/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -10,7 +11,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select"
-import type { MCQQuestion } from "@/components/features/assignments/types"
 
 interface MCQBuilderProps {
 	questions: MCQQuestion[]
@@ -65,10 +65,7 @@ export function MCQBuilder({ questions, onChange }: MCQBuilderProps) {
 			</div>
 
 			{questions.map((q, qi) => (
-				<div
-					key={`q-${qi.toString()}`}
-					className="space-y-3 rounded-xl border p-4"
-				>
+				<div key={`q-${qi.toString()}`} className="space-y-3 rounded-xl border p-4">
 					<div className="flex items-start justify-between gap-2">
 						<div className="flex-1 space-y-1.5">
 							<Label className="text-xs">Câu {qi + 1}</Label>

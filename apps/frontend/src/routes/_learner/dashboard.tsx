@@ -47,7 +47,10 @@ function InstructorView() {
 	const [description, setDescription] = useState("")
 
 	function handleCreate() {
-		if (!name.trim()) { toast.error("Vui lòng nhập tên lớp"); return }
+		if (!name.trim()) {
+			toast.error("Vui lòng nhập tên lớp")
+			return
+		}
 		createClass.mutate(
 			{ name: name.trim(), description: description.trim() || undefined },
 			{
@@ -74,7 +77,8 @@ function InstructorView() {
 
 	function handleCopyCode(e: React.MouseEvent, code: string) {
 		e.preventDefault()
-		navigator.clipboard.writeText(code)
+		navigator.clipboard
+			.writeText(code)
 			.then(() => toast.success("Đã sao chép mã mời"))
 			.catch(() => toast.error("Không thể sao chép"))
 	}
@@ -211,7 +215,10 @@ function LearnerView() {
 	const [joinError, setJoinError] = useState("")
 
 	function handleJoin() {
-		if (!inviteCode.trim()) { toast.error("Vui lòng nhập mã mời"); return }
+		if (!inviteCode.trim()) {
+			toast.error("Vui lòng nhập mã mời")
+			return
+		}
 		setJoinError("")
 		joinClass.mutate(
 			{ inviteCode: inviteCode.trim() },
@@ -312,10 +319,7 @@ function LearnerView() {
 						<Button variant="outline" onClick={() => setShowJoin(false)}>
 							Huỷ
 						</Button>
-						<Button
-							onClick={handleJoin}
-							disabled={!inviteCode.trim() || joinClass.isPending}
-						>
+						<Button onClick={handleJoin} disabled={!inviteCode.trim() || joinClass.isPending}>
 							{joinClass.isPending ? "Đang tham gia..." : "Tham gia"}
 						</Button>
 					</DialogFooter>

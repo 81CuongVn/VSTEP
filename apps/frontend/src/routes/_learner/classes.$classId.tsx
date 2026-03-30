@@ -13,11 +13,14 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { AudioRecorder } from "@/components/features/assignments/AudioRecorder"
 import { MCQAnswerForm } from "@/components/features/assignments/MCQAnswerForm"
-import { type AssignmentContent, isMCQContent, parseContent } from "@/components/features/assignments/types"
+import {
+	type AssignmentContent,
+	isMCQContent,
+	parseContent,
+} from "@/components/features/assignments/types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Textarea } from "@/components/ui/textarea"
 import {
 	Table,
 	TableBody,
@@ -27,6 +30,7 @@ import {
 	TableRow,
 } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Textarea } from "@/components/ui/textarea"
 import type {
 	ClassAssignment,
 	ClassFeedback,
@@ -292,11 +296,7 @@ function LearnerAssignmentsTab({
 											Đã chấm — {mySub.score} điểm
 										</Badge>
 										{canRetry && (
-											<Button
-												size="sm"
-												variant="outline"
-												onClick={() => openAssignment(asg)}
-											>
+											<Button size="sm" variant="outline" onClick={() => openAssignment(asg)}>
 												Làm lại
 											</Button>
 										)}
@@ -309,7 +309,10 @@ function LearnerAssignmentsTab({
 										</Badge>
 										{mySub.lateMinutes != null && mySub.lateMinutes > 0 && (
 											<Badge variant="destructive" className="text-[10px]">
-												Trễ {mySub.lateMinutes >= 60 ? `${Math.floor(mySub.lateMinutes / 60)}h${mySub.lateMinutes % 60 > 0 ? `${mySub.lateMinutes % 60}p` : ""}` : `${mySub.lateMinutes} phút`}
+												Trễ{" "}
+												{mySub.lateMinutes >= 60
+													? `${Math.floor(mySub.lateMinutes / 60)}h${mySub.lateMinutes % 60 > 0 ? `${mySub.lateMinutes % 60}p` : ""}`
+													: `${mySub.lateMinutes} phút`}
 											</Badge>
 										)}
 									</>
@@ -317,9 +320,7 @@ function LearnerAssignmentsTab({
 									<Button
 										size="sm"
 										className="gap-1.5"
-										onClick={() =>
-											isOpen ? setOpenId(null) : openAssignment(asg)
-										}
+										onClick={() => (isOpen ? setOpenId(null) : openAssignment(asg))}
 									>
 										{isOpen ? "Thu gọn" : "Làm bài"}
 									</Button>
@@ -389,11 +390,7 @@ function SkillAnswerForm({
 		<div className="border-t px-5 pb-5 pt-4 space-y-4">
 			{/* Listening/Reading: MCQ */}
 			{isMCQContent(parsed) && (
-				<MCQAnswerForm
-					content={parsed}
-					answers={mcqAnswers}
-					onChange={onMcqChange}
-				/>
+				<MCQAnswerForm content={parsed} answers={mcqAnswers} onChange={onMcqChange} />
 			)}
 
 			{/* Writing: prompt + essay */}
