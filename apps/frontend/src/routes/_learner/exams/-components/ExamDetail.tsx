@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import type { Exam } from "@/types/api"
 import { getDuration, getSkillQuestionCount, getTotalQuestions } from "./ExamListItem"
-import { getBlueprint, SKILL_ORDER, skillColor, skillMeta } from "./skill-meta"
+import { getBlueprint, getExamSections, SKILL_ORDER, skillColor, skillMeta } from "./skill-meta"
 
 function ExamDetail({
 	exam,
@@ -21,12 +21,22 @@ function ExamDetail({
 	const bp = getBlueprint(exam)
 	const duration = getDuration(exam)
 	const total = getTotalQuestions(exam)
-	const sectionCount = exam.sectionCount ?? exam.sections?.length ?? 0
+	const sections = getExamSections(exam)
+	const sectionCount = exam.sectionCount ?? sections.length
+	const sectionCountBySkill = sections.reduce<Record<string, number>>((acc, section) => {
+		acc[section.skill] = (acc[section.skill] ?? 0) + 1
+		return acc
+	}, {})
 
 	function getSkillUnit(skill: keyof typeof skillMeta): string {
 		if (skill === "writing") return "bài"
 		if (skill === "speaking") return "phần"
 		return "câu"
+	}
+
+	function getSkillCount(skill: keyof typeof skillMeta): number {
+		if (skill === "writing" || skill === "speaking") return sectionCountBySkill[skill] ?? 0
+		return getSkillQuestionCount(bp, skill)
 	}
 
 	return (
@@ -64,7 +74,7 @@ function ExamDetail({
 				<p className="text-sm font-medium">Cấu trúc đề</p>
 				<div className="grid gap-2 sm:grid-cols-2">
 					{SKILL_ORDER.map((skill) => {
-						const count = getSkillQuestionCount(bp, skill)
+						const count = getSkillCount(skill)
 						if (count === 0) return null
 
 						return (
@@ -74,8 +84,10 @@ function ExamDetail({
 							>
 								<HugeiconsIcon icon={skillMeta[skill].icon} className="size-5" />
 								<span className="text-sm font-medium">{skillMeta[skill].label}</span>
-							<span className="ml-auto shrink-0 text-sm font-bold tabular-nums">{count} {getSkillUnit(skill)}</span>
-						</div>
+								<span className="ml-auto shrink-0 text-sm font-bold tabular-nums">
+									{count} {getSkillUnit(skill)}
+								</span>
+							</div>
 						)
 					})}
 				</div>

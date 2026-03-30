@@ -11,14 +11,18 @@ let typoPromise: Promise<TypoInstance> | null = null
 
 function getTypo(): Promise<TypoInstance> {
 	if (!typoPromise) {
-		typoPromise = (async () => {
-			const [Typo, affData, wordsData] = await Promise.all([
-				import("typo-js").then((m) => m.default ?? m),
-				import("typo-js/dictionaries/en_US/en_US.aff?raw").then((m) => m.default),
-				import("typo-js/dictionaries/en_US/en_US.dic?raw").then((m) => m.default),
-			])
-			return new Typo("en_US", affData, wordsData) as TypoInstance
-		})()
+			typoPromise = (async () => {
+				const [Typo, affData, wordsData] = await Promise.all([
+					import("typo-js").then((m) => m.default ?? m),
+					import("../../node_modules/typo-js/dictionaries/en_US/en_US.aff?raw").then(
+						(m) => m.default,
+					),
+					import("../../node_modules/typo-js/dictionaries/en_US/en_US.dic?raw").then(
+						(m) => m.default,
+					),
+				])
+				return new Typo("en_US", affData, wordsData) as TypoInstance
+			})()
 	}
 	return typoPromise
 }

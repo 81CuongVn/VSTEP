@@ -3,11 +3,14 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import type { Exam, Skill } from "@/types/api"
-import { getBlueprint, SKILL_ORDER, skillMeta } from "./skill-meta"
+import { getBlueprint, getExamSections, SKILL_ORDER, skillMeta } from "./skill-meta"
 
 function getExamSkills(exam: Exam): Skill[] {
+	const skills = new Set(getExamSections(exam).map((section) => section.skill))
+	if (skills.size > 0) return SKILL_ORDER.filter((skill) => skills.has(skill))
+
 	const bp = getBlueprint(exam)
-	return SKILL_ORDER.filter((s) => (bp[s]?.questionIds.length ?? 0) > 0)
+	return SKILL_ORDER.filter((skill) => (bp[skill]?.questionIds.length ?? 0) > 0)
 }
 
 function getSkillQuestionCount(bp: ReturnType<typeof getBlueprint>, s: Skill): number {
@@ -71,7 +74,9 @@ function ExamListItem({
 					</span>
 				)}
 				{total > 0 && <span>{total} câu nghe/đọc</span>}
-				{typeof exam.sectionCount === "number" && exam.sectionCount > 0 && <span>{exam.sectionCount} phần</span>}
+				{typeof exam.sectionCount === "number" && exam.sectionCount > 0 && (
+					<span>{exam.sectionCount} phần</span>
+				)}
 				<div className="ml-auto flex gap-1">
 					{skills.map((s) => (
 						<span

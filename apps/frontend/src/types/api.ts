@@ -39,16 +39,20 @@ type QuestionLevel = "A2" | "B1" | "B2" | "C1"
 type VstepBand = "B1" | "B2" | "C1"
 
 interface ExamBlueprint {
- listening?: { questionIds: string[]; questionCount?: number }
- reading?: { questionIds: string[]; questionCount?: number }
- writing?: { questionIds: string[]; questionCount?: number }
- speaking?: { questionIds: string[]; questionCount?: number }
- durationMinutes?: number
+	listening?: { questionIds: string[]; questionCount?: number }
+	reading?: { questionIds: string[]; questionCount?: number }
+	writing?: { questionIds: string[]; questionCount?: number }
+	speaking?: { questionIds: string[]; questionCount?: number }
+	durationMinutes?: number
 }
 
 interface ExamSection {
 	skill: Skill
 	part: number
+	sectionType: "objective_group" | "writing_task" | "speaking_part"
+	objectiveItemCount: number
+	entryCount: number
+	bankEntryIds: string[]
 	questionIds: string[]
 	questionCount: number
 	order: number
@@ -634,6 +638,7 @@ export type {
 	Exam,
 	ExamAnswer,
 	ExamBlueprint,
+	ExamSection,
 	ExamSession,
 	ExamSessionDetail,
 	ExamSessionWithExam,

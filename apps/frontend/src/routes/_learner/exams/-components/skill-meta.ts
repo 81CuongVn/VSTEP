@@ -1,6 +1,6 @@
 import { Book02Icon, HeadphonesIcon, Mic01Icon, PencilEdit02Icon } from "@hugeicons/core-free-icons"
 import type { IconSvgElement } from "@hugeicons/react"
-import type { Exam, ExamBlueprint, Skill, Trend } from "@/types/api"
+import type { Exam, ExamBlueprint, ExamSection, Skill, Trend } from "@/types/api"
 
 export const SKILL_ORDER: Skill[] = ["listening", "reading", "writing", "speaking"]
 
@@ -47,19 +47,17 @@ export function getSmartTag(
 	return null
 }
 
-// BE returns `sections` array instead of `blueprint` object.
-// Map sections → ExamBlueprint for backward compat with FE components.
+export function getExamSections(exam: Exam): ExamSection[] {
+	return exam.sections ?? []
+}
+
 export function getBlueprint(exam: Exam): ExamBlueprint {
-	// If blueprint exists (legacy), use it directly
 	if (exam.blueprint && typeof exam.blueprint === "object") {
 		const bp = exam.blueprint as ExamBlueprint
 		if (bp.listening || bp.reading || bp.writing || bp.speaking) return bp
 	}
 
-	// Map sections array → blueprint object
-	const sections = (exam as unknown as Record<string, unknown>).sections as
-		| { skill: Skill; questionIds: string[]; questionCount: number }[]
-		| undefined
+	const sections = getExamSections(exam)
 	if (!sections) return {} as ExamBlueprint
 
 	const bp: ExamBlueprint = { durationMinutes: exam.durationMinutes ?? undefined }

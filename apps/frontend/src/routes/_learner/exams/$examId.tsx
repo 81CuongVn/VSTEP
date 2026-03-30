@@ -12,7 +12,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router"
 import { Button } from "@/components/ui/button"
 import { useExamDetail, useStartExam } from "@/hooks/use-exam-session"
 import { cn } from "@/lib/utils"
-import type { Skill } from "@/types/api"
+import type { ExamSection, Skill } from "@/types/api"
 
 export const Route = createFileRoute("/_learner/exams/$examId")({
 	component: ExamDetailPage,
@@ -52,13 +52,25 @@ function ExamDetailPage() {
 		)
 	}
 
-	// BE returns sections: [{ skill, questionIds, questionCount, ... }] instead of blueprint
-	const sections = ((exam as unknown as Record<string, unknown>).sections ?? []) as {
-		skill: Skill
-		questionCount: number
-		questionIds: string[]
-	}[]
-	const sectionsBySkill = new Map(sections.map((s) => [s.skill, s]))
+	const sections = exam.sections ?? []
+	const sectionsBySkill = sections.reduce<Record<Skill, ExamSection[]>>(
+		(acc, section) => {
+			acc[section.skill].push(section)
+			return acc
+		},
+		{ listening: [], reading: [], writing: [], speaking: [] },
+	)
+
+	function getSkillSummary(skill: Skill): { count: number; unit: string } {
+		const skillSections = sectionsBySkill[skill]
+		if (skill === "writing") return { count: skillSections.length, unit: "bài" }
+		if (skill === "speaking") return { count: skillSections.length, unit: "phần" }
+
+		return {
+			count: skillSections.reduce((sum, section) => sum + section.questionCount, 0),
+			unit: "câu",
+		}
+	}
 
 	function handleStart() {
 		startExam.mutate(examId, {
@@ -91,10 +103,10 @@ function ExamDetailPage() {
 
 				<div className="grid grid-cols-2 gap-3">
 					{SKILL_ORDER.map((skill) => {
-						const section = sectionsBySkill.get(skill)
-						if (!section || section.questionIds.length === 0) return null
+						const skillSections = sectionsBySkill[skill]
+						if (skillSections.length === 0) return null
 						const meta = skillMeta[skill]
-						const count = section.questionCount ?? section.questionIds.length
+						const summary = getSkillSummary(skill)
 
 						return (
 							<div
@@ -104,7 +116,9 @@ function ExamDetailPage() {
 								<HugeiconsIcon icon={meta.icon} className="size-5" />
 								<div>
 									<p className="text-sm font-medium">{meta.label}</p>
-									<p className="text-xs opacity-80">{count} câu</p>
+									<p className="text-xs opacity-80">
+										{summary.count} {summary.unit}
+									</p>
 								</div>
 							</div>
 						)

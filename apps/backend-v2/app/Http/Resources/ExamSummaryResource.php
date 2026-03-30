@@ -38,8 +38,14 @@ class ExamSummaryResource extends JsonResource
                 return [
                     'skill' => $section['skill'] ?? null,
                     'part' => $section['part'] ?? $index + 1,
+                    'section_type' => in_array($section['skill'] ?? null, ['listening', 'reading'], true)
+                        ? 'objective_group'
+                        : (($section['skill'] ?? null) === 'writing' ? 'writing_task' : 'speaking_part'),
                     'title' => $section['title'] ?? null,
                     'instructions' => $section['instructions'] ?? null,
+                    'objective_item_count' => $itemCount,
+                    'entry_count' => count($questionIds),
+                    'bank_entry_ids' => $questionIds,
                     'question_count' => $itemCount ?: count($questionIds),
                     'question_ids' => $questionIds,
                     'order' => $section['order'] ?? $index + 1,
