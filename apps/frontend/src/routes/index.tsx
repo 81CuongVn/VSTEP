@@ -471,7 +471,11 @@ function StepCard({
 				<div className="flex flex-1 items-center justify-center overflow-hidden rounded-2xl bg-white/[0.06] backdrop-blur-sm">
 					<div className="aspect-video w-full">
 						{step.image ? (
-							<img src={step.image} alt={step.title} className="size-full rounded-2xl object-cover" />
+							<img
+								src={step.image}
+								alt={step.title}
+								className="size-full rounded-2xl object-cover"
+							/>
 						) : (
 							<div className="flex size-full items-center justify-center">
 								<HugeiconsIcon icon={step.icon} className="size-16 text-white/25" />
@@ -512,9 +516,7 @@ function RoadmapSection() {
 											{b.level}
 										</div>
 										{/* Vertical segment between nodes */}
-										{i < BANDS.length - 1 && (
-											<div className="flex-1" />
-										)}
+										{i < BANDS.length - 1 && <div className="flex-1" />}
 									</div>
 
 									{/* Horizontal branch connector */}
@@ -523,9 +525,7 @@ function RoadmapSection() {
 									{/* Card */}
 									<div className="mb-6 flex-1 rounded-xl border bg-card p-5">
 										<p className="font-bold">{b.label}</p>
-										<p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-											{b.desc}
-										</p>
+										<p className="mt-1 text-sm leading-relaxed text-muted-foreground">{b.desc}</p>
 										<div className="mt-3 flex flex-wrap gap-1.5">
 											{b.skills.map((s) => (
 												<span
@@ -574,7 +574,10 @@ function TestimonialsSection() {
 										{Array.from({ length: 5 }).map((_, si) => (
 											<svg
 												key={`star-${t.name}-${si.toString()}`}
-												className={cn("size-3", si < t.stars ? "text-amber-400" : "text-muted-foreground/25")}
+												className={cn(
+													"size-3",
+													si < t.stars ? "text-amber-400" : "text-muted-foreground/25",
+												)}
 												viewBox="0 0 20 20"
 												fill="currentColor"
 												aria-hidden="true"
@@ -587,7 +590,9 @@ function TestimonialsSection() {
 									</div>
 								</div>
 							</div>
-							<p className="mt-4 text-sm leading-relaxed text-muted-foreground italic">"{t.quote}"</p>
+							<p className="mt-4 text-sm leading-relaxed text-muted-foreground italic">
+								"{t.quote}"
+							</p>
 							<div className="mt-4">
 								<span className="rounded-full bg-success/10 px-3 py-1 text-xs font-bold text-success">
 									{t.score}

@@ -16,6 +16,12 @@ import { useQueryClient } from "@tanstack/react-query"
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { Fragment, useState } from "react"
 import { toast } from "sonner"
+import { MCQBuilder } from "@/components/features/assignments/MCQBuilder"
+import {
+	isMCQContent,
+	type MCQQuestion,
+	parseContent,
+} from "@/components/features/assignments/types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -66,8 +72,6 @@ import {
 	useSendFeedback,
 	useUpdateClass,
 } from "@/hooks/use-classes"
-import { MCQBuilder } from "@/components/features/assignments/MCQBuilder"
-import { type MCQQuestion, isMCQContent, parseContent } from "@/components/features/assignments/types"
 
 export const Route = createFileRoute("/_learner/dashboard_/$classId")({
 	component: ClassDetailPage,
@@ -151,11 +155,17 @@ function ClassDetailPage() {
 
 	function handleEdit() {
 		if (!cls) return
-		if (!editName.trim()) { toast.error("Tên lớp không được để trống"); return }
+		if (!editName.trim()) {
+			toast.error("Tên lớp không được để trống")
+			return
+		}
 		updateClass.mutate(
 			{ id: cls.id, name: editName.trim(), description: editDesc.trim() || undefined },
 			{
-				onSuccess: () => { setShowEdit(false); toast.success("Đã cập nhật lớp học") },
+				onSuccess: () => {
+					setShowEdit(false)
+					toast.success("Đã cập nhật lớp học")
+				},
 				onError: () => toast.error("Không thể cập nhật lớp học"),
 			},
 		)
@@ -170,10 +180,13 @@ function ClassDetailPage() {
 
 	function handleRemoveMember(userId: string) {
 		if (confirm("Bạn có chắc muốn xóa thành viên này?")) {
-			removeMember.mutate({ classId, userId }, {
-				onSuccess: () => toast.success("Đã xóa thành viên"),
-				onError: () => toast.error("Không thể xóa thành viên"),
-			})
+			removeMember.mutate(
+				{ classId, userId },
+				{
+					onSuccess: () => toast.success("Đã xóa thành viên"),
+					onError: () => toast.error("Không thể xóa thành viên"),
+				},
+			)
 		}
 	}
 
@@ -184,11 +197,17 @@ function ClassDetailPage() {
 	}
 
 	function handleSendFeedback() {
-		if (!feedbackContent.trim()) { toast.error("Vui lòng nhập nội dung nhận xét"); return }
+		if (!feedbackContent.trim()) {
+			toast.error("Vui lòng nhập nội dung nhận xét")
+			return
+		}
 		sendFeedback.mutate(
 			{ classId, toUserId: feedbackUserId, content: feedbackContent.trim() },
 			{
-				onSuccess: () => { setShowFeedback(false); toast.success("Đã gửi nhận xét") },
+				onSuccess: () => {
+					setShowFeedback(false)
+					toast.success("Đã gửi nhận xét")
+				},
 				onError: () => toast.error("Không thể gửi nhận xét"),
 			},
 		)
@@ -227,7 +246,12 @@ function ClassDetailPage() {
 					<button
 						type="button"
 						className="text-muted-foreground hover:text-foreground"
-						onClick={() => navigator.clipboard.writeText(cls.inviteCode ?? "").then(() => toast.success("Đã sao chép mã mời")).catch(() => toast.error("Không thể sao chép"))}
+						onClick={() =>
+							navigator.clipboard
+								.writeText(cls.inviteCode ?? "")
+								.then(() => toast.success("Đã sao chép mã mời"))
+								.catch(() => toast.error("Không thể sao chép"))
+						}
 					>
 						<HugeiconsIcon icon={Copy01Icon} className="size-4" />
 					</button>
@@ -501,171 +525,158 @@ function AssignmentsTab({
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-					{subs.map((sub) => (
-						<Fragment key={sub.id}>
-						<TableRow>
-							<TableCell>
-									<div>
-										<p className="text-sm font-medium">{sub.fullName ?? "—"}</p>
-										<p className="text-xs text-muted-foreground">{sub.email}</p>
-									</div>
-								</TableCell>
-								<TableCell>
-									<Badge
-										variant={
-											sub.status === "graded"
-												? "default"
+						{subs.map((sub) => (
+							<Fragment key={sub.id}>
+								<TableRow>
+									<TableCell>
+										<div>
+											<p className="text-sm font-medium">{sub.fullName ?? "—"}</p>
+											<p className="text-xs text-muted-foreground">{sub.email}</p>
+										</div>
+									</TableCell>
+									<TableCell>
+										<Badge
+											variant={
+												sub.status === "graded"
+													? "default"
+													: sub.status === "submitted"
+														? "secondary"
+														: "outline"
+											}
+											className="text-[10px]"
+										>
+											{sub.status === "graded"
+												? "Đã chấm"
 												: sub.status === "submitted"
-													? "secondary"
-													: "outline"
-										}
-										className="text-[10px]"
-									>
-										{sub.status === "graded"
-											? "Đã chấm"
-											: sub.status === "submitted"
-												? "Đã nộp"
-												: "Chưa nộp"}
-									</Badge>
-									{sub.lateMinutes != null && sub.lateMinutes > 0 && (
-										<Badge variant="destructive" className="ml-1 text-[10px]">
-											Trễ {sub.lateMinutes >= 60 ? `${Math.floor(sub.lateMinutes / 60)}h${sub.lateMinutes % 60 > 0 ? `${sub.lateMinutes % 60}p` : ""}` : `${sub.lateMinutes} phút`}
+													? "Đã nộp"
+													: "Chưa nộp"}
 										</Badge>
-									)}
-								</TableCell>
-								<TableCell>
-									{sub.score != null ? (
-										<span className="font-semibold">{sub.score}</span>
-									) : (
-										<span className="text-muted-foreground">—</span>
-									)}
-								</TableCell>
-								<TableCell className="text-right">
-									{sub.status !== "pending" && (
-										<div className="flex items-center justify-end gap-2">
-											{sub.answer && (
-												<Button
-													size="sm"
-													variant="outline"
-													className="text-xs"
-													onClick={() =>
-														setViewAnswer(
-															viewAnswer === sub.id ? null : sub.id,
-														)
-													}
-												>
-													{viewAnswer === sub.id ? "Ẩn bài" : "Xem bài"}
-												</Button>
-											)}
-											{sub.examSessionId && (
-												<Button
-													size="sm"
-													variant="outline"
-													className="text-xs"
-													asChild
-												>
-													<Link
-														to="/exams/sessions/$sessionId"
-														params={{ sessionId: sub.examSessionId }}
+										{sub.lateMinutes != null && sub.lateMinutes > 0 && (
+											<Badge variant="destructive" className="ml-1 text-[10px]">
+												Trễ{" "}
+												{sub.lateMinutes >= 60
+													? `${Math.floor(sub.lateMinutes / 60)}h${sub.lateMinutes % 60 > 0 ? `${sub.lateMinutes % 60}p` : ""}`
+													: `${sub.lateMinutes} phút`}
+											</Badge>
+										)}
+									</TableCell>
+									<TableCell>
+										{sub.score != null ? (
+											<span className="font-semibold">{sub.score}</span>
+										) : (
+											<span className="text-muted-foreground">—</span>
+										)}
+									</TableCell>
+									<TableCell className="text-right">
+										{sub.status !== "pending" && (
+											<div className="flex items-center justify-end gap-2">
+												{sub.answer && (
+													<Button
+														size="sm"
+														variant="outline"
+														className="text-xs"
+														onClick={() => setViewAnswer(viewAnswer === sub.id ? null : sub.id)}
 													>
-														Xem kết quả
-													</Link>
-												</Button>
-											)}
-											<Button
-												size="sm"
-												variant="outline"
-												className="text-xs"
-												onClick={() => {
-													setGradeSubId(sub.id)
-													// Auto-calculate score for MCQ
-													const asgContent = parseContent(selectedAsg.content, selectedAsg.skill)
-													if (sub.answer && asgContent && isMCQContent(asgContent)) {
-														try {
-															const parsed = JSON.parse(sub.answer) as { answers: number[] }
-															const total = asgContent.questions.length
-															const correct = asgContent.questions.filter((q, i) => parsed.answers[i] === q.correctAnswer).length
-															setGradeScore(String(Math.round((correct / total) * 10 * 10) / 10))
-														} catch {
+														{viewAnswer === sub.id ? "Ẩn bài" : "Xem bài"}
+													</Button>
+												)}
+												{sub.examSessionId && (
+													<Button size="sm" variant="outline" className="text-xs" asChild>
+														<Link
+															to="/exams/sessions/$sessionId"
+															params={{ sessionId: sub.examSessionId }}
+														>
+															Xem kết quả
+														</Link>
+													</Button>
+												)}
+												<Button
+													size="sm"
+													variant="outline"
+													className="text-xs"
+													onClick={() => {
+														setGradeSubId(sub.id)
+														// Auto-calculate score for MCQ
+														const asgContent = parseContent(selectedAsg.content, selectedAsg.skill)
+														if (sub.answer && asgContent && isMCQContent(asgContent)) {
+															try {
+																const parsed = JSON.parse(sub.answer) as { answers: number[] }
+																const total = asgContent.questions.length
+																const correct = asgContent.questions.filter(
+																	(q, i) => parsed.answers[i] === q.correctAnswer,
+																).length
+																setGradeScore(String(Math.round((correct / total) * 10 * 10) / 10))
+															} catch {
+																setGradeScore(sub.score ?? "")
+															}
+														} else {
 															setGradeScore(sub.score ?? "")
 														}
-													} else {
-														setGradeScore(sub.score ?? "")
-													}
-													setGradeFeedback(sub.feedback ?? "")
-												}}
-											>
-												Chấm điểm
-											</Button>
-										</div>
-									)}
-								</TableCell>
-							</TableRow>
-							{viewAnswer === sub.id && sub.answer && (
-								<TableRow>
-									<TableCell colSpan={4}>
-										<AnswerDisplay
-											answer={sub.answer}
-											assignment={selectedAsg}
-										/>
-										{sub.feedback && (
-											<div className="mt-2 rounded-lg bg-blue-50/50 p-4 dark:bg-blue-950/10">
-												<p className="mb-1 text-xs font-medium text-blue-600">
-													Nhận xét:
-												</p>
-												<p className="whitespace-pre-wrap text-sm">{sub.feedback}</p>
+														setGradeFeedback(sub.feedback ?? "")
+													}}
+												>
+													Chấm điểm
+												</Button>
 											</div>
 										)}
 									</TableCell>
 								</TableRow>
-							)}
-							{gradeSubId === sub.id && (
-								<TableRow>
-									<TableCell colSpan={4}>
-										<div className="flex flex-col gap-3 rounded-lg bg-muted/30 p-4">
-											<div className="flex items-center gap-3">
-												<Label className="text-xs">Điểm:</Label>
-												<Input
-													type="number"
-													min="0"
-													max="100"
-													step="0.5"
-													className="h-8 w-24"
-													value={gradeScore}
-													onChange={(e) => setGradeScore(e.target.value)}
-												/>
+								{viewAnswer === sub.id && sub.answer && (
+									<TableRow>
+										<TableCell colSpan={4}>
+											<AnswerDisplay answer={sub.answer} assignment={selectedAsg} />
+											{sub.feedback && (
+												<div className="mt-2 rounded-lg bg-blue-50/50 p-4 dark:bg-blue-950/10">
+													<p className="mb-1 text-xs font-medium text-blue-600">Nhận xét:</p>
+													<p className="whitespace-pre-wrap text-sm">{sub.feedback}</p>
+												</div>
+											)}
+										</TableCell>
+									</TableRow>
+								)}
+								{gradeSubId === sub.id && (
+									<TableRow>
+										<TableCell colSpan={4}>
+											<div className="flex flex-col gap-3 rounded-lg bg-muted/30 p-4">
+												<div className="flex items-center gap-3">
+													<Label className="text-xs">Điểm:</Label>
+													<Input
+														type="number"
+														min="0"
+														max="100"
+														step="0.5"
+														className="h-8 w-24"
+														value={gradeScore}
+														onChange={(e) => setGradeScore(e.target.value)}
+													/>
+												</div>
+												<div className="space-y-1.5">
+													<Label className="text-xs">Nhận xét (tuỳ chọn):</Label>
+													<Textarea
+														value={gradeFeedback}
+														onChange={(e) => setGradeFeedback(e.target.value)}
+														rows={2}
+														placeholder="Nhận xét cho học viên..."
+													/>
+												</div>
+												<div className="flex gap-2">
+													<Button
+														size="sm"
+														onClick={handleGrade}
+														disabled={gradeSubmission.isPending}
+													>
+														{gradeSubmission.isPending ? "Đang lưu..." : "Lưu điểm"}
+													</Button>
+													<Button size="sm" variant="ghost" onClick={() => setGradeSubId("")}>
+														Huỷ
+													</Button>
+												</div>
 											</div>
-											<div className="space-y-1.5">
-												<Label className="text-xs">Nhận xét (tuỳ chọn):</Label>
-												<Textarea
-													value={gradeFeedback}
-													onChange={(e) => setGradeFeedback(e.target.value)}
-													rows={2}
-													placeholder="Nhận xét cho học viên..."
-												/>
-											</div>
-											<div className="flex gap-2">
-												<Button
-													size="sm"
-													onClick={handleGrade}
-													disabled={gradeSubmission.isPending}
-												>
-													{gradeSubmission.isPending ? "Đang lưu..." : "Lưu điểm"}
-												</Button>
-												<Button
-													size="sm"
-													variant="ghost"
-													onClick={() => setGradeSubId("")}
-												>
-													Huỷ
-												</Button>
-											</div>
-										</div>
-									</TableCell>
-								</TableRow>
-							)}
-						</Fragment>
-					))}
+										</TableCell>
+									</TableRow>
+								)}
+							</Fragment>
+						))}
 					</TableBody>
 				</Table>
 			</div>
@@ -748,10 +759,13 @@ function AssignmentsTab({
 									className="text-destructive hover:text-destructive"
 									onClick={() => {
 										if (confirm("Xóa bài tập này?")) {
-											deleteAssignment.mutate({ classId, assignmentId: asg.id }, {
-												onSuccess: () => toast.success("Đã xóa bài tập"),
-												onError: () => toast.error("Không thể xóa bài tập"),
-											})
+											deleteAssignment.mutate(
+												{ classId, assignmentId: asg.id },
+												{
+													onSuccess: () => toast.success("Đã xóa bài tập"),
+													onError: () => toast.error("Không thể xóa bài tập"),
+												},
+											)
 										}
 									}}
 								>
@@ -789,7 +803,16 @@ function AssignmentsTab({
 						</div>
 						<div className="space-y-1.5">
 							<Label>Kỹ năng</Label>
-							<Select value={skill} onValueChange={(v) => { setSkill(v); setQuestions([]); setPassage(""); setPrompt(""); setAudioUrl("") }}>
+							<Select
+								value={skill}
+								onValueChange={(v) => {
+									setSkill(v)
+									setQuestions([])
+									setPassage("")
+									setPrompt("")
+									setAudioUrl("")
+								}}
+							>
 								<SelectTrigger>
 									<SelectValue placeholder="Chọn kỹ năng" />
 								</SelectTrigger>
@@ -891,10 +914,7 @@ function AssignmentsTab({
 						<Button variant="outline" onClick={() => setShowCreate(false)}>
 							Huỷ
 						</Button>
-						<Button
-							onClick={handleCreate}
-							disabled={!title.trim() || createAssignment.isPending}
-						>
+						<Button onClick={handleCreate} disabled={!title.trim() || createAssignment.isPending}>
 							{createAssignment.isPending ? "Đang tạo..." : "Tạo bài tập"}
 						</Button>
 					</DialogFooter>
@@ -904,13 +924,7 @@ function AssignmentsTab({
 	)
 }
 
-function AnswerDisplay({
-	answer,
-	assignment,
-}: {
-	answer: string
-	assignment: ClassAssignment
-}) {
+function AnswerDisplay({ answer, assignment }: { answer: string; assignment: ClassAssignment }) {
 	const content = parseContent(assignment.content, assignment.skill)
 
 	// MCQ answer: show correct vs student
