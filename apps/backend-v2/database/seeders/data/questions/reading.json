@@ -140,6 +140,42 @@
                         "Important",
                         "Unusual"
                     ]
+                },
+                {
+                    "stem": "What do nutritionists consider the most important step?",
+                    "options": [
+                        "Eating at restaurants less often",
+                        "Reducing processed food",
+                        "Buying expensive supplements",
+                        "Following a strict diet"
+                    ]
+                },
+                {
+                    "stem": "Why are home-cooked meals recommended?",
+                    "options": [
+                        "They are cheaper and more nutritious",
+                        "They take less time to prepare",
+                        "They require no planning",
+                        "They are more fashionable"
+                    ]
+                },
+                {
+                    "stem": "What long-term effect of a poor diet is mentioned?",
+                    "options": [
+                        "Improved memory",
+                        "Long-term health problems",
+                        "Higher confidence",
+                        "Lower food costs"
+                    ]
+                },
+                {
+                    "stem": "Which additional habit is said to help people stay healthy?",
+                    "options": [
+                        "Good sleep",
+                        "Skipping lunch",
+                        "Taking medicine daily",
+                        "Studying late at night"
+                    ]
                 }
             ]
         },
@@ -150,7 +186,11 @@
                 "3": "C",
                 "4": "B",
                 "5": "D",
-                "6": "B"
+                "6": "B",
+                "7": "B",
+                "8": "A",
+                "9": "B",
+                "10": "A"
             }
         },
         "knowledge_points": []
@@ -218,6 +258,42 @@
                         "Reduce",
                         "Ignore"
                     ]
+                },
+                {
+                    "stem": "What effect does congestion have according to the text?",
+                    "options": [
+                        "It improves quality of life",
+                        "It damages quality of life",
+                        "It only affects tourists",
+                        "It reduces public transport use"
+                    ]
+                },
+                {
+                    "stem": "What have some cities already seen?",
+                    "options": [
+                        "Positive results from expanding public transport",
+                        "A complete end to congestion",
+                        "Lower housing prices everywhere",
+                        "Fewer private vehicles being sold"
+                    ]
+                },
+                {
+                    "stem": "What do experts agree on?",
+                    "options": [
+                        "The problem will disappear soon",
+                        "The issue will worsen without significant action",
+                        "Cars should be banned immediately",
+                        "Weather is the main cause of congestion"
+                    ]
+                },
+                {
+                    "stem": "Which title best fits the passage?",
+                    "options": [
+                        "Why People Prefer Driving",
+                        "Traffic Congestion and Possible Solutions",
+                        "How to Build Safer Roads",
+                        "The History of Urban Planning"
+                    ]
                 }
             ]
         },
@@ -228,7 +304,11 @@
                 "3": "A",
                 "4": "A",
                 "5": "B",
-                "6": "C"
+                "6": "C",
+                "7": "B",
+                "8": "A",
+                "9": "B",
+                "10": "B"
             }
         },
         "knowledge_points": []
@@ -248,10 +328,14 @@
                 {"stem": "What criticism of compulsory service is mentioned?", "options": ["It costs too much money", "It reduces motivation", "It makes students less confident", "It damages career prospects"]},
                 {"stem": "The word \"meaningful\" in the final paragraph is closest in meaning to...", "options": ["Unimportant", "Valuable", "Temporary", "Difficult"]},
                 {"stem": "What can students gain from community projects?", "options": ["Practical experience", "Guaranteed jobs", "Higher exam scores", "More free time"]},
-                {"stem": "Why do many institutions continue these programs?", "options": ["They are cheaper than normal classes", "They can support personal growth", "Parents require them", "They replace all other activities"]}
+                {"stem": "Why do many institutions continue these programs?", "options": ["They are cheaper than normal classes", "They can support personal growth", "Parents require them", "They replace all other activities"]},
+                {"stem": "Who is said to benefit from community service?", "options": ["Only students", "Only local authorities", "Both students and society", "Only future employers"]},
+                {"stem": "What can volunteering help students explore?", "options": ["Future career interests", "Foreign travel options", "Sports competitions", "Housing choices"]},
+                {"stem": "What do educators say about required service?", "options": ["It can still be valuable if designed well", "It should always be cancelled", "It is harmful to all students", "It only works outside school"]},
+                {"stem": "The passage suggests that well-designed activities should be connected to...", "options": ["students' interests", "teacher salaries", "national exams", "school uniforms"]}
             ]
         },
-        "answer_key": {"correctAnswers": {"1": "A", "2": "B", "3": "B", "4": "B", "5": "A", "6": "B"}},
+        "answer_key": {"correctAnswers": {"1": "A", "2": "B", "3": "B", "4": "B", "5": "A", "6": "B", "7": "C", "8": "A", "9": "A", "10": "A"}},
         "knowledge_points": []
     },
     {
@@ -269,10 +353,14 @@
                 {"stem": "What challenge is mentioned in relation to parks?", "options": ["Lack of visitors from other cities", "Long-term maintenance costs", "Insufficient scientific evidence", "Too many environmental regulations"]},
                 {"stem": "The word \"equipped\" in the passage is closest in meaning to...", "options": ["Decorated", "Provided", "Closed", "Protected"]},
                 {"stem": "Why do planners say some parks are underused?", "options": ["They are too large", "They are only open at night", "They may not be safe or accessible enough", "They are too expensive to enter"]},
-                {"stem": "The final sentence suggests that cities should...", "options": ["Stop building new parks", "Design parks for different community needs", "Use parks mainly for tourism", "Replace parks with housing projects"]}
+                {"stem": "The final sentence suggests that cities should...", "options": ["Stop building new parks", "Design parks for different community needs", "Use parks mainly for tourism", "Replace parks with housing projects"]},
+                {"stem": "Which activity is NOT mentioned as something parks support?", "options": ["Exercise", "Relaxation", "Social interaction", "Industrial production"]},
+                {"stem": "How do parks help the environment according to the passage?", "options": ["By reducing heat and improving air quality", "By increasing traffic flow", "By lowering rainfall", "By removing all noise pollution"]},
+                {"stem": "What do some critics argue about parks?", "options": ["They are underused in some neighborhoods", "They are impossible to maintain", "They are too dangerous for families", "They mainly benefit tourists"]},
+                {"stem": "What tends to increase park usage?", "options": ["Safety and accessibility", "Higher entrance fees", "Stricter opening hours", "Fewer facilities"]}
             ]
         },
-        "answer_key": {"correctAnswers": {"1": "B", "2": "B", "3": "B", "4": "B", "5": "C", "6": "B"}},
+        "answer_key": {"correctAnswers": {"1": "B", "2": "B", "3": "B", "4": "B", "5": "C", "6": "B", "7": "D", "8": "A", "9": "A", "10": "A"}},
         "knowledge_points": []
     },
     {
@@ -338,6 +426,42 @@
                         "Earn more than office counterparts",
                         "Have fewer career advancement opportunities"
                     ]
+                },
+                {
+                    "stem": "What benefit do companies gain from remote work?",
+                    "options": [
+                        "Reduced overhead costs",
+                        "Guaranteed employee loyalty",
+                        "Shorter working hours",
+                        "Fewer regulations"
+                    ]
+                },
+                {
+                    "stem": "Who is mentioned as being especially vulnerable to isolation?",
+                    "options": [
+                        "Workers living alone",
+                        "Interns in offices",
+                        "Factory managers",
+                        "International students"
+                    ]
+                },
+                {
+                    "stem": "What model do analysts expect to become standard?",
+                    "options": [
+                        "Hybrid work",
+                        "Permanent office work",
+                        "Weekend-only work",
+                        "Fully automated teams"
+                    ]
+                },
+                {
+                    "stem": "What risk do companies face if they fail to adapt?",
+                    "options": [
+                        "Losing talented employees",
+                        "Paying no taxes",
+                        "Ending remote work globally",
+                        "Closing all offices immediately"
+                    ]
                 }
             ]
         },
@@ -348,7 +472,11 @@
                 "3": "A",
                 "4": "A",
                 "5": "C",
-                "6": "B"
+                "6": "B",
+                "7": "A",
+                "8": "A",
+                "9": "A",
+                "10": "A"
             }
         },
         "knowledge_points": []
@@ -367,10 +495,15 @@
                 {"stem": "What do supporters recommend?", "options": ["Deleting every social media account", "Using technology more intentionally", "Avoiding online learning completely", "Replacing phones with printed materials"]},
                 {"stem": "According to the passage, reducing screen time may improve...", "options": ["sleep quality", "driving ability", "public transport access", "economic productivity"]},
                 {"stem": "What criticism of digital minimalism is mentioned?", "options": ["It is too expensive to follow", "It ignores the role of devices in work and study", "It has no scientific support", "It encourages unhealthy isolation"]},
-                {"stem": "The word \"autonomy\" in the final sentence is closest in meaning to...", "options": ["Popularity", "Independence", "Security", "Efficiency"]}
+                {"stem": "The word \"autonomy\" in the final sentence is closest in meaning to...", "options": ["Popularity", "Independence", "Security", "Efficiency"]},
+                {"stem": "What do digital minimalists try to eliminate?", "options": ["Unnecessary distractions", "All online communication", "Printed books", "Work-related devices"]},
+                {"stem": "What do critics say makes total disengagement unrealistic?", "options": ["Devices are deeply embedded in work and education", "People dislike technology", "Internet access is too expensive", "Apps are no longer improving"]},
+                {"stem": "According to supporters, what is the key principle?", "options": ["Moderation", "Competition", "Speed", "Isolation"]},
+                {"stem": "Why has digital minimalism attracted attention?", "options": ["It promises more personal control", "It increases online shopping", "It reduces education costs", "It guarantees higher salaries"]},
+                {"stem": "What overall approach does the passage support?", "options": ["Intentional use of technology", "Total rejection of devices", "Using more apps every day", "Avoiding all online study"]}
             ]
         },
-        "answer_key": {"correctAnswers": {"1": "B", "2": "B", "3": "A", "4": "B", "5": "B"}},
+        "answer_key": {"correctAnswers": {"1": "B", "2": "B", "3": "A", "4": "B", "5": "B", "6": "A", "7": "A", "8": "A", "9": "A", "10": "A"}},
         "knowledge_points": []
     },
     {
@@ -427,6 +560,51 @@
                         "Has significant limitations",
                         "Should be abolished entirely"
                     ]
+                },
+                {
+                    "stem": "What is emphasized in Finland's education system?",
+                    "options": [
+                        "Collaborative learning and student well-being",
+                        "Daily standardized exams",
+                        "Long homework assignments",
+                        "Strict competition between schools"
+                    ]
+                },
+                {
+                    "stem": "What do critics say standardized tests often fail to measure?",
+                    "options": [
+                        "Creativity and social skills",
+                        "Reading speed",
+                        "Attendance records",
+                        "Teacher salaries"
+                    ]
+                },
+                {
+                    "stem": "What is required to implement Finnish-style reforms elsewhere?",
+                    "options": [
+                        "Teacher training and cultural change",
+                        "Fewer teachers and more testing",
+                        "Shorter school years only",
+                        "Private funding from parents"
+                    ]
+                },
+                {
+                    "stem": "How should technology be used according to the passage?",
+                    "options": [
+                        "As a complement to traditional teaching",
+                        "As a complete replacement for teachers",
+                        "Only in science classes",
+                        "Only outside school"
+                    ]
+                },
+                {
+                    "stem": "What problem can test pressure create according to the passage?",
+                    "options": [
+                        "A narrow curriculum focused on test preparation",
+                        "More teacher autonomy",
+                        "Less need for research",
+                        "Greater student well-being"
+                    ]
                 }
             ]
         },
@@ -436,7 +614,12 @@
                 "2": "B",
                 "3": "B",
                 "4": "A",
-                "5": "C"
+                "5": "C",
+                "6": "A",
+                "7": "A",
+                "8": "A",
+                "9": "A",
+                "10": "A"
             }
         },
         "knowledge_points": []
@@ -455,10 +638,15 @@
                 {"stem": "What benefit of data collection do supporters mention?", "options": ["Lower electricity use", "More personalized services", "Fewer online accounts", "Guaranteed privacy protection"]},
                 {"stem": "Why is informed consent described as a major issue?", "options": ["Users often refuse to read anything online", "Long agreements may not lead to meaningful understanding", "Companies never ask for permission", "Governments ban all privacy policies"]},
                 {"stem": "The passage suggests that personal data could be used to...", "options": ["improve weather forecasts", "manipulate choices", "replace all human workers", "increase face-to-face communication"]},
-                {"stem": "What do supporters of stronger regulation believe?", "options": ["Transparency alone is not enough", "Data should be free for all companies", "Users are fully responsible for privacy", "Advertising should be banned worldwide"]}
+                {"stem": "What do supporters of stronger regulation believe?", "options": ["Transparency alone is not enough", "Data should be free for all companies", "Users are fully responsible for privacy", "Advertising should be banned worldwide"]},
+                {"stem": "Why do proponents support data collection?", "options": ["It allows more personalized services", "It eliminates all privacy risks", "It stops companies from advertising", "It reduces internet usage"]},
+                {"stem": "What does the passage say about long terms and conditions?", "options": ["They do not always create informed consent", "They guarantee user understanding", "They are no longer used by companies", "They are illegal in most countries"]},
+                {"stem": "What broader concern besides privacy is mentioned?", "options": ["Reinforcing social inequalities", "Reducing computer speed", "Increasing office rents", "Weakening local languages"]},
+                {"stem": "What does the debate mainly focus on?", "options": ["Who controls data and under what conditions", "How to eliminate all online services", "Why companies dislike regulation", "Whether data has any value at all"]},
+                {"stem": "What additional risk of data collection is mentioned?", "options": ["Reinforcing social inequalities", "Reducing website quality", "Increasing electricity use at home", "Making products less convenient"]}
             ]
         },
-        "answer_key": {"correctAnswers": {"1": "B", "2": "B", "3": "B", "4": "B", "5": "A"}},
+        "answer_key": {"correctAnswers": {"1": "B", "2": "B", "3": "B", "4": "B", "5": "A", "6": "A", "7": "A", "8": "A", "9": "A", "10": "A"}},
         "knowledge_points": []
     },
     {

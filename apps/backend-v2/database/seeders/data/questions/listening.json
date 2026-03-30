@@ -238,6 +238,24 @@
                         "Turn off phones",
                         "Read the brochure"
                     ]
+                },
+                {
+                    "stem": "Which area has new opening hours?",
+                    "options": [
+                        "The reception desk",
+                        "The exhibition area",
+                        "The parking lot",
+                        "The main hall"
+                    ]
+                },
+                {
+                    "stem": "When will more details be provided?",
+                    "options": [
+                        "During the opening ceremony",
+                        "At the reception desk",
+                        "In next week's meetings",
+                        "By email tonight"
+                    ]
                 }
             ]
         },
@@ -248,7 +266,9 @@
                 "3": "B",
                 "4": "A",
                 "5": "D",
-                "6": "A"
+                "6": "A",
+                "7": "B",
+                "8": "C"
             }
         },
         "knowledge_points": []
@@ -334,6 +354,42 @@
                         "She has visited before",
                         "She is running late"
                     ]
+                },
+                {
+                    "stem": "What do the speakers need before making decisions?",
+                    "options": [
+                        "More data",
+                        "A larger office",
+                        "Client approval",
+                        "A new manager"
+                    ]
+                },
+                {
+                    "stem": "What is the project short of?",
+                    "options": [
+                        "Staff training",
+                        "Public support",
+                        "Funding",
+                        "Equipment"
+                    ]
+                },
+                {
+                    "stem": "What does the man propose checking first?",
+                    "options": [
+                        "The budget",
+                        "The schedule",
+                        "The contract",
+                        "The office map"
+                    ]
+                },
+                {
+                    "stem": "How would you describe the overall tone of the discussion?",
+                    "options": [
+                        "Careful and problem-solving",
+                        "Angry and confrontational",
+                        "Relaxed and humorous",
+                        "Confused and disorganized"
+                    ]
                 }
             ]
         },
@@ -346,7 +402,11 @@
                 "5": "C",
                 "6": "B",
                 "7": "B",
-                "8": "A"
+                "8": "A",
+                "9": "A",
+                "10": "C",
+                "11": "B",
+                "12": "A"
             }
         },
         "knowledge_points": []
@@ -414,6 +474,87 @@
                         "Student motivation",
                         "Outdated curriculum"
                     ]
+                },
+                {
+                    "stem": "What does the speaker say about standardized testing in Finland?",
+                    "options": [
+                        "It is heavily emphasized",
+                        "It is avoided completely in universities",
+                        "It is less important than teacher quality",
+                        "It has recently been expanded"
+                    ]
+                },
+                {
+                    "stem": "Which group is said to be especially affected by the teacher shortage?",
+                    "options": [
+                        "Urban schools in wealthy countries",
+                        "Developing countries",
+                        "Private universities",
+                        "Adult learners"
+                    ]
+                },
+                {
+                    "stem": "Why does the speaker mention Finland?",
+                    "options": [
+                        "To criticize technology use",
+                        "To illustrate a model of reform",
+                        "To compare university fees",
+                        "To explain student migration"
+                    ]
+                },
+                {
+                    "stem": "What is implied about the speaker's view of future change?",
+                    "options": [
+                        "He expects improvement",
+                        "He thinks change is impossible",
+                        "He is doubtful about all reforms",
+                        "He wants fewer teachers"
+                    ]
+                },
+                {
+                    "stem": "Which statement best summarizes the lecture?",
+                    "options": [
+                        "Technology should replace teachers in most classrooms",
+                        "Teacher training remains central to educational improvement",
+                        "Finland's system cannot be discussed internationally",
+                        "Standardized tests are the only reliable measure of success"
+                    ]
+                },
+                {
+                    "stem": "What is technology compared to in the lecture?",
+                    "options": [
+                        "A replacement for schools",
+                        "A useful supplement",
+                        "A threat to learning",
+                        "A short-term trend"
+                    ]
+                },
+                {
+                    "stem": "What action do many experts recommend?",
+                    "options": [
+                        "Reducing the school year",
+                        "Increasing standardized testing",
+                        "Investing in teacher training",
+                        "Closing small schools"
+                    ]
+                },
+                {
+                    "stem": "Which word best describes the lecturer's attitude?",
+                    "options": [
+                        "Optimistic",
+                        "Indifferent",
+                        "Hostile",
+                        "Embarrassed"
+                    ]
+                },
+                {
+                    "stem": "What does the lecture mainly suggest about improving education?",
+                    "options": [
+                        "Teacher quality should be prioritized",
+                        "Technology should replace classrooms",
+                        "Testing should become more frequent",
+                        "Students need fewer subjects"
+                    ]
                 }
             ]
         },
@@ -424,7 +565,17 @@
                 "3": "B",
                 "4": "C",
                 "5": "B",
-                "6": "B"
+                "6": "B",
+                "7": "C",
+                "8": "B",
+                "9": "B",
+                "10": "A",
+                "11": "B",
+                "12": "B",
+                "13": "C",
+                "14": "A",
+                "15": "A",
+                "16": "A"
             }
         },
         "knowledge_points": []
@@ -483,6 +634,33 @@
                         "Technical difficulties",
                         "Low attendance"
                     ]
+                },
+                {
+                    "stem": "What type of reports must employees submit?",
+                    "options": [
+                        "Safety compliance reports",
+                        "Sales reports",
+                        "Travel expense reports",
+                        "Performance reviews"
+                    ]
+                },
+                {
+                    "stem": "When will further details be given?",
+                    "options": [
+                        "Later today",
+                        "At next week's departmental meetings",
+                        "After a fire drill",
+                        "At the end of the month"
+                    ]
+                },
+                {
+                    "stem": "Why are the new measures described as essential?",
+                    "options": [
+                        "Because the organization is expanding rapidly",
+                        "Because the company is losing money",
+                        "Because customers requested them",
+                        "Because a merger is taking place"
+                    ]
                 }
             ]
         },
@@ -492,7 +670,10 @@
                 "2": "B",
                 "3": "A",
                 "4": "A",
-                "5": "C"
+                "5": "C",
+                "6": "A",
+                "7": "B",
+                "8": "A"
             }
         },
         "knowledge_points": []
@@ -560,6 +741,60 @@
                         "Revising the timeline",
                         "Allocating additional resources"
                     ]
+                },
+                {
+                    "stem": "What does the woman say they should do before committing to a plan?",
+                    "options": [
+                        "Conduct more research",
+                        "Reduce the budget",
+                        "Hire more staff",
+                        "Cancel the policy"
+                    ]
+                },
+                {
+                    "stem": "What is the man skeptical about?",
+                    "options": [
+                        "The new proposal",
+                        "The data source",
+                        "The meeting schedule",
+                        "The environmental report"
+                    ]
+                },
+                {
+                    "stem": "What challenge do the speakers identify?",
+                    "options": [
+                        "A lack of public interest",
+                        "Internal disagreements",
+                        "Strict new regulations",
+                        "Poor time management"
+                    ]
+                },
+                {
+                    "stem": "What is the woman's attitude compared with the man's?",
+                    "options": [
+                        "More optimistic",
+                        "More impatient",
+                        "More uncertain",
+                        "More negative"
+                    ]
+                },
+                {
+                    "stem": "What do they decide to arrange this week?",
+                    "options": [
+                        "Training sessions",
+                        "Stakeholder meetings",
+                        "A public campaign",
+                        "A board election"
+                    ]
+                },
+                {
+                    "stem": "What is one likely goal of the planned meetings?",
+                    "options": [
+                        "Gathering feedback from affected people",
+                        "Announcing the final decision",
+                        "Reducing environmental standards",
+                        "Replacing the current team"
+                    ]
                 }
             ]
         },
@@ -570,7 +805,14 @@
                 "3": "A",
                 "4": "D",
                 "5": "B",
-                "6": "B"
+                "6": "B",
+                "7": "C",
+                "8": "A",
+                "9": "B",
+                "10": "A",
+                "11": "B",
+                "12": "A",
+                "13": "A"
             }
         },
         "knowledge_points": []
@@ -638,6 +880,87 @@
                         "Transportation infrastructure",
                         "Population growth statistics"
                     ]
+                },
+                {
+                    "stem": "Which group is said to be particularly affected?",
+                    "options": [
+                        "Young adults in densely populated areas",
+                        "Retired people in rural towns",
+                        "Children in suburban schools",
+                        "Tourists visiting city centers"
+                    ]
+                },
+                {
+                    "stem": "What variable is paired with pollution in the lecture data?",
+                    "options": [
+                        "Income level",
+                        "Population density",
+                        "Employment rate",
+                        "Housing cost"
+                    ]
+                },
+                {
+                    "stem": "Why does the speaker criticize current urban planning?",
+                    "options": [
+                        "It ignores transport entirely",
+                        "It focuses on short-term solutions",
+                        "It costs too much to implement",
+                        "It is controlled by universities"
+                    ]
+                },
+                {
+                    "stem": "What effect of park access is mentioned?",
+                    "options": [
+                        "It increases traffic flow",
+                        "It reduces stress levels",
+                        "It lowers housing prices",
+                        "It improves exam results"
+                    ]
+                },
+                {
+                    "stem": "What does the speaker say about future city design?",
+                    "options": [
+                        "It should ignore public health concerns",
+                        "It must consider implications of current research",
+                        "It depends only on private investment",
+                        "It should reduce all green spaces"
+                    ]
+                },
+                {
+                    "stem": "How is the lecture's tone best described?",
+                    "options": [
+                        "Analytical and critical",
+                        "Humorous and informal",
+                        "Angry and emotional",
+                        "Confused and hesitant"
+                    ]
+                },
+                {
+                    "stem": "What solution does the speaker recommend?",
+                    "options": [
+                        "Green space requirements in new developments",
+                        "Banning cars from all cities",
+                        "Moving people to rural areas",
+                        "Replacing planners with researchers"
+                    ]
+                },
+                {
+                    "stem": "What broader topic is being examined?",
+                    "options": [
+                        "Public health and urbanization",
+                        "University admissions policy",
+                        "Global migration patterns",
+                        "Private hospital reform"
+                    ]
+                },
+                {
+                    "stem": "What is one implication of the research for planners?",
+                    "options": [
+                        "City design should include more green space",
+                        "Urban growth should stop immediately",
+                        "Transport should replace parks",
+                        "Population density is unimportant"
+                    ]
                 }
             ]
         },
@@ -648,7 +971,17 @@
                 "3": "B",
                 "4": "B",
                 "5": "A",
-                "6": "A"
+                "6": "A",
+                "7": "A",
+                "8": "B",
+                "9": "B",
+                "10": "B",
+                "11": "B",
+                "12": "A",
+                "13": "A",
+                "14": "A",
+                "15": "A",
+                "16": "A"
             }
         },
         "knowledge_points": []
