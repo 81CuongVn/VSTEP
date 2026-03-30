@@ -67,20 +67,30 @@ interface SpeakingExamPanelProps {
 	onUpdateSpeaking: (questionId: string, audioPath: string, durationSeconds: number) => void
 }
 
+// --- Detect supported audio mimeType ---
+
+function getSupportedMimeType(): string | undefined {
+	const candidates = ["audio/ogg;codecs=opus", "audio/webm;codecs=opus", "audio/webm", "audio/mp4"]
+	for (const mime of candidates) {
+		if (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(mime)) return mime
+	}
+	return undefined
+}
+
 // --- Recorder per question ---
 
-type RecorderPhase = "idle" | "recording" | "done"
+type RecorderPhase = "idle" | "recording" | "stopping" | "done"
 
 function SpeakingRecorder({
 	speakingSeconds,
-	existingAudioUrl,
+	hasExistingRecording,
 	onRecorded,
 }: {
 	speakingSeconds: number
-	existingAudioUrl: string | null
+	hasExistingRecording: boolean
 	onRecorded: (audioPath: string, durationSeconds: number) => void
 }) {
-	const [phase, setPhase] = useState<RecorderPhase>(existingAudioUrl ? "done" : "idle")
+	const [phase, setPhase] = useState<RecorderPhase>(hasExistingRecording ? "done" : "idle")
 	const [timer, setTimer] = useState(0)
 	const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 	const recordStartRef = useRef(0)
@@ -88,41 +98,52 @@ function SpeakingRecorder({
 	onRecordedRef.current = onRecorded
 
 	const uploadAudio = useUploadSpeakingAudio()
+	const uploadAudioRef = useRef(uploadAudio)
+	uploadAudioRef.current = uploadAudio
 	const [uploading, setUploading] = useState(false)
+	const uploadingRef = useRef(false)
 	const [uploadError, setUploadError] = useState<string | null>(null)
+
+	const mimeType = useMemo(() => getSupportedMimeType(), [])
 
 	const { status, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } =
 		useReactMediaRecorder({
 			audio: true,
 			video: false,
-			mediaRecorderOptions: { mimeType: "audio/ogg;codecs=opus" },
+			mediaRecorderOptions: mimeType ? { mimeType } : undefined,
 			askPermissionOnMount: false,
 			onStop: () => {
+				// Only source of truth for phase → "done"
 				setPhase("done")
 			},
 		})
 
-	// Upload to R2 when recording finishes
+	// Upload to R2 when recording finishes and blob is ready
+	// Uses refs to avoid re-triggering on mutation object identity changes
 	useEffect(() => {
-		if (phase !== "done" || !mediaBlobUrl || uploading || uploadAudio.isSuccess) return
+		if (phase !== "done" || !mediaBlobUrl) return
+		if (uploadingRef.current || uploadAudioRef.current.isSuccess) return
 
 		const elapsed = Math.round((Date.now() - recordStartRef.current) / 1000)
 		const duration = Math.max(1, elapsed)
 
+		uploadingRef.current = true
 		setUploading(true)
 		setUploadError(null)
 
-		uploadAudio.mutate(mediaBlobUrl, {
+		uploadAudioRef.current.mutate(mediaBlobUrl, {
 			onSuccess: (audioPath) => {
 				onRecordedRef.current(audioPath, duration)
+				uploadingRef.current = false
 				setUploading(false)
 			},
 			onError: (err) => {
 				setUploadError(err instanceof Error ? err.message : "Upload thất bại")
+				uploadingRef.current = false
 				setUploading(false)
 			},
 		})
-	}, [phase, mediaBlobUrl, uploading, uploadAudio])
+	}, [phase, mediaBlobUrl])
 
 	// Recording countdown → auto-stop
 	useEffect(() => {
@@ -156,12 +177,15 @@ function SpeakingRecorder({
 	const handleStop = useCallback(() => {
 		if (timerRef.current) clearInterval(timerRef.current)
 		stopRecording()
-		setPhase("done")
+		// Don't setPhase("done") here — wait for onStop callback
+		// which fires after mediaBlobUrl is ready
+		setPhase("stopping")
 	}, [stopRecording])
 
 	const handleRetry = useCallback(() => {
 		clearBlobUrl()
 		uploadAudio.reset()
+		uploadingRef.current = false
 		setPhase("idle")
 		setTimer(0)
 		setUploading(false)
@@ -174,18 +198,17 @@ function SpeakingRecorder({
 
 	const handlePlayback = useCallback(() => {
 		const audio = playbackRef.current
-		const url = mediaBlobUrl ?? existingAudioUrl
-		if (!audio || !url) return
-		audio.src = url
+		if (!audio || !mediaBlobUrl) return
+		audio.src = mediaBlobUrl
 		audio.onended = () => setPlayingBack(false)
 		audio.play().catch(() => {})
 		setPlayingBack(true)
-	}, [mediaBlobUrl, existingAudioUrl])
+	}, [mediaBlobUrl])
 
 	const isError = status === "permission_denied" || status === "no_specified_media_found"
-	const localAudio = mediaBlobUrl ?? existingAudioUrl
-	const hasDoneRecording = phase === "done" && (localAudio || uploadAudio.isSuccess)
-	const isUploaded = uploadAudio.isSuccess
+	const hasDoneRecording =
+		phase === "done" && (mediaBlobUrl || uploadAudio.isSuccess || hasExistingRecording)
+	const isUploaded = uploadAudio.isSuccess || hasExistingRecording
 
 	return (
 		<div className="space-y-3 rounded-xl border bg-muted/10 p-4">
@@ -195,7 +218,7 @@ function SpeakingRecorder({
 					"flex h-14 items-center justify-center rounded-lg border",
 					phase === "recording"
 						? "border-destructive/30 bg-destructive/5"
-						: uploading
+						: uploading || phase === "stopping"
 							? "border-primary/30 bg-primary/5"
 							: "bg-muted/30",
 				)}
@@ -213,6 +236,13 @@ function SpeakingRecorder({
 					</div>
 				)}
 
+				{phase === "stopping" && (
+					<div className="flex items-center gap-2">
+						<HugeiconsIcon icon={Loading03Icon} className="size-4 animate-spin text-primary" />
+						<span className="text-sm text-primary">Đang xử lý...</span>
+					</div>
+				)}
+
 				{phase === "done" && uploading && (
 					<div className="flex items-center gap-2">
 						<HugeiconsIcon icon={Loading03Icon} className="size-4 animate-spin text-primary" />
@@ -226,7 +256,7 @@ function SpeakingRecorder({
 					</span>
 				)}
 
-				{phase === "done" && !uploading && !isUploaded && !uploadError && localAudio && (
+				{phase === "done" && !uploading && !isUploaded && !uploadError && mediaBlobUrl && (
 					<span className="text-sm text-muted-foreground">Đang xử lý...</span>
 				)}
 			</div>
@@ -248,7 +278,7 @@ function SpeakingRecorder({
 
 				{hasDoneRecording && !uploading && (
 					<>
-						{localAudio && (
+						{mediaBlobUrl && (
 							<Button size="sm" variant="outline" onClick={handlePlayback} disabled={playingBack}>
 								<HugeiconsIcon icon={playingBack ? PauseIcon : VolumeHighIcon} className="size-4" />
 								{playingBack ? "Đang phát..." : "Nghe lại"}
@@ -281,16 +311,16 @@ function SpeakingRecorder({
 // --- Part 1 recorder (no prep/speaking timer — free practice) ---
 
 function Part1Recorder({
-	existingAudioUrl,
+	hasExistingRecording,
 	onRecorded,
 }: {
-	existingAudioUrl: string | null
+	hasExistingRecording: boolean
 	onRecorded: (audioUrl: string, durationSeconds: number) => void
 }) {
 	return (
 		<SpeakingRecorder
 			speakingSeconds={180}
-			existingAudioUrl={existingAudioUrl}
+			hasExistingRecording={hasExistingRecording}
 			onRecorded={onRecorded}
 		/>
 	)
@@ -300,11 +330,11 @@ function Part1Recorder({
 
 function Part1Content({
 	content,
-	existingAudioUrl,
+	hasExistingRecording,
 	onRecorded,
 }: {
 	content: SpeakingPart1Content
-	existingAudioUrl: string | null
+	hasExistingRecording: boolean
 	onRecorded: (audioUrl: string, durationSeconds: number) => void
 }) {
 	return (
@@ -326,18 +356,18 @@ function Part1Content({
 				</div>
 			))}
 
-			<Part1Recorder existingAudioUrl={existingAudioUrl} onRecorded={onRecorded} />
+			<Part1Recorder hasExistingRecording={hasExistingRecording} onRecorded={onRecorded} />
 		</div>
 	)
 }
 
 function Part2Content({
 	content,
-	existingAudioUrl,
+	hasExistingRecording,
 	onRecorded,
 }: {
 	content: SpeakingPart2Content
-	existingAudioUrl: string | null
+	hasExistingRecording: boolean
 	onRecorded: (audioUrl: string, durationSeconds: number) => void
 }) {
 	return (
@@ -369,7 +399,7 @@ function Part2Content({
 
 			<SpeakingRecorder
 				speakingSeconds={content.speakingSeconds}
-				existingAudioUrl={existingAudioUrl}
+				hasExistingRecording={hasExistingRecording}
 				onRecorded={onRecorded}
 			/>
 		</div>
@@ -378,11 +408,11 @@ function Part2Content({
 
 function Part3Content({
 	content,
-	existingAudioUrl,
+	hasExistingRecording,
 	onRecorded,
 }: {
 	content: SpeakingPart3Content
-	existingAudioUrl: string | null
+	hasExistingRecording: boolean
 	onRecorded: (audioUrl: string, durationSeconds: number) => void
 }) {
 	return (
@@ -419,7 +449,7 @@ function Part3Content({
 
 			<SpeakingRecorder
 				speakingSeconds={content.speakingSeconds}
-				existingAudioUrl={existingAudioUrl}
+				hasExistingRecording={hasExistingRecording}
 				onRecorded={onRecorded}
 			/>
 		</div>
@@ -448,13 +478,13 @@ export function SpeakingExamPanel({
 		setActivePartIdx((i) => Math.min(i + 1, parts.length - 1))
 	}, [parts.length])
 
-	// Get existing audio blob URL for playback (local blob only)
-	const getExistingAudioUrl = useCallback((_questionId: string): string | null => {
-		// After upload, we only store audioPath (R2 path), not blob URL
-		// Playback of previously uploaded audio would require presigned read URL
-		// For now, playback only works for current session's recordings via mediaBlobUrl
-		return null
-	}, [])
+	const hasExistingRecording = useCallback(
+		(questionId: string): boolean => {
+			const entry = answers.get(questionId)
+			return entry != null && "audioPath" in entry
+		},
+		[answers],
+	)
 
 	const handleRecorded = useCallback(
 		(questionId: string) => (audioPath: string, durationSeconds: number) => {
@@ -485,21 +515,21 @@ export function SpeakingExamPanel({
 					{isPart1(content) && (
 						<Part1Content
 							content={content}
-							existingAudioUrl={getExistingAudioUrl(activeQuestion.id)}
+							hasExistingRecording={hasExistingRecording(activeQuestion.id)}
 							onRecorded={handleRecorded(activeQuestion.id)}
 						/>
 					)}
 					{isPart2(content) && (
 						<Part2Content
 							content={content}
-							existingAudioUrl={getExistingAudioUrl(activeQuestion.id)}
+							hasExistingRecording={hasExistingRecording(activeQuestion.id)}
 							onRecorded={handleRecorded(activeQuestion.id)}
 						/>
 					)}
 					{isPart3(content) && (
 						<Part3Content
 							content={content}
-							existingAudioUrl={getExistingAudioUrl(activeQuestion.id)}
+							hasExistingRecording={hasExistingRecording(activeQuestion.id)}
 							onRecorded={handleRecorded(activeQuestion.id)}
 						/>
 					)}

@@ -19,6 +19,7 @@ class QuestionService
             ->when($filters['part'] ?? null, fn ($q, $v) => $q->where('part', $v))
             ->when($filters['topic'] ?? null, fn ($q, $v) => $q->where('topic', $v))
             ->when($filters['search'] ?? null, fn ($q, $v) => $q->where('content', 'ilike', "%{$v}%"))
+            ->when(array_key_exists('is_active', $filters), fn ($q) => $q->where('is_active', $filters['is_active']))
             ->orderByDesc('created_at')
             ->paginate();
     }

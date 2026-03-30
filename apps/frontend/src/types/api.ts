@@ -288,6 +288,7 @@ interface Question {
 	skill: Skill
 	level: QuestionLevel
 	part: number
+	topic: string | null
 	content: QuestionContent
 	answerKey?: { correctAnswers: Record<string, string> | string[] } | null
 	explanation?: string | null
