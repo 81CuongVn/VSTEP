@@ -21,6 +21,13 @@ function ExamDetail({
 	const bp = getBlueprint(exam)
 	const duration = getDuration(exam)
 	const total = getTotalQuestions(exam)
+	const sectionCount = exam.sectionCount ?? exam.sections?.length ?? 0
+
+	function getSkillUnit(skill: keyof typeof skillMeta): string {
+		if (skill === "writing") return "bài"
+		if (skill === "speaking") return "phần"
+		return "câu"
+	}
 
 	return (
 		<div className="flex h-full flex-col">
@@ -47,7 +54,8 @@ function ExamDetail({
 							{duration} phút
 						</span>
 					)}
-					{total > 0 && <span>{total} câu hỏi</span>}
+					{total > 0 && <span>{total} câu nghe/đọc</span>}
+					{sectionCount > 0 && <span>{sectionCount} phần tổng</span>}
 				</div>
 			</div>
 
@@ -66,8 +74,8 @@ function ExamDetail({
 							>
 								<HugeiconsIcon icon={skillMeta[skill].icon} className="size-5" />
 								<span className="text-sm font-medium">{skillMeta[skill].label}</span>
-								<span className="ml-auto shrink-0 text-sm font-bold tabular-nums">{count} câu</span>
-							</div>
+							<span className="ml-auto shrink-0 text-sm font-bold tabular-nums">{count} {getSkillUnit(skill)}</span>
+						</div>
 						)
 					})}
 				</div>

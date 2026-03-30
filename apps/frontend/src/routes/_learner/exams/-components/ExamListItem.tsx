@@ -17,6 +17,7 @@ function getSkillQuestionCount(bp: ReturnType<typeof getBlueprint>, s: Skill): n
 }
 
 function getTotalQuestions(exam: Exam): number {
+	if (typeof exam.objectiveQuestionCount === "number") return exam.objectiveQuestionCount
 	const bp = getBlueprint(exam)
 	return SKILL_ORDER.reduce((sum, s) => sum + getSkillQuestionCount(bp, s), 0)
 }
@@ -69,7 +70,8 @@ function ExamListItem({
 						{duration}p
 					</span>
 				)}
-				{total > 0 && <span>{total} câu</span>}
+				{total > 0 && <span>{total} câu nghe/đọc</span>}
+				{typeof exam.sectionCount === "number" && exam.sectionCount > 0 && <span>{exam.sectionCount} phần</span>}
 				<div className="ml-auto flex gap-1">
 					{skills.map((s) => (
 						<span

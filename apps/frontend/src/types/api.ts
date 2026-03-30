@@ -39,11 +39,21 @@ type QuestionLevel = "A2" | "B1" | "B2" | "C1"
 type VstepBand = "B1" | "B2" | "C1"
 
 interface ExamBlueprint {
-	listening?: { questionIds: string[]; questionCount?: number }
-	reading?: { questionIds: string[]; questionCount?: number }
-	writing?: { questionIds: string[]; questionCount?: number }
-	speaking?: { questionIds: string[]; questionCount?: number }
-	durationMinutes?: number
+ listening?: { questionIds: string[]; questionCount?: number }
+ reading?: { questionIds: string[]; questionCount?: number }
+ writing?: { questionIds: string[]; questionCount?: number }
+ speaking?: { questionIds: string[]; questionCount?: number }
+ durationMinutes?: number
+}
+
+interface ExamSection {
+	skill: Skill
+	part: number
+	questionIds: string[]
+	questionCount: number
+	order: number
+	title?: string | null
+	instructions?: string | null
 }
 
 interface Exam {
@@ -58,6 +68,9 @@ interface Exam {
 	createdAt: string
 	updatedAt: string
 	description: string | null
+	objectiveQuestionCount?: number
+	sectionCount?: number
+	sections?: ExamSection[]
 }
 
 interface ExamSession {
