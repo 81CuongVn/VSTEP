@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace App\Ai;
 
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Laravel\Ai\Gateway\OpenAi\OpenAiGateway;
 use Laravel\Ai\Gateway\TextGenerationOptions;
 use Laravel\Ai\Providers\Provider;
+use Laravel\Ai\Responses\StructuredTextResponse;
+use Laravel\Ai\Responses\TextResponse;
+use Laravel\Ai\Responses\Data\Meta;
 
 class LocalOpenAiGateway extends OpenAiGateway
 {
@@ -35,6 +39,38 @@ class LocalOpenAiGateway extends OpenAiGateway
         unset($body['max_output_tokens']);
 
         return $body;
+    }
+
+    protected function continueWithToolResults(
+        string $responseId,
+        string $model,
+        Provider $provider,
+        bool $structured,
+        array $tools,
+        ?array $schema,
+        Collection $steps,
+        Collection $messages,
+        array $toolResults,
+        int $depth,
+        ?int $maxSteps,
+    ): TextResponse {
+        if ($structured) {
+            return (new StructuredTextResponse(
+                [],
+                '',
+                $this->combineUsage($steps),
+                new Meta($provider->name(), $model),
+            ))->withToolCallsAndResults(
+                toolCalls: $steps->flatMap(fn ($step) => $step->toolCalls),
+                toolResults: $steps->flatMap(fn ($step) => $step->toolResults),
+            )->withSteps($steps);
+        }
+
+        return (new TextResponse(
+            '',
+            $this->combineUsage($steps),
+            new Meta($provider->name(), $model),
+        ))->withMessages($messages)->withSteps($steps);
     }
 
     protected function client(Provider $provider, ?int $timeout = null): PendingRequest
