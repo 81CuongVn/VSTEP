@@ -15,10 +15,13 @@ use App\Services\PracticeService;
 use App\Services\QuestionService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Attributes\Controllers\Authorize;
+use Illuminate\Validation\ClosureValidationRule;
 use Illuminate\Validation\Rule;
 
 class PracticeController extends Controller
 {
+    private const INVALID_AUDIO_PATH_PREFIXES = ['blob:', 'data:'];
+
     public function __construct(
         private readonly PracticeService $service,
         private readonly QuestionService $questionService,
@@ -86,15 +89,19 @@ class PracticeController extends Controller
         $skill = $practiceSession->skill;
 
         if ($mode === PracticeMode::Shadowing || $mode === PracticeMode::Drill) {
-            $rules['answer.audio_path'] = ['required', 'string'];
+            $rules['answer.audio_path'] = $this->speakingAudioPathRules();
         } elseif ($mode === PracticeMode::Guided) {
             $rules['answer.text'] = ['required', 'string'];
         } elseif ($mode === PracticeMode::Free) {
             if ($skill->isObjective()) {
                 $rules['answer.answers'] = ['required', 'array'];
             } else {
-                $rules['answer.text'] = ['required_without:answer.audio_path', 'nullable', 'string'];
-                $rules['answer.audio_path'] = ['required_without:answer.text', 'nullable', 'string'];
+                if ($skill === Skill::Speaking) {
+                    $rules['answer.audio_path'] = $this->speakingAudioPathRules();
+                } else {
+                    $rules['answer.text'] = ['required_without:answer.audio_path', 'nullable', 'string'];
+                    $rules['answer.audio_path'] = ['required_without:answer.text', 'nullable', 'string'];
+                }
             }
         }
 
@@ -103,6 +110,31 @@ class PracticeController extends Controller
         $result = $this->service->submit($practiceSession, $validated['answer']);
 
         return response()->json(['data' => $result]);
+    }
+
+    /**
+     * @return list<string|ClosureValidationRule>
+     */
+    private function speakingAudioPathRules(): array
+    {
+        return [
+            'required',
+            'string',
+            'starts_with:speaking/',
+            function (string $attribute, mixed $value, \Closure $fail): void {
+                if (! is_string($value)) {
+                    return;
+                }
+
+                foreach (self::INVALID_AUDIO_PATH_PREFIXES as $prefix) {
+                    if (str_starts_with($value, $prefix)) {
+                        $fail('The '.$attribute.' must be an uploaded storage path, not a temporary browser URL.');
+
+                        return;
+                    }
+                }
+            },
+        ];
     }
 
     #[Authorize('view', 'practiceSession')]
