@@ -6,13 +6,3 @@ declare module "typo-js" {
 	}
 	export default Typo
 }
-
-declare module "typo-js/dictionaries/en_US/en_US.aff?raw" {
-	const content: string
-	export default content
-}
-
-declare module "typo-js/dictionaries/en_US/en_US.dic?raw" {
-	const content: string
-	export default content
-}
