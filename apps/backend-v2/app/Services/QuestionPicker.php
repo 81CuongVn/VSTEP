@@ -26,12 +26,14 @@ class QuestionPicker
         int $totalItems,
         Collection $sessionQuestionIds,
         ?string $focusKp = null,
+        ?string $topic = null,
+        ?int $part = null,
     ): ?Question {
         $excludeIds = $this->buildExcludeIds($userId, $skill, $sessionQuestionIds);
 
         // Every 3rd item → try review from weak points (skip if learner chose a focus KP)
         if (! $focusKp && $currentIndex > 0 && $currentIndex % 3 === 0) {
-            $review = $this->pickReviewItem($userId, $skill, $excludeIds);
+            $review = $this->pickReviewItem($userId, $skill, $excludeIds, $topic, $part);
             if ($review) {
                 return $review;
             }
@@ -40,10 +42,10 @@ class QuestionPicker
         $level = $this->resolveDifficulty($baseLevel, $currentIndex, $totalItems);
 
         // Progressively relax constraints: level → excludeIds → focusKp
-        return $this->findQuestion($skill, $level, $excludeIds, $focusKp)
-            ?? $this->findQuestion($skill, $baseLevel, $excludeIds, $focusKp)
-            ?? $this->findQuestion($skill, $baseLevel, collect(), $focusKp)
-            ?? $this->findQuestion($skill, $baseLevel, collect());
+        return $this->findQuestion($skill, $level, $excludeIds, $focusKp, $topic, $part)
+            ?? $this->findQuestion($skill, $baseLevel, $excludeIds, $focusKp, $topic, $part)
+            ?? $this->findQuestion($skill, $baseLevel, collect(), $focusKp, $topic, $part)
+            ?? $this->findQuestion($skill, $baseLevel, collect(), null, $topic, $part);
     }
 
     public function resolveDifficulty(Level $baseLevel, int $index, int $total): Level
@@ -61,7 +63,7 @@ class QuestionPicker
         };
     }
 
-    private function pickReviewItem(string $userId, Skill $skill, Collection $excludeIds): ?Question
+    private function pickReviewItem(string $userId, Skill $skill, Collection $excludeIds, ?string $topic = null, ?int $part = null): ?Question
     {
         $dueWp = $this->weakPointService->getDueForReview($userId, $skill, 1)->first();
 
@@ -72,18 +74,22 @@ class QuestionPicker
         return Question::where('skill', $skill)
             ->where('is_active', true)
             ->when($excludeIds->isNotEmpty(), fn ($q) => $q->whereNotIn('id', $excludeIds))
+            ->when($topic, fn ($q, $value) => $q->where('topic', $value))
+            ->when($part, fn ($q, $value) => $q->where('part', $value))
             ->whereHas('knowledgePoints', fn ($q) => $q->where('knowledge_points.id', $dueWp->knowledge_point_id))
             ->inRandomOrder()
             ->first();
     }
 
-    private function findQuestion(Skill $skill, Level $level, Collection $excludeIds, ?string $focusKp = null): ?Question
+    private function findQuestion(Skill $skill, Level $level, Collection $excludeIds, ?string $focusKp = null, ?string $topic = null, ?int $part = null): ?Question
     {
         return Question::where('skill', $skill)
             ->where('level', $level)
             ->where('is_active', true)
             ->when($excludeIds->isNotEmpty(), fn ($q) => $q->whereNotIn('id', $excludeIds))
             ->when($focusKp, fn ($q, $v) => $q->whereHas('knowledgePoints', fn ($q) => $q->where('name', $v)))
+            ->when($topic, fn ($q, $value) => $q->where('topic', $value))
+            ->when($part, fn ($q, $value) => $q->where('part', $value))
             ->inRandomOrder()
             ->first();
     }

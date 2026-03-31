@@ -50,6 +50,8 @@ class PracticeController extends Controller
             'mode' => ['required', 'string', Rule::enum(PracticeMode::class)],
             'level' => ['nullable', 'string', Rule::enum(Level::class)],
             'items_count' => ['nullable', 'integer', 'min:1', 'max:20'],
+            'part' => ['nullable', 'integer', 'min:1', 'max:4'],
+            'topic' => ['nullable', 'string', 'max:255'],
             'focus_kp' => ['nullable', 'string'],
         ]);
 

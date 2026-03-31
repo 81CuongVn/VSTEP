@@ -61,6 +61,8 @@ class PracticeService
             'config' => [
                 'items_count' => $itemsCount,
                 'focus_kp' => $options['focus_kp'] ?? null,
+                'topic' => $options['topic'] ?? null,
+                'part' => $options['part'] ?? null,
                 'writing_tier' => $writingTier,
             ],
             'started_at' => now(),
@@ -224,6 +226,8 @@ class PracticeService
             $useDifficultyCurve ? $session->itemsCount() : -1,
             $sessionQuestionIds,
             $session->config['focus_kp'] ?? null,
+            $session->config['topic'] ?? null,
+            $session->config['part'] ?? null,
         );
 
         $session->update(['current_question_id' => $question?->id]);
