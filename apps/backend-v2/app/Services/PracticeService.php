@@ -27,6 +27,7 @@ class PracticeService
     public function __construct(
         private readonly QuestionPicker $picker,
         private readonly WeakPointService $weakPointService,
+        private readonly WritingScaffoldService $writingScaffoldService,
     ) {}
 
     public function start(string $userId, Skill $skill, PracticeMode $mode, array $options = []): array
@@ -250,6 +251,18 @@ class PracticeService
             )->value,
             'is_review' => false,
             ...$handler->enrichItem($question, $writingTier),
+            ...$this->buildWritingScaffold($question, $writingTier),
+        ];
+    }
+
+    private function buildWritingScaffold(Question $question, ?int $writingTier): array
+    {
+        if ($question->skill !== Skill::Writing || $writingTier === null) {
+            return [];
+        }
+
+        return [
+            'writing_scaffold' => $this->writingScaffoldService->forQuestion($question, $writingTier),
         ];
     }
 

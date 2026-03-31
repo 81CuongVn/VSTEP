@@ -7,7 +7,6 @@ namespace App\Services\PracticeHandlers;
 use App\Jobs\GradeSubmission;
 use App\Models\Question;
 use App\Models\Submission;
-use App\Support\WritingHints;
 
 class GuidedHandler implements PracticeModeHandler
 {
@@ -25,19 +24,6 @@ class GuidedHandler implements PracticeModeHandler
 
     public function enrichItem(Question $question, ?int $writingTier = null): array
     {
-        // Tier 3 (freeform): no scaffolding
-        if ($writingTier === 3) {
-            return [];
-        }
-
-        // Tier 1 (template) and Tier 2 (guided): return hints
-        // Tier 1 template is generated client-side via AI proxy
-        return [
-            'writing_hints' => WritingHints::forQuestion(
-                $question->content,
-                $question->level,
-                $question->part,
-            ),
-        ];
+        return [];
     }
 }
