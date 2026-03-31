@@ -1,9 +1,14 @@
+import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Link, useNavigate } from "@tanstack/react-router"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
+	useCompletePractice,
 	useGenerateTemplate,
+	usePracticeSession,
 	useStartPractice,
 	useSubmission,
 	useSubmitPracticeAnswer,
@@ -51,14 +56,25 @@ const TIER_META: Record<number, { label: string; color: string }> = {
 // ═══════════════════════════════════════════════════
 
 interface WritingPracticeFlowProps {
-	questionId?: string
+	part?: number
+	resumeSessionId?: string
+}
+
+// ═══════════════════════════════════════════════════
+// URL helpers — persist sessionId for resume on refresh
+// ═══════════════════════════════════════════════════
+
+function persistSessionToUrl(sessionId: string) {
+	const url = new URL(window.location.href)
+	url.searchParams.set("session", sessionId)
+	window.history.replaceState(null, "", url.toString())
 }
 
 // ═══════════════════════════════════════════════════
 // Main component
 // ═══════════════════════════════════════════════════
 
-export function WritingPracticeFlow(_props: WritingPracticeFlowProps) {
+export function WritingPracticeFlow({ part, resumeSessionId }: WritingPracticeFlowProps) {
 	const [session, setSession] = useState<PracticeSession | null>(null)
 	const [item, setItem] = useState<PracticeItem | null>(null)
 	const [tier, setTier] = useState<WritingTier>(3)
@@ -68,22 +84,49 @@ export function WritingPracticeFlow(_props: WritingPracticeFlowProps) {
 		"loading",
 	)
 	const [error, setError] = useState<string | null>(null)
+	const [sessionCompleted, setSessionCompleted] = useState(false)
 
+	const navigate = useNavigate()
 	const startMutation = useStartPractice()
-	const hasStartedRef = useRef(false)
+	const hasInitRef = useRef(false)
 
+	// Resume existing session
+	const { data: resumeData, isError: resumeFailed } = usePracticeSession(
+		resumeSessionId && !session ? resumeSessionId : null,
+	)
+
+	// Handle resume response
 	useEffect(() => {
-		if (hasStartedRef.current) return
-		hasStartedRef.current = true
+		if (!resumeData || session) return
+
+		const s = resumeData.session
+		if (s.completedAt) {
+			// Session already completed — start fresh
+			hasInitRef.current = false
+			return
+		}
+
+		setSession(s)
+		setItem(resumeData.currentItem)
+		setTier(resumeData.writingTier ?? (s.config.writingTier as WritingTier) ?? 3)
+		setPhase(resumeData.currentItem ? "writing" : "loading")
+	}, [resumeData, session])
+
+	// Start new session (if not resuming)
+	useEffect(() => {
+		if (hasInitRef.current) return
+		if (resumeSessionId && !resumeFailed && !resumeData?.session.completedAt) return
+		hasInitRef.current = true
 
 		startMutation.mutate(
-			{ skill: "writing", mode: "guided", itemsCount: 1 },
+			{ skill: "writing", mode: "guided", itemsCount: 1, part },
 			{
 				onSuccess: (data: PracticeStartResponse) => {
 					setSession(data.session)
 					setItem(data.currentItem)
 					setTier(data.writingTier ?? 3)
 					setPhase("writing")
+					persistSessionToUrl(data.session.id)
 				},
 				onError: (err) => {
 					setError(err.message)
@@ -91,7 +134,16 @@ export function WritingPracticeFlow(_props: WritingPracticeFlowProps) {
 				},
 			},
 		)
-	}, [startMutation])
+	}, [startMutation, part, resumeSessionId, resumeFailed, resumeData])
+
+	// Auto-complete session when grading finishes
+	const completeMutation = useCompletePractice(session?.id ?? "")
+	useEffect(() => {
+		if (phase === "result" && session && !sessionCompleted) {
+			setSessionCompleted(true)
+			completeMutation.mutate()
+		}
+	}, [phase, session, sessionCompleted, completeMutation])
 
 	const content = item
 		? isWritingContent(item.question.content)
@@ -99,6 +151,23 @@ export function WritingPracticeFlow(_props: WritingPracticeFlowProps) {
 			: null
 		: null
 	const hints = item?.writingHints ?? null
+
+	const handlePracticeAgain = useCallback(() => {
+		navigate({
+			to: "/exercise",
+			search: { skill: "writing", id: "", part: part ? String(part) : "", session: "" },
+			replace: true,
+		})
+		// Reset state for new session
+		setSession(null)
+		setItem(null)
+		setWritingText("")
+		setSubmissionId(null)
+		setPhase("loading")
+		setError(null)
+		setSessionCompleted(false)
+		hasInitRef.current = false
+	}, [navigate, part])
 
 	return (
 		<div className="flex h-full flex-col overflow-hidden">
@@ -115,7 +184,7 @@ export function WritingPracticeFlow(_props: WritingPracticeFlowProps) {
 						variant="outline"
 						onClick={() => {
 							setError(null)
-							hasStartedRef.current = false
+							hasInitRef.current = false
 						}}
 					>
 						Thử lại
@@ -176,8 +245,25 @@ export function WritingPracticeFlow(_props: WritingPracticeFlowProps) {
 					submissionId={submissionId}
 					submittedText={writingText}
 					content={content}
+					tier={tier}
 					onCompleted={() => setPhase("result")}
 				/>
+			)}
+
+			{/* Action buttons after grading result */}
+			{phase === "result" && (
+				<footer className="flex shrink-0 items-center justify-center gap-3 border-t px-4 py-3">
+					<Button variant="outline" asChild>
+						<Link to="/practice/writing">
+							<HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
+							Quay lại
+						</Link>
+					</Button>
+					<Button onClick={handlePracticeAgain}>
+						Luyện bài khác
+						<HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />
+					</Button>
+				</footer>
 			)}
 		</div>
 	)
@@ -439,10 +525,17 @@ interface GradingPollerProps {
 	submissionId: string
 	submittedText: string
 	content: WritingContent | null
+	tier: WritingTier
 	onCompleted: () => void
 }
 
-function GradingPoller({ submissionId, submittedText, content, onCompleted }: GradingPollerProps) {
+function GradingPoller({
+	submissionId,
+	submittedText,
+	content,
+	tier,
+	onCompleted,
+}: GradingPollerProps) {
 	const { data: submission } = useSubmission(submissionId)
 	const notifiedRef = useRef(false)
 
@@ -463,7 +556,12 @@ function GradingPoller({ submissionId, submittedText, content, onCompleted }: Gr
 	}
 
 	return (
-		<WritingGradingResult submission={submission} submittedText={submittedText} content={content} />
+		<WritingGradingResult
+			submission={submission}
+			submittedText={submittedText}
+			content={content}
+			tier={tier}
+		/>
 	)
 }
 
