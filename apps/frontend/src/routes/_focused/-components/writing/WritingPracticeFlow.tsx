@@ -90,6 +90,9 @@ export function WritingPracticeFlow({ part, resumeSessionId }: WritingPracticeFl
 	const startMutation = useStartPractice()
 	const hasInitRef = useRef(false)
 
+	// ── Submit mutation lives HERE (parent) so callbacks always fire ──
+	const submitMutation = useSubmitPracticeAnswer(session?.id ?? "")
+
 	// Resume existing session
 	const {
 		data: resumeData,
@@ -100,11 +103,8 @@ export function WritingPracticeFlow({ part, resumeSessionId }: WritingPracticeFl
 	// Single init effect: resume or start new
 	useEffect(() => {
 		if (hasInitRef.current || session) return
-
-		// Still loading resume data — wait
 		if (resumeSessionId && resumeLoading) return
 
-		// Resume succeeded and session is still active
 		if (resumeData && !resumeData.session.completedAt) {
 			hasInitRef.current = true
 			const s = resumeData.session
@@ -115,7 +115,6 @@ export function WritingPracticeFlow({ part, resumeSessionId }: WritingPracticeFl
 			return
 		}
 
-		// No resume, or resume failed, or session completed — start fresh
 		if (!resumeSessionId || resumeFailed || resumeData?.session.completedAt) {
 			hasInitRef.current = true
 			startMutation.mutate(
@@ -153,13 +152,36 @@ export function WritingPracticeFlow({ part, resumeSessionId }: WritingPracticeFl
 		: null
 	const hints = item?.writingHints ?? null
 
+	// ── Unified submit handler — called by child editors ──
+	const handleSubmitText = useCallback(
+		(text: string, questionId: string) => {
+			if (!text.trim()) return
+			setWritingText(text)
+			setPhase("submitting")
+
+			submitMutation.mutate(
+				{ questionId, answer: { text } },
+				{
+					onSuccess: (data) => {
+						setSubmissionId(data.submissionId)
+						setPhase("grading")
+					},
+					onError: (err) => {
+						setError(err.message)
+						setPhase("writing")
+					},
+				},
+			)
+		},
+		[submitMutation],
+	)
+
 	const handlePracticeAgain = useCallback(() => {
 		navigate({
 			to: "/exercise",
 			search: { skill: "writing", id: "", part: part ? String(part) : "", session: "" },
 			replace: true,
 		})
-		// Reset state for new session
 		setSession(null)
 		setItem(null)
 		setWritingText("")
@@ -185,7 +207,7 @@ export function WritingPracticeFlow({ part, resumeSessionId }: WritingPracticeFl
 						variant="outline"
 						onClick={() => {
 							setError(null)
-							hasInitRef.current = false
+							setPhase("writing")
 						}}
 					>
 						Thử lại
@@ -207,17 +229,8 @@ export function WritingPracticeFlow({ part, resumeSessionId }: WritingPracticeFl
 							questionId={item.question.id}
 							content={content}
 							hints={hints}
-							sessionId={session.id}
-							onSubmitted={(subId, text) => {
-								setWritingText(text)
-								setSubmissionId(subId)
-								setPhase("grading")
-							}}
-							onSubmitting={() => setPhase("submitting")}
-							onError={(msg) => {
-								setError(msg)
-								setPhase("writing")
-							}}
+							onSubmit={(text) => handleSubmitText(text, item.question.id)}
+							isSubmitting={submitMutation.isPending}
 						/>
 					) : (
 						<WritingEditor
@@ -225,17 +238,8 @@ export function WritingPracticeFlow({ part, resumeSessionId }: WritingPracticeFl
 							hints={tier === 2 ? hints : null}
 							text={writingText}
 							onTextChange={setWritingText}
-							sessionId={session.id}
-							questionId={item.question.id}
-							onSubmitted={(subId) => {
-								setSubmissionId(subId)
-								setPhase("grading")
-							}}
-							onSubmitting={() => setPhase("submitting")}
-							onError={(msg) => {
-								setError(msg)
-								setPhase("writing")
-							}}
+							onSubmit={(text) => handleSubmitText(text, item.question.id)}
+							isSubmitting={submitMutation.isPending}
 						/>
 					)}
 				</>
@@ -284,23 +288,18 @@ interface TemplateEditorWithApiProps {
 	questionId: string
 	content: WritingContent
 	hints: WritingHints | null
-	sessionId: string
-	onSubmitted: (submissionId: string, assembledText: string) => void
-	onSubmitting: () => void
-	onError: (msg: string) => void
+	onSubmit: (assembledText: string) => void
+	isSubmitting: boolean
 }
 
 function TemplateEditorWithApi({
 	questionId,
 	content,
 	hints,
-	sessionId,
-	onSubmitted,
-	onSubmitting,
-	onError,
+	onSubmit,
+	isSubmitting,
 }: TemplateEditorWithApiProps) {
 	const { data, isLoading, isError } = useGenerateTemplate(questionId)
-	const submitMutation = useSubmitPracticeAnswer(sessionId)
 	const [filledBlanks, setFilledBlanks] = useState<Record<string, string>>({})
 	const [fallbackText, setFallbackText] = useState("")
 
@@ -311,9 +310,9 @@ function TemplateEditorWithApi({
 		return template
 			.map((section) =>
 				section.parts
-					.map((part) => {
-						if (part.type === "text") return part.content ?? ""
-						return filledBlanks[part.id ?? ""] ?? ""
+					.map((p) => {
+						if (p.type === "text") return p.content ?? ""
+						return filledBlanks[p.id ?? ""] ?? ""
 					})
 					.join(""),
 			)
@@ -323,15 +322,8 @@ function TemplateEditorWithApi({
 	const handleSubmit = useCallback(() => {
 		const text = assembleText()
 		if (!text.trim()) return
-
-		submitMutation.mutate(
-			{ questionId, answer: { text } },
-			{
-				onSuccess: (result) => onSubmitted(result.submissionId, text),
-				onError: (err) => onError(err.message),
-			},
-		)
-	}, [assembleText, questionId, submitMutation, onSubmitted, onError])
+		onSubmit(text)
+	}, [assembleText, onSubmit])
 
 	if (isLoading) {
 		return (
@@ -357,11 +349,8 @@ function TemplateEditorWithApi({
 				hints={hints}
 				text={fallbackText}
 				onTextChange={setFallbackText}
-				sessionId={sessionId}
-				questionId={questionId}
-				onSubmitted={(subId) => onSubmitted(subId, fallbackText)}
-				onSubmitting={onSubmitting}
-				onError={onError}
+				onSubmit={onSubmit}
+				isSubmitting={isSubmitting}
 			/>
 		)
 	}
@@ -378,8 +367,8 @@ function TemplateEditorWithApi({
 					onBlankChange={(id, value) => setFilledBlanks((prev) => ({ ...prev, [id]: value }))}
 				/>
 				<div className="flex shrink-0 items-center justify-end border-t px-5 py-3">
-					<Button onClick={handleSubmit} disabled={submitMutation.isPending}>
-						{submitMutation.isPending ? "Đang nộp..." : "Nộp bài"}
+					<Button onClick={handleSubmit} disabled={isSubmitting}>
+						{isSubmitting ? "Đang nộp..." : "Nộp bài"}
 					</Button>
 				</div>
 			</div>
@@ -458,11 +447,8 @@ interface WritingEditorProps {
 	hints: WritingHints | null
 	text: string
 	onTextChange: (text: string) => void
-	sessionId: string
-	questionId: string
-	onSubmitted: (submissionId: string) => void
-	onSubmitting: () => void
-	onError: (msg: string) => void
+	onSubmit: (text: string) => void
+	isSubmitting: boolean
 }
 
 function WritingEditor({
@@ -470,30 +456,15 @@ function WritingEditor({
 	hints,
 	text,
 	onTextChange,
-	sessionId,
-	questionId,
-	onSubmitted,
-	onSubmitting,
-	onError,
+	onSubmit,
+	isSubmitting,
 }: WritingEditorProps) {
-	const submitMutation = useSubmitPracticeAnswer(sessionId)
 	const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0
 
 	const handleSubmit = useCallback(() => {
 		if (!text.trim()) return
-		onSubmitting()
-		submitMutation.mutate(
-			{ questionId, answer: { text } },
-			{
-				onSuccess: (data) => {
-					onSubmitted(data.submissionId)
-				},
-				onError: (err) => {
-					onError(err.message)
-				},
-			},
-		)
-	}, [text, questionId, submitMutation, onSubmitted, onSubmitting, onError])
+		onSubmit(text)
+	}, [text, onSubmit])
 
 	return (
 		<div className="flex flex-1 flex-col overflow-hidden lg:flex-row">
@@ -515,8 +486,8 @@ function WritingEditor({
 							<span className="ml-1 text-orange-500">(cần tối thiểu {content.minWords} từ)</span>
 						)}
 					</p>
-					<Button onClick={handleSubmit} disabled={!text.trim() || submitMutation.isPending}>
-						{submitMutation.isPending ? "Đang nộp..." : "Nộp bài"}
+					<Button onClick={handleSubmit} disabled={!text.trim() || isSubmitting}>
+						{isSubmitting ? "Đang nộp..." : "Nộp bài"}
 					</Button>
 				</div>
 			</div>
