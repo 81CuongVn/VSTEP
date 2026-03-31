@@ -583,6 +583,61 @@ interface PracticeNextResponse {
 	currentLevel: string
 }
 
+type PracticeMode = "guided" | "free"
+
+interface PracticeSession {
+	id: string
+	skill: Skill
+	mode: PracticeMode
+	level: QuestionLevel
+	config: { focusKp: string | null; itemsCount: number }
+	currentQuestionId: string | null
+	summary: unknown | null
+	startedAt: string
+	completedAt: string | null
+	createdAt: string
+	updatedAt: string
+}
+
+interface WritingHints {
+	outline: string[]
+	starters: string[]
+	wordCount: string
+}
+
+interface PracticeItem {
+	question: Question
+	difficulty: string
+	isReview: boolean
+	writingHints?: WritingHints
+}
+
+interface PracticeRecommendation {
+	isFirstTime: boolean
+	reviewDue: number
+	topPatterns: Record<string, number>
+	suggestedFocus: string | null
+}
+
+interface PracticeStartResponse {
+	session: PracticeSession
+	currentItem: PracticeItem
+	recommendation: PracticeRecommendation
+	progress: { current: number; total: number; hasMore: boolean }
+}
+
+interface PracticeSubmitResponse {
+	result: { type: string; status: string }
+	submissionId: string
+	canRetry: boolean
+	isRetry: boolean
+	previousScore: number | null
+	improvement: number | null
+	attemptNumber: number
+	currentItem: PracticeItem | null
+	progress: { current: number; total: number; hasMore: boolean }
+}
+
 // AI
 interface ParaphraseRequest {
 	text: string
@@ -669,7 +724,13 @@ export type {
 	ParaphraseResponse,
 	PlacementResult,
 	PlacementStarted,
+	PracticeItem,
+	PracticeMode,
 	PracticeNextResponse,
+	PracticeRecommendation,
+	PracticeSession,
+	PracticeStartResponse,
+	PracticeSubmitResponse,
 	ProgressOverview,
 	ProgressRecentScore,
 	ProgressSkillDetail,
@@ -714,4 +775,5 @@ export type {
 	VstepBand,
 	WritingAnswer,
 	WritingContent,
+	WritingHints,
 }

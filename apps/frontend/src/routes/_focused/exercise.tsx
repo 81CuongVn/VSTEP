@@ -8,32 +8,67 @@ import { ListeningExerciseSection } from "@/routes/_focused/-components/listenin
 import { ReadingExerciseSection } from "@/routes/_focused/-components/reading/ReadingExerciseSection"
 import { findExam, getAllQuestions } from "@/routes/_focused/-components/shared/exercise-shared"
 import { SpeakingExerciseSection } from "@/routes/_focused/-components/speaking/SpeakingExerciseSection"
-import { WritingExerciseSection } from "@/routes/_focused/-components/writing/WritingExerciseSection"
+import { WritingPracticeFlow } from "@/routes/_focused/-components/writing/WritingPracticeFlow"
 import { skillColor, skillMeta } from "@/routes/_learner/exams/-components/skill-meta"
 import type {
 	ListeningExam,
 	ReadingExam,
 	SpeakingExam,
-	WritingExam,
 } from "@/routes/_learner/practice/-components/mock-data"
-import type { Skill } from "@/types/api"
+import type { QuestionLevel, Skill } from "@/types/api"
 
 export const Route = createFileRoute("/_focused/exercise")({
 	component: ExercisePage,
 	validateSearch: (search: Record<string, unknown>) => ({
 		skill: (search.skill as string) || "",
 		id: (search.id as string) || "",
+		level: (search.level as string) || "",
 	}),
 })
 
 function ExercisePage() {
-	const { skill, id } = Route.useSearch()
+	const { skill, id, level } = Route.useSearch()
 
-	const validSkill = ["listening", "reading", "writing", "speaking"].includes(skill)
+	// Writing uses real API — skip mock lookup
+	if (skill === "writing" && id) {
+		return <WritingExercisePage questionId={id} level={(level as QuestionLevel) || "B1"} />
+	}
+
+	return <MockExercisePage skill={skill} id={id} />
+}
+
+function WritingExercisePage({ questionId, level }: { questionId: string; level: QuestionLevel }) {
+	const meta = skillMeta.writing
+
+	return (
+		<div className="flex h-full flex-col">
+			<header className="flex h-12 shrink-0 items-center justify-between border-b px-4">
+				<div className="flex items-center gap-2">
+					<div
+						className={cn("flex size-7 items-center justify-center rounded-lg", skillColor.writing)}
+					>
+						<HugeiconsIcon icon={meta.icon} className="size-4" />
+					</div>
+					<span className="text-sm font-semibold">Luyện viết</span>
+				</div>
+				<Button variant="ghost" size="sm" asChild>
+					<Link to="/practice/writing">
+						<HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
+						Quay lại
+					</Link>
+				</Button>
+			</header>
+
+			<WritingPracticeFlow questionId={questionId} questionLevel={level} />
+		</div>
+	)
+}
+
+function MockExercisePage({ skill, id }: { skill: string; id: string }) {
+	const validSkill = ["listening", "reading", "speaking"].includes(skill)
 	const exam = validSkill ? findExam(skill, id) : null
 
 	const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({})
-	const [writingTexts, setWritingTexts] = useState<Record<number, string>>({})
 	const [submitted, setSubmitted] = useState(false)
 	const [resetCounter, setResetCounter] = useState(0)
 
@@ -52,7 +87,6 @@ function ExercisePage() {
 	const handleReset = useCallback(() => {
 		setSubmitted(false)
 		setSelectedAnswers({})
-		setWritingTexts({})
 		setResetCounter((c) => c + 1)
 		window.scrollTo({ top: 0, behavior: "smooth" })
 	}, [])
@@ -116,15 +150,6 @@ function ExercisePage() {
 					submitted={submitted}
 					onSelect={handleSelect}
 					onSubmit={handleSubmit}
-				/>
-			) : skill === "writing" ? (
-				<WritingExerciseSection
-					key={resetCounter}
-					exam={exam as WritingExam}
-					examId={id}
-					writingTexts={writingTexts}
-					setWritingTexts={setWritingTexts}
-					submitted={submitted}
 				/>
 			) : (
 				<SpeakingExerciseSection
