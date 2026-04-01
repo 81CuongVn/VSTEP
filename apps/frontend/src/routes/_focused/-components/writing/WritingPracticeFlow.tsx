@@ -115,17 +115,24 @@ export function WritingPracticeFlow({ part, resumeSessionId }: WritingPracticeFl
 			startMutation.mutate(
 				{ skill: "writing", mode: WRITING_PRACTICE_MODE, itemsCount: 1, part },
 				{
-					onSuccess: (data: PracticeStartResponse) => {
-						setSession(data.session)
-						setItem(data.currentItem)
-						setTier(data.writingTier ?? 3)
-						setPhase("writing")
-						persistSessionToUrl(data.session.id)
-					},
-					onError: (err) => {
-						setError(err.message)
+				onSuccess: (data: PracticeStartResponse) => {
+					setSession(data.session)
+					setItem(data.currentItem)
+					setTier(data.writingTier ?? 3)
+					if (!data.currentItem) {
+						setError(
+							"Hiện chưa có bài tập phù hợp với trình độ của bạn. Vui lòng thử lại sau hoặc liên hệ quản trị viên.",
+						)
 						setPhase("loading")
-					},
+						return
+					}
+					setPhase("writing")
+					persistSessionToUrl(data.session.id)
+				},
+				onError: (err) => {
+					setError(err.message)
+					setPhase("loading")
+				},
 				},
 			)
 		}
