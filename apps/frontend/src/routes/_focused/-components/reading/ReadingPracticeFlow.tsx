@@ -18,6 +18,7 @@ import type {
 	PracticeItem,
 	PracticeSession,
 	PracticeStartResponse,
+	PracticeSubmitResponse,
 	QuestionContent,
 	QuestionLevel,
 	ReadingContent,
@@ -92,7 +93,10 @@ function getPassageBody(content: QuestionContent): string[] {
 	return []
 }
 
-function buildMockReviewQuestions(content: QuestionContent): ExamQuestion[] {
+function buildReviewQuestions(
+	content: QuestionContent,
+	correctAnswers?: Record<string, string | null>,
+): ExamQuestion[] {
 	return Array.from({ length: getItemCount(content) }, (_, index) => ({
 		questionNumber: index + 1,
 		questionText: getItemStem(content, index),
@@ -102,7 +106,7 @@ function buildMockReviewQuestions(content: QuestionContent): ExamQuestion[] {
 				option,
 			]),
 		),
-		correctAnswer: "A",
+		correctAnswer: correctAnswers?.[String(index + 1)] ?? "A",
 	}))
 }
 
@@ -122,6 +126,7 @@ export function ReadingPracticeFlow({ part, level, resumeSessionId }: ReadingPra
 	const [error, setError] = useState<string | null>(null)
 	const [pendingNextItem, setPendingNextItem] = useState<PracticeItem | null>(null)
 	const [latestScore, setLatestScore] = useState<number | null>(null)
+	const [submitResult, setSubmitResult] = useState<PracticeSubmitResponse["result"] | null>(null)
 	const [progress, setProgress] = useState<{
 		current: number
 		total: number
@@ -154,6 +159,7 @@ export function ReadingPracticeFlow({ part, level, resumeSessionId }: ReadingPra
 			hasInitRef.current = true
 			setSession(resumeData.session)
 			setItem(resumeData.currentItem)
+			setSubmitResult(null)
 			setProgress(resumeData.progress)
 			setPhase("answering")
 			return
@@ -177,6 +183,7 @@ export function ReadingPracticeFlow({ part, level, resumeSessionId }: ReadingPra
 
 						setSession(data.session)
 						setItem(data.currentItem)
+						setSubmitResult(null)
 						setProgress(data.progress)
 						setPhase("answering")
 						persistSessionToUrl(data.session.id)
@@ -229,8 +236,9 @@ export function ReadingPracticeFlow({ part, level, resumeSessionId }: ReadingPra
 					const nextItem = data.currentItem
 					const isDuplicateNextItem = nextItem?.question.id === item.question.id
 
-					setLatestScore(data.result.score ?? null)
-					setProgress(data.progress)
+							setLatestScore(data.result.score ?? null)
+							setSubmitResult(data.result)
+							setProgress(data.progress)
 					setPendingNextItem(isDuplicateNextItem ? null : nextItem)
 
 					if (isDuplicateNextItem) {
@@ -263,6 +271,7 @@ export function ReadingPracticeFlow({ part, level, resumeSessionId }: ReadingPra
 		setPendingNextItem(null)
 		setSelectedAnswers({})
 		setLatestScore(null)
+		setSubmitResult(null)
 		setPhase("answering")
 		window.scrollTo({ top: 0, behavior: "smooth" })
 	}
@@ -304,8 +313,11 @@ export function ReadingPracticeFlow({ part, level, resumeSessionId }: ReadingPra
 	}
 
 	if (phase === "completed") {
-		const mockQuestions = buildMockReviewQuestions(content)
-		const estimatedCorrectCount = latestScore !== null ? Math.round((latestScore / 10) * itemCount) : 0
+		const reviewQuestions = buildReviewQuestions(content, submitResult?.correctAnswers)
+		const totalQuestions = submitResult?.total ?? itemCount
+		const correctCount =
+			submitResult?.items?.filter((item) => item.isCorrect).length ??
+			(latestScore !== null ? Math.round((latestScore / 10) * totalQuestions) : 0)
 		const practiceAnswers = Object.fromEntries(
 			Object.entries(selectedAnswers).map(([key, value]) => [Number(key), value]),
 		)
@@ -344,13 +356,13 @@ export function ReadingPracticeFlow({ part, level, resumeSessionId }: ReadingPra
 					<div className="flex-1 overflow-hidden">
 						<ReadingAnswerDetail
 							examId="read-1"
-							questions={mockQuestions}
+							questions={reviewQuestions}
 							answers={practiceAnswers}
 							onHighlightParagraph={() => {}}
 							summaryOverride={{
 								score: latestScore,
-								correct: estimatedCorrectCount,
-								total: itemCount,
+								correct: correctCount,
+								total: totalQuestions,
 							}}
 						/>
 					</div>

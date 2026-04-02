@@ -700,7 +700,23 @@ interface PracticeStartResponse {
 }
 
 interface PracticeSubmitResponse {
-	result: { type: string; status?: string; score?: number; correct?: boolean }
+	result: {
+		type: string
+		status?: string
+		score?: number
+		correct?: boolean
+		total?: number
+		rawRatio?: number
+		allCorrect?: boolean
+		userAnswers?: Record<string, string | null>
+		correctAnswers?: Record<string, string | null>
+		items?: {
+			questionNumber: number
+			userAnswer: string | null
+			correctAnswer: string | null
+			isCorrect: boolean
+		}[]
+	}
 	submissionId: string
 	canRetry: boolean
 	isRetry: boolean
