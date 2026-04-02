@@ -6,7 +6,10 @@ TUNNEL_SESSION := vstep-tunnel
 FE_PORT := 8080
 API_PORT := 3000
 
-.PHONY: deploy deploy-backend deploy-frontend setup-frontend-service logs ssh tunnel tunnel-stop generate-vocab generate-sentences generate-all
+.PHONY: dev deploy deploy-backend deploy-frontend setup-frontend-service logs ssh tunnel tunnel-stop generate-vocab generate-sentences generate-all
+
+dev: tunnel
+	cd $(LOCAL_BE) && npx concurrently -c "#22c55e,#93c5fd,#c4b5fd,#fb7185" "php artisan serve --host=127.0.0.1 --port=8010" "php artisan horizon" "php artisan pail --timeout=0" "printf 'E2E demo: http://127.0.0.1:8010/internal/e2e-demo\n' && while true; do sleep 3600; done" --names=server,horizon,logs,demo --kill-others
 
 
 deploy: deploy-backend deploy-frontend
