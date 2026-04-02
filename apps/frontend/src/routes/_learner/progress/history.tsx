@@ -8,13 +8,24 @@ import {
 import type { IconSvgElement } from "@hugeicons/react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { createFileRoute, Link } from "@tanstack/react-router"
-import { useState } from "react"
-import { DoughnutChart, DoughnutLegend } from "@/components/common/DoughnutChart"
-import { SpiderChart } from "@/components/common/SpiderChart"
+import { Suspense, lazy, useState } from "react"
+import { Skeleton } from "@/components/ui/skeleton"
 import { useExamSessions } from "@/hooks/use-exam-session"
 import { useProgress, useSpiderChart } from "@/hooks/use-progress"
 import { cn } from "@/lib/utils"
 import type { ExamSessionWithExam, Skill } from "@/types/api"
+
+const SpiderChart = lazy(() =>
+	import("@/components/common/SpiderChart").then((module) => ({ default: module.SpiderChart })),
+)
+
+const DoughnutChart = lazy(() =>
+	import("@/components/common/DoughnutChart").then((module) => ({ default: module.DoughnutChart })),
+)
+
+const DoughnutLegend = lazy(() =>
+	import("@/components/common/DoughnutChart").then((module) => ({ default: module.DoughnutLegend })),
+)
 
 export const Route = createFileRoute("/_learner/progress/history")({
 	component: TestHistoryPage,
@@ -130,7 +141,9 @@ function SpiderChartCard({
 		<div className="rounded-xl border bg-card p-5">
 			<h3 className="mb-1 text-sm font-semibold">Điểm trung bình theo kỹ năng</h3>
 			<div className="flex justify-center">
-				<SpiderChart skills={spiderSkills} className="size-64" />
+				<Suspense fallback={<Skeleton className="size-64 rounded-2xl" />}>
+					<SpiderChart skills={spiderSkills} className="size-64" />
+				</Suspense>
 			</div>
 		</div>
 	)
@@ -156,15 +169,19 @@ function DoughnutChartCard({
 			<h3 className="mb-3 text-sm font-semibold">Điểm trung bình theo kỹ năng</h3>
 			<div className="flex items-center gap-6">
 				<div className="w-36 shrink-0">
-					<DoughnutChart
-						segments={segments}
-						centerLabel="Tổng số bài test"
-						centerValue={total}
-						innerRadius={35}
-						className="max-h-[140px]"
-					/>
+					<Suspense fallback={<Skeleton className="h-[140px] w-full rounded-2xl" />}>
+						<DoughnutChart
+							segments={segments}
+							centerLabel="Tổng số bài test"
+							centerValue={total}
+							innerRadius={35}
+							className="max-h-[140px]"
+						/>
+					</Suspense>
 				</div>
-				<DoughnutLegend segments={segments} className="flex-col items-start" />
+				<Suspense fallback={<div className="space-y-2">{Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-4 w-28" />)}</div>}>
+					<DoughnutLegend segments={segments} className="flex-col items-start" />
+				</Suspense>
 			</div>
 		</div>
 	)

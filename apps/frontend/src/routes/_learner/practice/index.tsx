@@ -7,7 +7,7 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { createFileRoute, Link } from "@tanstack/react-router"
-import { SpiderChart } from "@/components/common/SpiderChart"
+import { Suspense, lazy } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useActivity, useProgress, useSpiderChart } from "@/hooks/use-progress"
 import { cn } from "@/lib/utils"
@@ -18,6 +18,10 @@ import {
 	skillMeta,
 } from "@/routes/_learner/exams/-components/skill-meta"
 import type { Skill } from "@/types/api"
+
+const SpiderChart = lazy(() =>
+	import("@/components/common/SpiderChart").then((module) => ({ default: module.SpiderChart })),
+)
 
 export const Route = createFileRoute("/_learner/practice/")({
 	component: PracticePage,
@@ -172,10 +176,12 @@ function PracticePage() {
 					{/* Spider chart */}
 					<div className="rounded-2xl bg-muted/50 p-5 shadow-sm">
 						<p className="text-sm font-semibold">Tổng quan kỹ năng</p>
-						<SpiderChart
-							skills={spiderSkills}
-							className="mx-auto aspect-square w-full max-w-[260px]"
-						/>
+						<Suspense fallback={<Skeleton className="mx-auto mt-2 aspect-square w-full max-w-[260px] rounded-2xl" />}>
+							<SpiderChart
+								skills={spiderSkills}
+								className="mx-auto aspect-square w-full max-w-[260px]"
+							/>
+						</Suspense>
 					</div>
 
 					{/* Level & average */}

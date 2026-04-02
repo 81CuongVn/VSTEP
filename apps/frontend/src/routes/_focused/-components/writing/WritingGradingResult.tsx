@@ -1,12 +1,17 @@
 import { AlertCircleIcon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { SpiderChart } from "@/components/common/SpiderChart"
+import { Suspense, lazy } from "react"
 import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 import type { SubmissionFull, WritingContent, WritingTier } from "@/types/api"
 import { AnnotatedEssay } from "./AnnotatedEssay"
 import { MarkdownFeedback } from "./MarkdownFeedback"
 import { CriterionBar, type CriterionScore } from "./writing-grading-shared"
+
+const SpiderChart = lazy(() =>
+	import("@/components/common/SpiderChart").then((module) => ({ default: module.SpiderChart })),
+)
 
 const TIER_BADGE: Record<WritingTier, { label: string; className: string }> = {
 	1: {
@@ -163,14 +168,16 @@ export function WritingGradingResult({
 						<div className="space-y-4">
 							<h4 className="text-sm font-semibold">Điểm từng tiêu chí</h4>
 							<div className="flex justify-center">
-								<SpiderChart
-									skills={criteria.map((c, i) => ({
-										label: criteriaShortLabel[c.label] ?? c.label,
-										value: c.score,
-										color: CRITERION_COLORS[i % CRITERION_COLORS.length],
-									}))}
-									className="size-60"
-								/>
+								<Suspense fallback={<Skeleton className="size-60 rounded-2xl" />}>
+									<SpiderChart
+										skills={criteria.map((c, i) => ({
+											label: criteriaShortLabel[c.label] ?? c.label,
+											value: c.score,
+											color: CRITERION_COLORS[i % CRITERION_COLORS.length],
+										}))}
+										className="size-60"
+									/>
+								</Suspense>
 							</div>
 
 							<div className="space-y-3">
