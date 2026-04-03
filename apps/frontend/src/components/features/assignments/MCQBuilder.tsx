@@ -50,7 +50,7 @@ export function MCQBuilder({ questions, onChange }: MCQBuilderProps) {
 
 	function updateCorrectAnswer(qIndex: number, value: string) {
 		const updated = [...questions]
-		updated[qIndex] = { ...updated[qIndex], correctAnswer: Number.parseInt(value) }
+		updated[qIndex] = { ...updated[qIndex], correctAnswer: Number.parseInt(value, 10) }
 		onChange(updated)
 	}
 
