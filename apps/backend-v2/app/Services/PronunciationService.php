@@ -46,9 +46,9 @@ class PronunciationService
         $this->validateAudioMime($audioContent);
         $this->validateSize($audioContent);
 
-        $ext = strtolower(pathinfo($audioPath, PATHINFO_EXTENSION));
-        $contentType = self::SUPPORTED_FORMATS[$ext]
-            ?? throw new RuntimeException("Unsupported audio format: {$ext}");
+        $detectedFormat = $this->detectFormat($audioContent);
+        $contentType = self::SUPPORTED_FORMATS[$detectedFormat]
+            ?? throw new RuntimeException("Unsupported audio format: {$detectedFormat}");
 
         $endpoint = "https://{$this->region}.stt.speech.microsoft.com"
             .'/speech/recognition/conversation/cognitiveservices/v1'
@@ -132,6 +132,23 @@ class PronunciationService
             'prosody_score' => (float) ($nBest['ProsodyScore'] ?? $nBest['PronunciationAssessment']['ProsodyScore'] ?? 0),
             'word_errors' => $wordErrors,
         ];
+    }
+
+    /**
+     * Detect actual audio format from file content, ignoring file extension.
+     * Browser MediaRecorder often produces WebM even when frontend claims WAV.
+     */
+    private function detectFormat(string $content): string
+    {
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $mime = $finfo->buffer($content);
+
+        return match ($mime) {
+            'audio/x-wav', 'audio/wav' => 'wav',
+            'audio/ogg', 'application/ogg' => 'ogg',
+            'audio/webm', 'video/webm' => 'webm',
+            default => throw new RuntimeException("Cannot detect audio format. MIME: {$mime}"),
+        };
     }
 
     private function validateAudioMime(string $content): void
