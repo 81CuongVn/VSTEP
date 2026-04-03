@@ -1,17 +1,38 @@
 import { ArrowLeft01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { createFileRoute, Link } from "@tanstack/react-router"
-import { useCallback, useState } from "react"
+import { lazy, Suspense, useCallback, useState } from "react"
 import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
-import { ListeningExerciseSection } from "@/routes/_focused/-components/listening/ListeningExerciseSection"
-import { ReadingPracticeFlow } from "@/routes/_focused/-components/reading/ReadingPracticeFlow"
 import { findExam, getAllQuestions } from "@/routes/_focused/-components/shared/exercise-shared"
-import { SpeakingExerciseSection } from "@/routes/_focused/-components/speaking/SpeakingExerciseSection"
-import { WritingPracticeFlow } from "@/routes/_focused/-components/writing/WritingPracticeFlow"
 import { skillColor, skillMeta } from "@/routes/_learner/exams/-components/skill-meta"
 import type { ListeningExam, SpeakingExam } from "@/routes/_learner/practice/-components/mock-data"
 import type { QuestionLevel, Skill } from "@/types/api"
+
+const ListeningExerciseSection = lazy(() =>
+	import("@/routes/_focused/-components/listening/ListeningExerciseSection").then((module) => ({
+		default: module.ListeningExerciseSection,
+	})),
+)
+
+const ReadingPracticeFlow = lazy(() =>
+	import("@/routes/_focused/-components/reading/ReadingPracticeFlow").then((module) => ({
+		default: module.ReadingPracticeFlow,
+	})),
+)
+
+const SpeakingExerciseSection = lazy(() =>
+	import("@/routes/_focused/-components/speaking/SpeakingExerciseSection").then((module) => ({
+		default: module.SpeakingExerciseSection,
+	})),
+)
+
+const WritingPracticeFlow = lazy(() =>
+	import("@/routes/_focused/-components/writing/WritingPracticeFlow").then((module) => ({
+		default: module.WritingPracticeFlow,
+	})),
+)
 
 export const Route = createFileRoute("/_focused/exercise")({
 	component: ExercisePage,
@@ -30,24 +51,32 @@ function ExercisePage() {
 	// Writing uses real API — adaptive session flow
 	if (skill === "writing") {
 		return (
-			<WritingExercisePage
-				part={part ? Number(part) : undefined}
-				sessionId={session || undefined}
-			/>
+			<Suspense fallback={<ExerciseShellSkeleton />}>
+				<WritingExercisePage
+					part={part ? Number(part) : undefined}
+					sessionId={session || undefined}
+				/>
+			</Suspense>
 		)
 	}
 
 	if (skill === "reading") {
 		return (
-			<ReadingExercisePage
-				part={part ? Number(part) : undefined}
-				level={level ? (level as QuestionLevel) : undefined}
-				sessionId={session || undefined}
-			/>
+			<Suspense fallback={<ExerciseShellSkeleton />}>
+				<ReadingExercisePage
+					part={part ? Number(part) : undefined}
+					level={level ? (level as QuestionLevel) : undefined}
+					sessionId={session || undefined}
+				/>
+			</Suspense>
 		)
 	}
 
-	return <MockExercisePage skill={skill} id={id} />
+	return (
+		<Suspense fallback={<ExerciseShellSkeleton />}>
+			<MockExercisePage skill={skill} id={id} />
+		</Suspense>
+	)
 }
 
 function WritingExercisePage({ part, sessionId }: { part?: number; sessionId?: string }) {
@@ -73,6 +102,34 @@ function WritingExercisePage({ part, sessionId }: { part?: number; sessionId?: s
 			</header>
 
 			<WritingPracticeFlow part={part} resumeSessionId={sessionId} />
+		</div>
+	)
+}
+
+function ExerciseShellSkeleton() {
+	return (
+		<div className="flex h-full flex-col">
+			<header className="flex h-12 shrink-0 items-center justify-between border-b px-4">
+				<Skeleton className="h-5 w-32" />
+				<Skeleton className="h-8 w-24" />
+			</header>
+			<div className="flex flex-1 overflow-hidden">
+				<div className="w-1/2 space-y-4 border-r p-6">
+					<Skeleton className="h-6 w-48" />
+					{Array.from({ length: 8 }).map((_, index) => (
+						<Skeleton key={index} className="h-4 w-full" />
+					))}
+				</div>
+				<div className="flex-1 space-y-4 p-6">
+					{Array.from({ length: 4 }).map((_, index) => (
+						<div key={index} className="space-y-2">
+							<Skeleton className="h-4 w-56" />
+							<Skeleton className="h-12 w-full" />
+							<Skeleton className="h-12 w-full" />
+						</div>
+					))}
+				</div>
+			</div>
 		</div>
 	)
 }

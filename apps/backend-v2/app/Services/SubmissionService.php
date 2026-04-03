@@ -80,7 +80,7 @@ class SubmissionService
                 NotificationType::GradingComplete,
                 'Bài làm đã được chấm điểm',
                 "Bạn đạt {$submission->score}/10 cho bài {$submission->skill->value}.",
-                ['submission_id' => $submission->id, 'score' => $submission->score],
+                ['submission_id' => $submission->id, 'score' => $submission->score, 'skill' => $submission->skill->value],
             );
 
             return $submission;
@@ -103,6 +103,9 @@ class SubmissionService
                 'type' => 'auto',
                 'correct_count' => $result['correct'],
                 'total_count' => $result['total'],
+                'user_answers' => $result['user_answers'],
+                'correct_answers' => $result['correct_answers'],
+                'items' => $result['items'],
                 'score' => $score,
                 'graded_at' => now()->toAtomString(),
             ],

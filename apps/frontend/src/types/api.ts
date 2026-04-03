@@ -407,6 +407,24 @@ interface AIResult {
 	criteriaScores: Record<string, number>
 	feedback: string
 	grammarErrors?: { offset: number; length: number; message: string; suggestion?: string }[]
+	annotations?: {
+		strengthQuotes: {
+			phrase: string
+			note: string
+			type: "structure" | "collocation" | "transition"
+		}[]
+		corrections: {
+			original: string
+			correction: string
+			type: "grammar" | "vocabulary" | "spelling"
+			explanation: string
+		}[]
+		rewriteSuggestion: {
+			original: string
+			correction: string
+			note: string
+		} | null
+	}
 	confidence: "high" | "medium" | "low"
 	gradedAt: string
 }
@@ -445,6 +463,12 @@ interface SubmissionFull extends Submission {
 	answer: SubmissionAnswer | null
 	result: GradingResult | null
 	feedback: string | null
+	question?: Question
+	practiceSession?: {
+		config?: {
+			writingTier?: WritingTier
+		} | null
+	} | null
 }
 
 // Knowledge Points
@@ -563,7 +587,12 @@ interface NotificationItem {
 	type: NotificationType
 	title: string
 	body: string | null
-	data: unknown
+	data: {
+		submissionId?: string
+		score?: number
+		skill?: Skill
+	} | null
+	url?: string | null
 	readAt: string | null
 	createdAt: string
 }
@@ -639,8 +668,11 @@ type WritingScaffoldType = "template" | "guided" | "freeform"
 interface WritingScaffold {
 	questionId: string
 	tier: WritingTier
+	requestedTier?: WritingTier
+	effectiveTier?: WritingTier
 	type: WritingScaffoldType
 	payload: WritingTemplateScaffoldPayload | WritingHints | null
+	fallbackReason?: "template_unavailable" | null
 }
 
 interface PracticeItem {
@@ -668,7 +700,23 @@ interface PracticeStartResponse {
 }
 
 interface PracticeSubmitResponse {
-	result: { type: string; status?: string; score?: number; correct?: boolean }
+	result: {
+		type: string
+		status?: string
+		score?: number
+		correct?: boolean
+		total?: number
+		rawRatio?: number
+		allCorrect?: boolean
+		userAnswers?: Record<string, string | null>
+		correctAnswers?: Record<string, string | null>
+		items?: {
+			questionNumber: number
+			userAnswer: string | null
+			correctAnswer: string | null
+			isCorrect: boolean
+		}[]
+	}
 	submissionId: string
 	canRetry: boolean
 	isRetry: boolean

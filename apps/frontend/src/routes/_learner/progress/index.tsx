@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
+import { lazy, Suspense } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -6,9 +7,16 @@ import { useActivity, useProgress, useSpiderChart } from "@/hooks/use-progress"
 import { useUser } from "@/hooks/use-user"
 import { user as getAuthUser } from "@/lib/auth"
 import { avatarUrl, getInitials } from "@/lib/avatar"
-import { LearningPathTab } from "./-components/LearningPathTab"
-import { OverviewTab } from "./-components/OverviewTab"
-import { TestPracticeTab } from "./-components/TestPracticeTab"
+
+const LearningPathTab = lazy(() =>
+	import("./-components/LearningPathTab").then((module) => ({ default: module.LearningPathTab })),
+)
+const OverviewTab = lazy(() =>
+	import("./-components/OverviewTab").then((module) => ({ default: module.OverviewTab })),
+)
+const TestPracticeTab = lazy(() =>
+	import("./-components/TestPracticeTab").then((module) => ({ default: module.TestPracticeTab })),
+)
 
 export const Route = createFileRoute("/_learner/progress/")({
 	component: ProgressOverviewPage,
@@ -100,21 +108,45 @@ function ProgressOverviewPage() {
 				</TabsList>
 
 				<TabsContent value="overview" className="mt-6 space-y-6">
-					<OverviewTab
-						spiderData={spiderData}
-						progressData={progressData}
-						activityData={activityData}
-					/>
+					<Suspense fallback={<TabSectionSkeleton />}>
+						<OverviewTab
+							spiderData={spiderData}
+							progressData={progressData}
+							activityData={activityData}
+						/>
+					</Suspense>
 				</TabsContent>
 
 				<TabsContent value="test-practice" className="mt-6 space-y-6">
-					<TestPracticeTab spiderData={spiderData} progressData={progressData} />
+					<Suspense fallback={<TabSectionSkeleton />}>
+						<TestPracticeTab spiderData={spiderData} progressData={progressData} />
+					</Suspense>
 				</TabsContent>
 
 				<TabsContent value="learning-path" className="mt-6 space-y-6">
-					<LearningPathTab />
+					<Suspense fallback={<TabSectionSkeleton />}>
+						<LearningPathTab />
+					</Suspense>
 				</TabsContent>
 			</Tabs>
+		</div>
+	)
+}
+
+function TabSectionSkeleton() {
+	return (
+		<div className="space-y-6">
+			<Skeleton className="h-24 rounded-2xl" />
+			<div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+				{Array.from({ length: 4 }).map((_, i) => (
+					<Skeleton key={i} className="h-20 rounded-2xl" />
+				))}
+			</div>
+			<Skeleton className="h-48 rounded-2xl" />
+			<div className="grid gap-6 md:grid-cols-2">
+				<Skeleton className="h-72 rounded-2xl" />
+				<Skeleton className="h-72 rounded-2xl" />
+			</div>
 		</div>
 	)
 }
