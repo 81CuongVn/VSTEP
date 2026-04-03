@@ -47,15 +47,8 @@ class PronunciationService
         $this->validateSize($audioContent);
 
         $detectedFormat = $this->detectFormat($audioContent);
-
-        // Azure REST API doesn't support WebM — convert to WAV PCM 16kHz
-        if ($detectedFormat === 'webm') {
-            $audioContent = $this->convertToWav($audioContent);
-            $detectedFormat = 'wav';
-        }
-
         $contentType = self::AZURE_CONTENT_TYPES[$detectedFormat]
-            ?? throw new RuntimeException("Unsupported audio format for Azure: {$detectedFormat}");
+            ?? throw new RuntimeException("Audio format '{$detectedFormat}' is not supported by Azure Speech API. Only WAV (PCM 16kHz) and OGG (Opus) are accepted.");
 
         $endpoint = "https://{$this->region}.stt.speech.microsoft.com"
             .'/speech/recognition/conversation/cognitiveservices/v1'
@@ -139,47 +132,6 @@ class PronunciationService
             'prosody_score' => (float) ($nBest['ProsodyScore'] ?? $nBest['PronunciationAssessment']['ProsodyScore'] ?? 0),
             'word_errors' => $wordErrors,
         ];
-    }
-
-    /**
-     * Convert audio to WAV PCM 16kHz mono using ffmpeg.
-     * Used for WebM files since Azure REST API doesn't support WebM.
-     */
-    private function convertToWav(string $content): string
-    {
-        $inputPath = tempnam(sys_get_temp_dir(), 'audio_in_').'.webm';
-        $outputPath = tempnam(sys_get_temp_dir(), 'audio_out_').'.wav';
-
-        try {
-            file_put_contents($inputPath, $content);
-
-            $command = sprintf(
-                'ffmpeg -y -i %s -ar 16000 -ac 1 -f wav %s 2>&1',
-                escapeshellarg($inputPath),
-                escapeshellarg($outputPath),
-            );
-
-            exec($command, $output, $exitCode);
-
-            if ($exitCode !== 0) {
-                Log::error('ffmpeg_conversion_failed', [
-                    'exit_code' => $exitCode,
-                    'output' => implode("\n", array_slice($output, -5)),
-                ]);
-                throw new RuntimeException('Failed to convert audio to WAV: ffmpeg exit code '.$exitCode);
-            }
-
-            $wavContent = file_get_contents($outputPath);
-
-            if ($wavContent === false || $wavContent === '') {
-                throw new RuntimeException('ffmpeg produced empty WAV output.');
-            }
-
-            return $wavContent;
-        } finally {
-            @unlink($inputPath);
-            @unlink($outputPath);
-        }
     }
 
     /**
