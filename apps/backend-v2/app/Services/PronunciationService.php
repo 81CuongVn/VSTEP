@@ -16,12 +16,12 @@ class PronunciationService
     private string $region;
 
     /**
-     * Azure short-audio REST pronunciation assessment only supports these formats.
+     * Azure short-audio REST API only supports WAV (PCM 16kHz) and OGG (Opus).
+     * WebM is NOT supported — must be converted before sending.
      */
-    private const SUPPORTED_FORMATS = [
+    private const AZURE_CONTENT_TYPES = [
         'wav' => 'audio/wav; codecs=audio/pcm; samplerate=16000',
         'ogg' => 'audio/ogg; codecs=opus',
-        'webm' => 'audio/webm; codecs=opus',
     ];
 
     public function __construct()
@@ -47,8 +47,15 @@ class PronunciationService
         $this->validateSize($audioContent);
 
         $detectedFormat = $this->detectFormat($audioContent);
-        $contentType = self::SUPPORTED_FORMATS[$detectedFormat]
-            ?? throw new RuntimeException("Unsupported audio format: {$detectedFormat}");
+
+        // Azure REST API doesn't support WebM — convert to WAV PCM 16kHz
+        if ($detectedFormat === 'webm') {
+            $audioContent = $this->convertToWav($audioContent);
+            $detectedFormat = 'wav';
+        }
+
+        $contentType = self::AZURE_CONTENT_TYPES[$detectedFormat]
+            ?? throw new RuntimeException("Unsupported audio format for Azure: {$detectedFormat}");
 
         $endpoint = "https://{$this->region}.stt.speech.microsoft.com"
             .'/speech/recognition/conversation/cognitiveservices/v1'
@@ -135,6 +142,47 @@ class PronunciationService
     }
 
     /**
+     * Convert audio to WAV PCM 16kHz mono using ffmpeg.
+     * Used for WebM files since Azure REST API doesn't support WebM.
+     */
+    private function convertToWav(string $content): string
+    {
+        $inputPath = tempnam(sys_get_temp_dir(), 'audio_in_').'.webm';
+        $outputPath = tempnam(sys_get_temp_dir(), 'audio_out_').'.wav';
+
+        try {
+            file_put_contents($inputPath, $content);
+
+            $command = sprintf(
+                'ffmpeg -y -i %s -ar 16000 -ac 1 -f wav %s 2>&1',
+                escapeshellarg($inputPath),
+                escapeshellarg($outputPath),
+            );
+
+            exec($command, $output, $exitCode);
+
+            if ($exitCode !== 0) {
+                Log::error('ffmpeg_conversion_failed', [
+                    'exit_code' => $exitCode,
+                    'output' => implode("\n", array_slice($output, -5)),
+                ]);
+                throw new RuntimeException('Failed to convert audio to WAV: ffmpeg exit code '.$exitCode);
+            }
+
+            $wavContent = file_get_contents($outputPath);
+
+            if ($wavContent === false || $wavContent === '') {
+                throw new RuntimeException('ffmpeg produced empty WAV output.');
+            }
+
+            return $wavContent;
+        } finally {
+            @unlink($inputPath);
+            @unlink($outputPath);
+        }
+    }
+
+    /**
      * Detect actual audio format from file content, ignoring file extension.
      * Browser MediaRecorder often produces WebM even when frontend claims WAV.
      */
@@ -172,6 +220,6 @@ class PronunciationService
 
     public static function supportedExtensions(): array
     {
-        return array_keys(self::SUPPORTED_FORMATS);
+        return ['wav', 'ogg', 'webm'];
     }
 }
