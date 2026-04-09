@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
             QuestionSeeder::class,
             PracticeReviewSeeder::class,
             VocabularySeeder::class,
+            SentenceSeeder::class,
             ExamSeeder::class,
         ]);
     }

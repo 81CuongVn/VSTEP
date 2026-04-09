@@ -45,7 +45,7 @@ class ExamSeeder extends Seeder
                 ...$this->buildSections($bySkillLevel, Skill::Reading, $level, self::READING_PARTS),
             ];
 
-            if (count($sections) !== count(self::LISTENING_PARTS) + count(self::READING_PARTS)) {
+            if (count($sections) < 4) {
                 continue;
             }
 
@@ -64,7 +64,7 @@ class ExamSeeder extends Seeder
 
         // Mock exams per level: full 4 skills using the exact VSTEP part layout.
 
-        foreach ([Level::B1, Level::B2] as $level) {
+        foreach ([Level::B1, Level::B2, Level::C1] as $level) {
             $sections = [
                 ...$this->buildSections($bySkillLevel, Skill::Listening, $level, self::LISTENING_PARTS),
                 ...$this->buildSections($bySkillLevel, Skill::Reading, $level, self::READING_PARTS),
@@ -72,7 +72,7 @@ class ExamSeeder extends Seeder
                 ...$this->buildSections($bySkillLevel, Skill::Speaking, $level, self::SPEAKING_PARTS),
             ];
 
-            if (count($sections) !== 12) {
+            if (count($sections) < 8) {
                 continue;
             }
 
@@ -109,6 +109,28 @@ class ExamSeeder extends Seeder
                 ],
             );
         }
+
+        foreach ([Level::B1, Level::B2, Level::C1] as $level) {
+            foreach ([Skill::Listening, Skill::Reading, Skill::Writing, Skill::Speaking] as $skill) {
+                $sections = $this->buildSections($bySkillLevel, $skill, $level, $this->partsForSkill($skill));
+
+                if ($sections === []) {
+                    continue;
+                }
+
+                Exam::updateOrCreate(
+                    ['title' => sprintf('%s Focus %s', ucfirst($skill->value), $level->value), 'type' => ExamType::Practice],
+                    [
+                        'level' => $level,
+                        'duration_minutes' => $this->durationForSkill($skill),
+                        'blueprint' => $sections,
+                        'description' => sprintf('Bộ ôn tập tập trung cho kỹ năng %s trình độ %s.', ucfirst($skill->value), $level->value),
+                        'is_active' => true,
+                        'created_by' => $admin?->id,
+                    ],
+                );
+            }
+        }
     }
 
     /**
@@ -124,7 +146,7 @@ class ExamSeeder extends Seeder
         foreach ($parts as $part) {
             $questionId = collect($partMap->get($part, []))->first();
             if (! $questionId) {
-                return [];
+                continue;
             }
 
             $sections[] = [
@@ -135,6 +157,29 @@ class ExamSeeder extends Seeder
         }
 
         return $sections;
+    }
+
+    /**
+     * @return list<int>
+     */
+    private function partsForSkill(Skill $skill): array
+    {
+        return match ($skill) {
+            Skill::Listening => self::LISTENING_PARTS,
+            Skill::Reading => self::READING_PARTS,
+            Skill::Writing => self::WRITING_PARTS,
+            Skill::Speaking => self::SPEAKING_PARTS,
+        };
+    }
+
+    private function durationForSkill(Skill $skill): int
+    {
+        return match ($skill) {
+            Skill::Listening => 35,
+            Skill::Reading => 45,
+            Skill::Writing => 40,
+            Skill::Speaking => 20,
+        };
     }
 
     /**
