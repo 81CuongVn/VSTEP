@@ -13,6 +13,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Attributes\Controllers\Authorize;
 
 class UserController extends Controller
@@ -44,6 +45,10 @@ class UserController extends Controller
     #[Authorize('update', 'user')]
     public function update(UpdateUserRequest $request, User $user)
     {
+        if ($request->filled('role') && $request->user()?->role?->value !== 'admin') {
+            abort(Response::HTTP_FORBIDDEN, 'Only admins can change user roles');
+        }
+
         $user = $this->service->update($user, $request->validated());
 
         return new UserResource($user);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\Role;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Hash;
@@ -24,6 +25,8 @@ class UserService
 
     public function create(array $data): User
     {
+        $data = $this->normalizeRole($data);
+
         return User::create($data);
     }
 
@@ -34,6 +37,8 @@ class UserService
 
     public function update(User $user, array $data): User
     {
+        $data = $this->normalizeRole($data);
+
         $user->update($data);
 
         return $user;
@@ -48,5 +53,14 @@ class UserService
         }
 
         $user->update(['password' => $newPassword]);
+    }
+
+    private function normalizeRole(array $data): array
+    {
+        if (($data['role'] ?? null) === 'teacher') {
+            $data['role'] = Role::Instructor->value;
+        }
+
+        return $data;
     }
 }

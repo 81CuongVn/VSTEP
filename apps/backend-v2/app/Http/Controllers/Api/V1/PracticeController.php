@@ -25,6 +25,7 @@ class PracticeController extends Controller
     public function __construct(
         private readonly PracticeService $service,
         private readonly QuestionService $questionService,
+        private readonly \App\Services\PracticeCatalogService $catalogService,
     ) {}
 
     /**
@@ -41,6 +42,13 @@ class PracticeController extends Controller
         $questions->getCollection()->each->makeHidden(['answer_key', 'explanation']);
 
         return QuestionResource::collection($questions);
+    }
+
+    public function catalog()
+    {
+        return response()->json([
+            'data' => $this->catalogService->getCatalog(),
+        ]);
     }
 
     public function start(Request $request)

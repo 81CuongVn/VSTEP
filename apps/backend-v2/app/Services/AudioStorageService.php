@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
@@ -68,6 +69,25 @@ class AudioStorageService
             return Storage::disk('s3')->temporaryUrl($path, now()->addSeconds($expiresInSeconds));
         } catch (\Throwable $e) {
             throw new ServiceUnavailableHttpException(null, 'Audio storage is temporarily unavailable.', $e);
+        }
+    }
+
+    public function storeUploadedFile(string $path, UploadedFile $file, string $contentType): void
+    {
+        $stream = fopen($file->getRealPath(), 'rb');
+
+        if ($stream === false) {
+            throw new ServiceUnavailableHttpException(null, 'Audio storage is temporarily unavailable.');
+        }
+
+        try {
+            Storage::disk('s3')->put($path, $stream, [
+                'ContentType' => $contentType,
+            ]);
+        } catch (\Throwable $e) {
+            throw new ServiceUnavailableHttpException(null, 'Audio storage is temporarily unavailable.', $e);
+        } finally {
+            fclose($stream);
         }
     }
 }

@@ -298,6 +298,43 @@ interface Question {
 	updatedAt: string
 }
 
+interface PracticeCatalogBand {
+	level: QuestionLevel
+	available: boolean
+	questionCount: number
+	topicCount: number
+	topics: string[]
+}
+
+interface PracticeCatalogPart {
+	part: number
+	code: string
+	title: string
+	shortLabel: string
+	description: string
+	sectionType: "objective_group" | "writing_task" | "speaking_part"
+	recommendedItems: number
+	questionCount: number
+	topicCount: number
+	bands: PracticeCatalogBand[]
+}
+
+interface PracticeCatalogSkill {
+	key: Skill
+	label: string
+	description: string
+	sectionType: "objective_group" | "writing_task" | "speaking_part"
+	supportedModes: PracticeMode[]
+	questionCount: number
+	topicCount: number
+	parts: PracticeCatalogPart[]
+}
+
+interface PracticeCatalogResponse {
+	levels: QuestionLevel[]
+	skills: PracticeCatalogSkill[]
+}
+
 // Answer types
 interface ObjectiveAnswer {
 	answers: Record<string, string> | string[]
@@ -771,7 +808,7 @@ interface ExplainResponse {
 
 // Uploads
 interface UploadAudioResponse {
-	audioKey: string
+	audioPath: string
 }
 
 export type {
@@ -814,6 +851,10 @@ export type {
 	PlacementResult,
 	PlacementStarted,
 	PracticeItem,
+	PracticeCatalogBand,
+	PracticeCatalogPart,
+	PracticeCatalogResponse,
+	PracticeCatalogSkill,
 	PracticeMode,
 	PracticeNextResponse,
 	PracticeRecommendation,

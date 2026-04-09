@@ -34,7 +34,7 @@ return new class extends Migration
             $table->integer('repetition_count')->default(0);
             $table->integer('interval_days')->default(1);
             $table->timestamp('last_practiced_at')->nullable();
-            $table->timestamp('next_review_at');
+            $table->timestamp('next_review_at')->useCurrent();
             $table->boolean('is_mastered')->default(false);
             $table->timestamps();
 

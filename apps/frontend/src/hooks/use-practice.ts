@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { api } from "@/lib/api"
 import type {
 	PaginatedResponse,
+	PracticeCatalogResponse,
 	PracticeMode,
 	PracticeStartResponse,
 	PracticeSubmitResponse,
@@ -29,6 +30,13 @@ function usePracticeQuestions(params: UsePracticeQuestionsParams) {
 	return useQuery({
 		queryKey: ["practice", "questions", params],
 		queryFn: () => api.get<PaginatedResponse<Question>>(`/api/practice/questions?${qs}`),
+	})
+}
+
+function usePracticeCatalog() {
+	return useQuery({
+		queryKey: ["practice", "catalog"],
+		queryFn: () => api.get<PracticeCatalogResponse>("/api/practice/catalog"),
 	})
 }
 
@@ -106,6 +114,7 @@ function useSubmission(submissionId: string | null) {
 
 export {
 	useCompletePractice,
+	usePracticeCatalog,
 	usePracticeQuestions,
 	usePracticeSession,
 	useStartPractice,

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AudioController;
+use App\Http\Controllers\Api\V1\AudioUploadController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ClassroomController;
 use App\Http\Controllers\Api\V1\DeviceController;
@@ -86,6 +87,7 @@ Route::prefix('v1')->group(function () {
 
         // Uploads (rate limited: 10/min)
         Route::middleware('throttle:10,1')->group(function () {
+            Route::post('/uploads/audio', [AudioUploadController::class, 'store']);
             Route::post('/uploads/presign', [SpeakingUploadController::class, 'presign']);
         });
 
@@ -150,6 +152,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/practice/generate-writing-scaffold', [WritingScaffoldController::class, 'generate']);
 
         // Practice (adaptive)
+        Route::get('/practice/catalog', [PracticeController::class, 'catalog']);
         Route::get('/practice/questions', [PracticeController::class, 'questions']);
         Route::get('/practice/sessions', [PracticeController::class, 'index']);
         Route::post('/practice/sessions', [PracticeController::class, 'start']);

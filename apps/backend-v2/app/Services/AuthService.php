@@ -101,10 +101,11 @@ class AuthService
             ->delete();
 
         $keep = self::MAX_REFRESH_TOKENS - 1;
-        $staleIds = RefreshToken::where('user_id', $user->id)
+        $tokenIds = RefreshToken::where('user_id', $user->id)
             ->orderByDesc('created_at')
-            ->skip($keep)
             ->pluck('id');
+
+        $staleIds = $tokenIds->slice($keep)->values();
 
         if ($staleIds->isNotEmpty()) {
             RefreshToken::whereIn('id', $staleIds)->delete();

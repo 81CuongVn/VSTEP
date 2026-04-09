@@ -1,15 +1,12 @@
 import { useMutation } from "@tanstack/react-query"
 import { api } from "@/lib/api"
 
-interface PresignResponse {
-	uploadUrl: string
-	headers: Record<string, string>
+interface AudioUploadResponse {
 	audioPath: string
-	expiresIn: number
 }
 
 /**
- * Upload speaking audio to R2 via presigned URL.
+ * Upload speaking audio through the backend to avoid browser-to-R2 CORS issues.
  * Always converts to WAV PCM 16kHz mono before upload — Azure Speech REST API
  * only supports WAV and OGG, and Chrome MediaRecorder only produces WebM.
  */
@@ -21,26 +18,12 @@ function useUploadSpeakingAudio() {
 
 			// Convert any format to WAV PCM 16kHz mono for Azure compatibility
 			const wavBlob = await convertToWav(blob)
+			const formData = new FormData()
+			formData.append("audio", new File([wavBlob], "recording.wav", { type: "audio/wav" }))
 
-			const presign = await api.post<PresignResponse>("/api/uploads/presign", {
-				contentType: "audio/wav",
-				fileSize: wavBlob.size,
-			})
+			const upload = await api.upload<AudioUploadResponse>("/api/uploads/audio", formData)
 
-			const uploadRes = await fetch(presign.uploadUrl, {
-				method: "PUT",
-				headers: {
-					"Content-Type": "audio/wav",
-					...presign.headers,
-				},
-				body: wavBlob,
-			})
-
-			if (!uploadRes.ok) {
-				throw new Error(`Upload failed: ${uploadRes.status}`)
-			}
-
-			return presign.audioPath
+			return upload.audioPath
 		},
 	})
 }
@@ -119,7 +102,7 @@ function writeString(view: DataView, offset: number, str: string) {
 }
 
 /**
- * Upload an audio File to R2 via presigned URL.
+ * Upload an audio File through the backend.
  * Converts to WAV PCM 16kHz mono (same as speaking upload) so the backend accepts it.
  * Returns the R2 storage path.
  */
@@ -127,26 +110,12 @@ function useUploadAudioFile() {
 	return useMutation({
 		mutationFn: async (file: File): Promise<string> => {
 			const wavBlob = await convertToWav(file)
+			const formData = new FormData()
+			formData.append("audio", new File([wavBlob], file.name.replace(/\.[^.]+$/, "") + ".wav", { type: "audio/wav" }))
 
-			const presign = await api.post<PresignResponse>("/api/uploads/presign", {
-				contentType: "audio/wav",
-				fileSize: wavBlob.size,
-			})
+			const upload = await api.upload<AudioUploadResponse>("/api/uploads/audio", formData)
 
-			const uploadRes = await fetch(presign.uploadUrl, {
-				method: "PUT",
-				headers: {
-					"Content-Type": "audio/wav",
-					...presign.headers,
-				},
-				body: wavBlob,
-			})
-
-			if (!uploadRes.ok) {
-				throw new Error(`Upload failed: ${uploadRes.status}`)
-			}
-
-			return presign.audioPath
+			return upload.audioPath
 		},
 	})
 }

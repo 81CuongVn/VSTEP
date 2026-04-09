@@ -37,6 +37,8 @@ class DatabaseSeeder extends Seeder
             KnowledgeGraphSeeder::class,
             GradingRubricSeeder::class,
             QuestionSeeder::class,
+            PracticeReviewSeeder::class,
+            VocabularySeeder::class,
             ExamSeeder::class,
         ]);
     }

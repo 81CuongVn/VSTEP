@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 
 class SpeakingUploadService
@@ -15,8 +16,11 @@ class SpeakingUploadService
      */
     private const ALLOWED_TYPES = [
         'audio/wav' => 'wav',
+        'audio/x-wav' => 'wav',
         'audio/ogg' => 'ogg',
+        'application/ogg' => 'ogg',
         'audio/webm' => 'webm',
+        'video/webm' => 'webm',
     ];
 
     private const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -42,6 +46,25 @@ class SpeakingUploadService
         ];
     }
 
+    public function storeAudioUpload(string $userId, UploadedFile $file): array
+    {
+        $contentType = $file->getMimeType() ?: $file->getClientMimeType();
+        if (! is_string($contentType) || $contentType === '') {
+            throw new \InvalidArgumentException('Unsupported content type: unknown');
+        }
+
+        $ext = self::ALLOWED_TYPES[$contentType]
+            ?? throw new \InvalidArgumentException("Unsupported content type: {$contentType}");
+
+        $audioPath = "speaking/{$userId}/".Str::uuid().".{$ext}";
+
+        $this->storage->storeUploadedFile($audioPath, $file, $contentType);
+
+        return [
+            'audio_path' => $audioPath,
+        ];
+    }
+
     public function verifyAudioOwnership(string $audioPath, string $userId): void
     {
         if (! $this->isOwnedByUser($audioPath, $userId)) {
@@ -61,6 +84,11 @@ class SpeakingUploadService
     public static function allowedTypes(): array
     {
         return array_keys(self::ALLOWED_TYPES);
+    }
+
+    public static function allowedMimeValidationTypes(): array
+    {
+        return self::allowedTypes();
     }
 
     public static function maxFileSize(): int

@@ -443,7 +443,7 @@ function HowItWorksSection() {
 			{/* Scroll runway — height drives the album-stack scroll distance */}
 			<div
 				ref={containerRef}
-				className="mx-auto mt-8 h-[190vh] max-w-[1800px] px-4 sm:mt-12 sm:h-[240vh] sm:px-6 md:px-10 lg:px-16 2xl:px-24 min-[2200px]:max-w-[1400px]"
+				className="relative mx-auto mt-8 h-[190vh] max-w-[1800px] px-4 sm:mt-12 sm:h-[240vh] sm:px-6 md:px-10 lg:px-16 2xl:px-24 min-[2200px]:max-w-[1400px]"
 			>
 				<div className="sticky top-14 sm:top-16">
 					<div className="relative">

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Casts\RoleCast;
 use App\Enums\Role;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -27,7 +28,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return [
             'password' => 'hashed',
-            'role' => Role::class,
+            'role' => RoleCast::class,
         ];
     }
 
