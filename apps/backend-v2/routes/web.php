@@ -16,3 +16,12 @@ Route::get('/debug-cache', function () {
         'session_driver' => config('session.driver'),
     ]);
 });
+
+Route::get('/force-migrate', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true, '--database' => 'pgsql-migrate']);
+        return response()->json(['output' => \Illuminate\Support\Facades\Artisan::output()]);
+    } catch (\Throwable $e) {
+        return response()->json(['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);
+    }
+});
