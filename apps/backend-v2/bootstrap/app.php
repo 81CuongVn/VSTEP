@@ -53,16 +53,4 @@ return Application::configure(basePath: dirname(__DIR__))
 
             return response()->json(['message' => 'Not found.'], 404);
         });
-
-        $exceptions->render(function (\Throwable $e, Request $request) {
-            if ($request->is('api/*')) {
-                return response()->json([
-                    'message' => $e->getMessage(),
-                    'file'    => $e->getFile(),
-                    'line'    => $e->getLine(),
-                    'trace'   => array_slice($e->getTrace(), 0, 5)
-                ], 500);
-            }
-            return null;
-        });
     })->create();
