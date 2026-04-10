@@ -21,28 +21,47 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        $user = $this->authService->register($request->validated());
+        try {
+            $user = $this->authService->register($request->validated());
 
-        return response()->json(['data' => [
-            'user' => new UserResource($user),
-            'message' => 'Registration successful.',
-        ]], 201);
+            return response()->json(['data' => [
+                'user' => new UserResource($user),
+                'message' => 'Registration successful.',
+            ]], 201);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'message' => 'Exception Caught',
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                // 'trace' => $e->getTraceAsString(), // Too large maybe
+            ], 500);
+        }
     }
 
     public function login(LoginRequest $request)
     {
-        $result = $this->authService->login(
-            $request->validated('email'),
-            $request->validated('password'),
-            $request->userAgent(),
-        );
+        try {
+            $result = $this->authService->login(
+                $request->validated('email'),
+                $request->validated('password'),
+                $request->userAgent(),
+            );
 
-        return response()->json(['data' => [
-            'user' => new UserResource($result['user']),
-            'access_token' => $result['access_token'],
-            'refresh_token' => $result['refresh_token'],
-            'expires_in' => $result['expires_in'],
-        ]]);
+            return response()->json(['data' => [
+                'user' => new UserResource($result['user']),
+                'access_token' => $result['access_token'],
+                'refresh_token' => $result['refresh_token'],
+                'expires_in' => $result['expires_in'],
+            ]]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'message' => 'Exception Caught',
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ], 500);
+        }
     }
 
     public function refresh(RefreshRequest $request)
