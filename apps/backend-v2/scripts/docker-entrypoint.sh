@@ -21,9 +21,9 @@ echo "==> Caching config and routes..."
 php artisan config:cache
 php artisan route:cache
 
-# Run database migrations
+# Run database migrations using direct (non-pooler) connection
 echo "==> Running migrations..."
-php artisan migrate --force --no-interaction
+php artisan migrate --force --no-interaction --database=pgsql-migrate
 
 echo "==> Starting Octane server..."
 exec "$@"
