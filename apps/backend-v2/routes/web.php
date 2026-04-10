@@ -9,3 +9,10 @@ Route::get('/', function () {
 Route::get('/internal/e2e-demo', function () {
     return view('internal.e2e-demo');
 });
+
+Route::get('/debug-cache', function () {
+    return response()->json([
+        'cache_default' => config('cache.default'),
+        'session_driver' => config('session.driver'),
+    ]);
+});
