@@ -19,9 +19,12 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 COPY . .
 
-# Build-time setup (no .env needed — env vars come from Render at runtime)
-RUN composer run-script post-autoload-dump \
-    && php artisan storage:link 2>/dev/null || true
+# Create minimal .env for build-time artisan commands (package:discover)
+# Real env vars are injected by Render at runtime
+RUN echo "APP_KEY=base64:build-placeholder-key-will-be-overwritten=" > .env \
+    && composer run-script post-autoload-dump \
+    && php artisan storage:link 2>/dev/null || true \
+    && rm .env
 
 COPY scripts/docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
