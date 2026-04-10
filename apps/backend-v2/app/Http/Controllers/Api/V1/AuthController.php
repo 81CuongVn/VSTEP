@@ -21,47 +21,28 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        try {
-            $user = $this->authService->register($request->validated());
+        $user = $this->authService->register($request->validated());
 
-            return response()->json(['data' => [
-                'user' => new UserResource($user),
-                'message' => 'Registration successful.',
-            ]], 201);
-        } catch (\Throwable $e) {
-            return response()->json([
-                'message' => 'Exception Caught',
-                'error' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                // 'trace' => $e->getTraceAsString(), // Too large maybe
-            ], 500);
-        }
+        return response()->json(['data' => [
+            'user' => new UserResource($user),
+            'message' => 'Registration successful.',
+        ]], 201);
     }
 
     public function login(LoginRequest $request)
     {
-        try {
-            $result = $this->authService->login(
-                $request->validated('email'),
-                $request->validated('password'),
-                $request->userAgent(),
-            );
+        $result = $this->authService->login(
+            $request->validated('email'),
+            $request->validated('password'),
+            $request->userAgent(),
+        );
 
-            return response()->json(['data' => [
-                'user' => new UserResource($result['user']),
-                'access_token' => $result['access_token'],
-                'refresh_token' => $result['refresh_token'],
-                'expires_in' => $result['expires_in'],
-            ]]);
-        } catch (\Throwable $e) {
-            return response()->json([
-                'message' => 'Exception Caught',
-                'error' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-            ], 500);
-        }
+        return response()->json(['data' => [
+            'user' => new UserResource($result['user']),
+            'access_token' => $result['access_token'],
+            'refresh_token' => $result['refresh_token'],
+            'expires_in' => $result['expires_in'],
+        ]]);
     }
 
     public function refresh(RefreshRequest $request)
