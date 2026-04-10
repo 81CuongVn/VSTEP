@@ -50,6 +50,20 @@ Route::prefix('v1')->group(function () {
         return response()->json(['status' => $healthy ? 'ok' : 'degraded', ...$checks], $healthy ? 200 : 503);
     });
 
+    Route::get('/debug-logs', function () {
+        $logPath = storage_path('logs/laravel.log');
+        if (!file_exists($logPath)) {
+            return response()->json(['message' => 'No logs found'], 404);
+        }
+        
+        // Return last 1000 lines
+        $logs = file($logPath);
+        return response()->json([
+            'total_lines' => count($logs),
+            'logs' => array_slice($logs, -1000)
+        ]);
+    });
+
     // Auth (public, rate limited)
     Route::middleware('throttle:10,1')->group(function () {
         Route::post('/auth/register', [AuthController::class, 'register']);
