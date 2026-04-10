@@ -43,7 +43,7 @@ const adminNavItems: NavItem[] = [
 ]
 
 const instructorNavItems: NavItem[] = [
-	{ label: "Lớp học", icon: UserGroup02Icon, href: "/dashboard" },
+	{ label: "Tổng quan", icon: DashboardSquare01Icon, href: "/dashboard" },
 ]
 
 async function handleLogout() {
@@ -60,7 +60,7 @@ async function handleLogout() {
 export function AppSidebar() {
 	const currentUser = user()
 	const isAdmin = currentUser?.role === "admin"
-	const navItems = isAdmin ? [...adminNavItems, ...instructorNavItems] : instructorNavItems
+	const navItems = isAdmin ? adminNavItems : instructorNavItems
 
 	return (
 		<Sidebar>

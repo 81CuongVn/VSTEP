@@ -40,7 +40,7 @@ export const ListeningQuestion = memo(function ListeningQuestion({
 					controlsList="nodownload"
 					preload="metadata"
 					className="w-full"
-					src={audioSrc ?? ""}
+					src={audioSrc || undefined}
 				/>
 			</div>
 
@@ -80,7 +80,7 @@ export function AudioPlayerSection({
 					controlsList="nodownload"
 					preload="metadata"
 					className="w-full"
-					src={audioSrc ?? ""}
+					src={audioSrc || undefined}
 				/>
 			</div>
 			{transcript && (

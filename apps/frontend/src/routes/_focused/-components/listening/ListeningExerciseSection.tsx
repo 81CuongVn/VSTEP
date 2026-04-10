@@ -121,7 +121,7 @@ export function ListeningExerciseSection({
 					</div>
 
 					{/* Audio bar */}
-					<ListeningPracticeAudioBar src={resolvedAudioUrl ?? ""} />
+					<ListeningPracticeAudioBar src={resolvedAudioUrl} />
 
 					{/* Bottom bar: question nav + submit */}
 					<div className="flex h-14 shrink-0 items-center justify-between border-t px-4">
@@ -210,7 +210,7 @@ export function ListeningExerciseSection({
 						</div>
 					</div>
 					{/* Audio bar pinned at bottom */}
-					<ListeningPracticeAudioBar src={resolvedAudioUrl ?? ""} />
+					<ListeningPracticeAudioBar src={resolvedAudioUrl} />
 				</>
 			)}
 		</div>

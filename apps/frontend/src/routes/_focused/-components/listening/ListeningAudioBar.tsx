@@ -9,7 +9,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { formatTime } from "@/routes/_focused/-components/shared/exercise-shared"
 
-export function ListeningPracticeAudioBar({ src }: { src: string }) {
+export function ListeningPracticeAudioBar({ src }: { src?: string | null }) {
 	const audioRef = useRef<HTMLAudioElement>(null)
 	const progressRef = useRef<HTMLDivElement>(null)
 	const [playing, setPlaying] = useState(false)
@@ -137,7 +137,7 @@ export function ListeningPracticeAudioBar({ src }: { src: string }) {
 			</div>
 
 			{/* biome-ignore lint/a11y/useMediaCaption: VSTEP listening practice audio */}
-			<audio ref={audioRef} src={src} preload="metadata" className="hidden" />
+			<audio ref={audioRef} src={src || undefined} preload="metadata" className="hidden" />
 		</div>
 	)
 }

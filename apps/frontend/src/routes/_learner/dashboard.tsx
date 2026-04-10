@@ -18,6 +18,7 @@ import { createFileRoute, Link } from "@tanstack/react-router"
 import type { MouseEvent } from "react"
 import { useState } from "react"
 import { toast } from "sonner"
+import { OperationsControlCenter } from "@/components/features/admin/OperationsControlCenter"
 import { Button } from "@/components/ui/button"
 import {
 	Dialog,
@@ -31,7 +32,9 @@ import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Textarea } from "@/components/ui/textarea"
 import { useClasses, useCreateClass, useDeleteClass, useJoinClass } from "@/hooks/use-classes"
+import { useExams } from "@/hooks/use-exams"
 import { usePracticeCatalog } from "@/hooks/use-practice"
+import { useSubmissions } from "@/hooks/use-submissions"
 import { useVocabularyTopics } from "@/hooks/use-vocabulary"
 import { user } from "@/lib/auth"
 
@@ -51,8 +54,18 @@ function InstructorView() {
 	const { data, isLoading } = useClasses()
 	const createClass = useCreateClass()
 	const deleteClass = useDeleteClass()
+	const exams = useExams({ limit: 100 })
+	const practiceCatalog = usePracticeCatalog()
+	const vocabularyTopics = useVocabularyTopics(1, 100)
+	const reviewPending = useSubmissions({ page: 1, status: "review_pending" })
 
 	const classes = data?.data ?? []
+	const totalClasses = data?.meta?.total ?? classes.length
+	const totalExams = exams.data?.meta?.total ?? exams.data?.data.length ?? 0
+	const practiceSkills = practiceCatalog.data?.skills.length ?? 0
+	const totalVocabularyTopics =
+		vocabularyTopics.data?.meta?.total ?? vocabularyTopics.data?.data.length ?? 0
+	const reviewQueue = reviewPending.data?.meta?.total ?? reviewPending.data?.data.length ?? 0
 
 	const [showCreate, setShowCreate] = useState(false)
 	const [name, setName] = useState("")
@@ -99,6 +112,133 @@ function InstructorView() {
 
 	return (
 		<div className="space-y-6">
+			<OperationsControlCenter
+				eyebrow="Instructor Workspace"
+				title="Overview for Instructor"
+				description="Một màn tổng hợp để instructor nhìn nhanh toàn bộ khu vực đang phụ trách, biết section nào có thể thao tác trực tiếp và section nào thuộc quyền admin."
+				stats={[
+					{
+						label: "Classes",
+						value: String(totalClasses),
+						note: "Số lớp học bạn đang quản lý.",
+					},
+					{
+						label: "Review Queue",
+						value: String(reviewQueue),
+						note: "Các bài cần theo dõi thêm trong workflow chấm.",
+					},
+					{
+						label: "Practice Skills",
+						value: String(practiceSkills),
+						note: "Kỹ năng hiện có trong practice catalog.",
+					},
+					{
+						label: "Exam Sets",
+						value: String(totalExams),
+						note: "Đề thi có thể dùng cho lớp hoặc ôn tập.",
+					},
+				]}
+				sections={[
+					{
+						title: "Classes",
+						description: "Tạo lớp, chia sẻ invite code và theo dõi nhịp học của từng nhóm learner.",
+						metric: String(totalClasses),
+						icon: UserGroup02Icon,
+						href: "/dashboard",
+						badge: "Instructor",
+						toneClass: "border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-900/60 dark:bg-sky-950/40 dark:text-sky-300",
+					},
+					{
+						title: "Practice Catalog",
+						description: "Mở nhanh practice theo kỹ năng và part để chuẩn bị review packs hoặc bài ôn.",
+						metric: String(practiceSkills),
+						icon: Book02Icon,
+						href: "/practice",
+						toneClass: "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300",
+					},
+					{
+						title: "Vocabulary",
+						description: "Theo dõi ngân hàng topic để định hướng ôn speaking và writing cho học viên.",
+						metric: String(totalVocabularyTopics),
+						icon: FolderLibraryIcon,
+						href: "/vocabulary",
+						toneClass: "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300",
+					},
+					{
+						title: "Exam Library",
+						description: "Nắm nhanh số đề thi hiện có để lên kế hoạch mock test hoặc placement.",
+						metric: String(totalExams),
+						icon: DocumentValidationIcon,
+						href: "/exams",
+						toneClass: "border-violet-200 bg-violet-50 text-violet-700 dark:border-violet-900/60 dark:bg-violet-950/40 dark:text-violet-300",
+					},
+					{
+						title: "User & Role Settings",
+						description: "Khu vực phân quyền và quản trị tài khoản thuộc admin, instructor chỉ theo dõi phạm vi này.",
+						metric: "Admin",
+						icon: Shield01Icon,
+						badge: "Admin only",
+						toneClass: "border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-300",
+					},
+					{
+						title: "Question Governance",
+						description: "Question bank và knowledge-point taxonomy được admin duy trì để instructor dùng thống nhất.",
+						metric: "Shared",
+						icon: AnalyticsUpIcon,
+						badge: "Read by context",
+						toneClass: "border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-300",
+					},
+				]}
+				settings={[
+					{
+						title: "Classroom Operations",
+						description: "Những cấu hình vận hành mà instructor cần dùng hàng ngày.",
+						icon: TeacherIcon,
+						href: "/dashboard",
+						toneClass: "border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-900/60 dark:bg-sky-950/40 dark:text-sky-300",
+						items: [
+							"Invite code là điểm vào chính để learner tham gia lớp.",
+							"Dashboard lớp là nơi nhìn số học viên có nguy cơ tụt nhịp.",
+							"Tạo lớp mới trực tiếp từ màn overview này khi cần mở cohort mới.",
+						],
+					},
+					{
+						title: "Review & Grading",
+						description: "Tín hiệu vận hành liên quan tới bài nộp và chất lượng chấm.",
+						icon: Notification03Icon,
+						toneClass: "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300",
+						items: [
+							`Hiện có ${reviewQueue} bài trong review queue cần chú ý.`,
+							"Practice và exam đều là nguồn sinh ra bài cần đánh giá thêm.",
+							"Instructor nên dùng số liệu này để ưu tiên buổi chữa bài hoặc phản hồi lớp.",
+						],
+					},
+					{
+						title: "Learning Surfaces",
+						description: "Các khu vực learner-facing mà instructor thường xuyên điều hướng sang.",
+						icon: FolderLibraryIcon,
+						toneClass: "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300",
+						items: [
+							`${practiceSkills} kỹ năng practice đang sẵn sàng cho lớp.`,
+							`${totalVocabularyTopics} topic vocabulary có thể dùng như bài warm-up hoặc review.`,
+							`${totalExams} đề thi hiện có để chuẩn bị mock test và placement.`,
+						],
+					},
+					{
+						title: "Admin Settings Boundary",
+						description: "Các khu vực instructor cần thấy để phối hợp, nhưng không chỉnh trực tiếp.",
+						icon: Shield01Icon,
+						badge: "Escalate to admin",
+						toneClass: "border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-300",
+						items: [
+							"Quyền người dùng và cấu hình role thuộc admin.",
+							"Question bank, exam blueprint và taxonomy là các phần cần admin cập nhật.",
+							"Khi nội dung thiếu hoặc lệch chuẩn, instructor có thể phát hiện sớm từ màn overview này rồi chuyển việc cho admin.",
+						],
+					},
+				]}
+			/>
+
 			<RoleHero
 				icon={TeacherIcon}
 				title="Instructor workspace"

@@ -336,7 +336,7 @@ function AudioReviewPlayer({ audioUrl }: { audioUrl: string }) {
 				controlsList="nodownload"
 				preload="metadata"
 				className="w-full"
-				src={audioSrc ?? ""}
+				src={audioSrc || undefined}
 			/>
 		</div>
 	)
@@ -442,7 +442,7 @@ function SpeakingAudioPlayer({ audioPath }: { audioPath: string }) {
 			controlsList="nodownload"
 			preload="metadata"
 			className="w-full"
-			src={audioSrc ?? ""}
+			src={audioSrc || undefined}
 		/>
 	)
 }

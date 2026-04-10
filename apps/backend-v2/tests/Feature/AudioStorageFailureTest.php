@@ -42,6 +42,30 @@ class AudioStorageFailureTest extends TestCase
     }
 
     #[Test]
+    public function it_falls_back_to_local_sample_audio_for_listening_files_in_local_dev(): void
+    {
+        $user = User::create([
+            'full_name' => 'Learner',
+            'email' => 'audio-local-fallback@example.com',
+            'password' => 'password',
+            'role' => 'learner',
+        ]);
+
+        $this->actingAs($user, 'api');
+        $this->app->bind(AudioStorageService::class, fn () => new class extends AudioStorageService
+        {
+            public function exists(string $path): bool
+            {
+                throw new ServiceUnavailableHttpException(null, 'Audio storage is temporarily unavailable.');
+            }
+        });
+
+        $this->getJson('/api/v1/audio/presign?path=listening/b1_part3.wav')
+            ->assertOk()
+            ->assertJsonPath('data.url', fn (string $url) => str_contains($url, '/e2e-speaking-sample.wav'));
+    }
+
+    #[Test]
     public function it_returns_503_when_upload_presign_storage_is_unavailable(): void
     {
         $user = User::create([

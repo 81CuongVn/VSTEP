@@ -336,7 +336,7 @@ export function ListeningExamPanel({ questions, answers, onSelectMCQ }: Listenin
 							ref={(el) => {
 								audioRefs.current[i] = el
 							}}
-							src={audioUrlMap.get(c.audioUrl) ?? ""}
+							src={audioUrlMap.get(c.audioUrl) || undefined}
 							preload="metadata"
 							className="hidden"
 						/>

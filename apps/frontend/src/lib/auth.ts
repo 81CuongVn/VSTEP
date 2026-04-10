@@ -35,7 +35,7 @@ function user(): AuthUser | null {
 }
 
 function isAuthenticated() {
-	return !!token()
+	return !!token() && !!refreshToken() && !!user()
 }
 
 let redirecting = false

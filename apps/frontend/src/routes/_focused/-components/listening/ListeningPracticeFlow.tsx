@@ -624,7 +624,7 @@ function ListeningCompletedView({
 
 function ListeningAudioBarWithPresign({ audioUrl }: { audioUrl: string }) {
 	const { data: resolvedUrl } = usePresignedUrl(audioUrl)
-	return <ListeningPracticeAudioBar src={resolvedUrl ?? ""} />
+	return <ListeningPracticeAudioBar src={resolvedUrl} />
 }
 
 // ═══════════════════════════════════════════════════
