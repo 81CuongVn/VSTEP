@@ -34,12 +34,17 @@ Route::prefix('v1')->group(function () {
         } catch (Throwable) {
             $checks['db'] = 'fail';
         }
-        try {
-            Cache::store('redis')->get('health');
-            $checks['redis'] = 'ok';
-        } catch (Throwable) {
-            $checks['redis'] = 'fail';
+
+        // Only check Redis if the app actually uses it
+        if (in_array(config('queue.default'), ['redis'], true) || config('cache.default') === 'redis') {
+            try {
+                Cache::store('redis')->get('health');
+                $checks['redis'] = 'ok';
+            } catch (Throwable) {
+                $checks['redis'] = 'fail';
+            }
         }
+
         $healthy = ! in_array('fail', $checks, true);
 
         return response()->json(['status' => $healthy ? 'ok' : 'degraded', ...$checks], $healthy ? 200 : 503);
