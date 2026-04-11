@@ -12,26 +12,32 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        User::create([
-            'full_name' => 'Admin',
-            'email' => 'admin@vstep.local',
-            'password' => 'password',
-            'role' => Role::Admin,
-        ]);
+        User::updateOrCreate(
+            ['email' => 'admin@vstep.local'],
+            [
+                'full_name' => 'Admin',
+                'password' => 'password',
+                'role' => Role::Admin,
+            ],
+        );
 
-        User::create([
-            'full_name' => 'Instructor Demo',
-            'email' => 'instructor@vstep.local',
-            'password' => 'password',
-            'role' => Role::Instructor,
-        ]);
+        User::updateOrCreate(
+            ['email' => 'instructor@vstep.local'],
+            [
+                'full_name' => 'Instructor Demo',
+                'password' => 'password',
+                'role' => Role::Instructor,
+            ],
+        );
 
-        User::create([
-            'full_name' => 'Learner Demo',
-            'email' => 'learner@vstep.local',
-            'password' => 'password',
-            'role' => Role::Learner,
-        ]);
+        User::updateOrCreate(
+            ['email' => 'learner@vstep.local'],
+            [
+                'full_name' => 'Learner Demo',
+                'password' => 'password',
+                'role' => Role::Learner,
+            ],
+        );
 
         $this->call([
             KnowledgeGraphSeeder::class,
