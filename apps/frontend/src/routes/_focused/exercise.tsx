@@ -46,6 +46,19 @@ export const Route = createFileRoute("/_focused/exercise")({
 	}),
 })
 
+function parseOptionalNumber(value: string): number | undefined {
+	if (!value) return undefined
+
+	const normalized =
+		value.length >= 2 && value.startsWith('"') && value.endsWith('"')
+			? value.slice(1, -1)
+			: value
+
+	const parsed = Number(normalized)
+
+	return Number.isFinite(parsed) ? parsed : undefined
+}
+
 function ExercisePage() {
 	const { skill, id, part, level, session } = Route.useSearch()
 
@@ -54,7 +67,7 @@ function ExercisePage() {
 		return (
 			<Suspense fallback={<ExerciseShellSkeleton />}>
 				<WritingExercisePage
-					part={part ? Number(part) : undefined}
+					part={parseOptionalNumber(part)}
 					sessionId={session || undefined}
 				/>
 			</Suspense>
@@ -65,7 +78,7 @@ function ExercisePage() {
 		return (
 			<Suspense fallback={<ExerciseShellSkeleton />}>
 				<ReadingExercisePage
-					part={part ? Number(part) : undefined}
+					part={parseOptionalNumber(part)}
 					level={level ? (level as QuestionLevel) : undefined}
 					sessionId={session || undefined}
 				/>
@@ -77,7 +90,7 @@ function ExercisePage() {
 		return (
 			<Suspense fallback={<ExerciseShellSkeleton />}>
 				<ListeningExercisePage
-					part={part ? Number(part) : undefined}
+					part={parseOptionalNumber(part)}
 					level={level ? (level as QuestionLevel) : undefined}
 					sessionId={session || undefined}
 				/>
@@ -89,7 +102,7 @@ function ExercisePage() {
 		return (
 			<Suspense fallback={<ExerciseShellSkeleton />}>
 				<SpeakingExercisePage
-					part={part ? Number(part) : undefined}
+					part={parseOptionalNumber(part)}
 					sessionId={session || undefined}
 				/>
 			</Suspense>

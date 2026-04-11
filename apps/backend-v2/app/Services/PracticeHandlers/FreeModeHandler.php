@@ -35,20 +35,28 @@ class FreeModeHandler implements PracticeModeHandler
 
     private function gradeObjective(Submission $submission, Question $question, array $answer): array
     {
-        $result = $question->gradeObjective($answer['answers'] ?? []);
-        $score = $result ? VstepScoring::score($result['raw_ratio']) : 0;
+        $result = $question->gradeObjective($answer['answers'] ?? []) ?? [
+            'correct' => 0,
+            'total' => 0,
+            'raw_ratio' => 0.0,
+            'all_correct' => false,
+            'user_answers' => [],
+            'correct_answers' => [],
+            'items' => [],
+        ];
+        $score = VstepScoring::score($result['raw_ratio']);
 
         $submission->update([
             'status' => SubmissionStatus::Completed,
             'score' => $score,
-            'result' => ['type' => 'objective', ...$result ?? []],
+            'result' => ['type' => 'objective', ...$result],
             'completed_at' => now(),
         ]);
 
         return [
             'type' => 'objective',
-            ...($result ?? []),
-            'correct' => $result['all_correct'] ?? false,
+            ...$result,
+            'correct' => $result['all_correct'],
             'score' => $score,
         ];
     }
