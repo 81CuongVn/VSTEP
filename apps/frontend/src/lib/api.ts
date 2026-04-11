@@ -9,6 +9,10 @@ import type { AuthUser, LoginResponse, RegisterResponse } from "@/types/api"
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000"
 
+function normalizeApiBaseUrl(rawUrl: string): string {
+	return rawUrl.replace(/\/+$/, "").replace(/\/api(?:\/v1)?$/, "")
+}
+
 // ---------------------------------------------------------------------------
 // snake_case ↔ camelCase transforms (for Laravel ↔ React convention bridge)
 // ---------------------------------------------------------------------------
@@ -69,7 +73,8 @@ function unwrapData(obj: unknown): unknown {
 
 // Auto-prefix /api/ → /api/v1/ for Laravel backend-v2
 function buildUrl(path: string): string {
-	return `${API_URL}${path.replace(/^\/api\//, "/api/v1/")}`
+	const normalizedBaseUrl = normalizeApiBaseUrl(API_URL)
+	return `${normalizedBaseUrl}${path.replace(/^\/api\//, "/api/v1/")}`
 }
 
 // ---------------------------------------------------------------------------

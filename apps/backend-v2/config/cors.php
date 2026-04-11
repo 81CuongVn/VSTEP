@@ -19,17 +19,25 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => array_map(function (string $origin) {
+    'allowed_origins' => array_values(array_filter(array_map(function (string $origin) {
         $origin = trim($origin);
+
+        if ($origin === '') {
+            return null;
+        }
+
         // Auto-fix: prepend https:// if someone forgets the protocol
         if ($origin !== '*' && ! str_starts_with($origin, 'http')) {
             $origin = 'https://'.$origin;
         }
 
-        return $origin;
-    }, explode(',', env('CORS_ALLOWED_ORIGINS', '*'))),
+        return rtrim($origin, '/');
+    }, explode(',', env('CORS_ALLOWED_ORIGINS', '*'))))),
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => array_values(array_filter(array_map(
+        static fn (string $pattern): ?string => ($pattern = trim($pattern)) !== '' ? $pattern : null,
+        explode(',', (string) env('CORS_ALLOWED_ORIGIN_PATTERNS', ''))
+    ))),
 
     'allowed_headers' => ['*'],
 
