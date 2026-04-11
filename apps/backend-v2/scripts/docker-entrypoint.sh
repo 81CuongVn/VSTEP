@@ -25,5 +25,12 @@ php artisan route:cache
 echo "==> Running migrations..."
 php artisan migrate --force --no-interaction --database=pgsql-migrate
 
+if [ "${DB_SEED_ON_BOOT:-false}" = "true" ]; then
+    echo "==> Seeding database..."
+    php artisan db:seed --force --no-interaction
+else
+    echo "==> Skipping database seed (set DB_SEED_ON_BOOT=true to enable)"
+fi
+
 echo "==> Starting Octane server..."
 exec "$@"
