@@ -15,6 +15,7 @@ use App\Models\ExamSession;
 use App\Models\Question;
 use App\Models\Submission;
 use App\Support\VstepScoring;
+use Illuminate\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -69,8 +70,7 @@ class SessionService
     {
         $session->load(['exam', 'answers']);
 
-        $questionIds = collect($session->exam->blueprint)
-            ->flatMap(fn ($section) => $section['question_ids'] ?? []);
+        $questionIds = $this->collectExamQuestionIds($session->exam);
 
         $questionsKeyed = Question::whereIn('id', $questionIds)->get()->keyBy('id');
         $questions = $questionIds->map(fn ($id) => $questionsKeyed->get($id))->filter()->values();
@@ -197,13 +197,26 @@ class SessionService
 
     private function assertQuestionInExam(Exam $exam, string $questionId): void
     {
-        $allIds = collect($exam->blueprint)->flatMap(fn ($section) => $section['question_ids'] ?? []);
+        $allIds = $this->collectExamQuestionIds($exam);
 
         if (! $allIds->contains($questionId)) {
             throw ValidationException::withMessages([
                 'question_id' => ['Question does not belong to this exam.'],
             ]);
         }
+    }
+
+    private function collectExamQuestionIds(Exam $exam): Collection
+    {
+        return collect($exam->blueprint ?? [])
+            ->filter(fn (mixed $section) => is_array($section))
+            ->flatMap(function (array $section): array {
+                $questionIds = $section['question_ids'] ?? [];
+
+                return is_array($questionIds) ? $questionIds : [];
+            })
+            ->filter(fn (mixed $id) => is_string($id) && $id !== '')
+            ->values();
     }
 
     private function gradeObjectiveAnswers(ExamSession $session): void

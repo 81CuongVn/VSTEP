@@ -24,10 +24,18 @@ const PRESIGN_GC = 60 * 60 * 1000 // 1 hour
 
 async function fetchPresignedUrl(key: string): Promise<string> {
 	if (isFullUrl(key)) return key
-	const res = await api.get<{ url: string; expiresIn: number }>(
-		`/api/audio/presign?path=${encodeURIComponent(key)}`,
-	)
-	return res.url
+	try {
+		const res = await api.get<{ url: string; expiresIn: number }>(
+			`/api/audio/presign?path=${encodeURIComponent(key)}`,
+		)
+		return res.url
+	} catch (error) {
+		if (STORAGE_URL) {
+			return resolveStorageUrl(key)
+		}
+
+		throw error
+	}
 }
 
 /**

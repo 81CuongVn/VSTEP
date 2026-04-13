@@ -34,7 +34,7 @@ class AudioController extends Controller
 
         try {
             if (! $this->storage->exists($path)) {
-                $fallbackUrl = $this->localFallbackUrl($path);
+                $fallbackUrl = $this->fallbackUrl($path);
                 if ($fallbackUrl !== null) {
                     return $this->presignedResponse($fallbackUrl);
                 }
@@ -46,7 +46,7 @@ class AudioController extends Controller
 
             $url = $this->storage->temporaryUrl($path, self::PRESIGN_SECONDS);
         } catch (ServiceUnavailableHttpException $e) {
-            $fallbackUrl = $this->localFallbackUrl($path);
+            $fallbackUrl = $this->fallbackUrl($path);
             if ($fallbackUrl !== null) {
                 return $this->presignedResponse($fallbackUrl);
             }
@@ -65,13 +65,33 @@ class AudioController extends Controller
         ]]);
     }
 
-    private function localFallbackUrl(string $path): ?string
+    private function fallbackUrl(string $path): ?string
     {
-        if (! app()->isLocal()) {
+        $publicUrl = $this->publicStorageUrl($path);
+        if ($publicUrl !== null) {
+            return $publicUrl;
+        }
+
+        return $this->localFallbackUrl($path);
+    }
+
+    private function publicStorageUrl(string $path): ?string
+    {
+        if (str_starts_with($path, 'speaking/')) {
             return null;
         }
 
-        if (str_starts_with($path, 'speaking/')) {
+        $baseUrl = config('filesystems.disks.s3.url');
+        if (! is_string($baseUrl) || trim($baseUrl) === '') {
+            return null;
+        }
+
+        return rtrim($baseUrl, '/').'/'.ltrim($path, '/');
+    }
+
+    private function localFallbackUrl(string $path): ?string
+    {
+        if (! app()->isLocal() || str_starts_with($path, 'speaking/')) {
             return null;
         }
 

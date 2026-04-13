@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AiScoringGuideRouteImport } from './routes/ai-scoring-guide'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as LearnerRouteImport } from './routes/_learner'
 import { Route as FocusedRouteImport } from './routes/_focused'
@@ -54,6 +55,11 @@ import { Route as LearnerExamsSessionsSessionIdRouteImport } from './routes/_lea
 import { Route as LearnerAssignmentsNewClassIdRouteImport } from './routes/_learner/assignments_.new.$classId'
 import { Route as LearnerClassesClassIdDoAssignmentIdRouteImport } from './routes/_learner/classes_.$classId.do.$assignmentId'
 
+const AiScoringGuideRoute = AiScoringGuideRouteImport.update({
+  id: '/ai-scoring-guide',
+  path: '/ai-scoring-guide',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -286,6 +292,7 @@ const LearnerClassesClassIdDoAssignmentIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/ai-scoring-guide': typeof AiScoringGuideRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/exam': typeof FocusedExamRoute
@@ -328,6 +335,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ai-scoring-guide': typeof AiScoringGuideRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/exam': typeof FocusedExamRoute
@@ -374,6 +382,7 @@ export interface FileRoutesById {
   '/_focused': typeof FocusedRouteWithChildren
   '/_learner': typeof LearnerRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
+  '/ai-scoring-guide': typeof AiScoringGuideRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
   '/_focused/exam': typeof FocusedExamRoute
@@ -419,6 +428,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/ai-scoring-guide'
     | '/login'
     | '/register'
     | '/exam'
@@ -461,6 +471,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/ai-scoring-guide'
     | '/login'
     | '/register'
     | '/exam'
@@ -506,6 +517,7 @@ export interface FileRouteTypes {
     | '/_focused'
     | '/_learner'
     | '/admin'
+    | '/ai-scoring-guide'
     | '/_auth/login'
     | '/_auth/register'
     | '/_focused/exam'
@@ -553,10 +565,18 @@ export interface RootRouteChildren {
   FocusedRoute: typeof FocusedRouteWithChildren
   LearnerRoute: typeof LearnerRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
+  AiScoringGuideRoute: typeof AiScoringGuideRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/ai-scoring-guide': {
+      id: '/ai-scoring-guide'
+      path: '/ai-scoring-guide'
+      fullPath: '/ai-scoring-guide'
+      preLoaderRoute: typeof AiScoringGuideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -1011,6 +1031,7 @@ const rootRouteChildren: RootRouteChildren = {
   FocusedRoute: FocusedRouteWithChildren,
   LearnerRoute: LearnerRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
+  AiScoringGuideRoute: AiScoringGuideRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

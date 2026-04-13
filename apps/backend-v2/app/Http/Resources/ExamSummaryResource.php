@@ -24,7 +24,7 @@ class ExamSummaryResource extends JsonResource
             ? Question::whereIn('id', $allQuestionIds)
                 ->get(['id', 'content'])
                 ->mapWithKeys(fn (Question $q) => [
-                    $q->id => count($q->content['items'] ?? []),
+                    $q->id => $this->objectiveItemCount($q),
                 ])
             : collect();
 
@@ -67,5 +67,17 @@ class ExamSummaryResource extends JsonResource
             'section_count' => count($normalizedSections),
             'sections' => $normalizedSections,
         ];
+    }
+
+    private function objectiveItemCount(Question $question): int
+    {
+        $content = $question->content;
+        if (! is_array($content)) {
+            return 0;
+        }
+
+        $items = $content['items'] ?? [];
+
+        return is_array($items) ? count($items) : 0;
     }
 }
