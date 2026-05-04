@@ -13,6 +13,46 @@ function normalizeApiBaseUrl(rawUrl: string): string {
 	return rawUrl.replace(/\/+$/, "").replace(/\/api(?:\/v1)?$/, "")
 }
 
+function isLocalHostname(hostname: string): boolean {
+	return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1"
+}
+
+function parseUrl(rawUrl: string): URL | null {
+	try {
+		return new URL(rawUrl)
+	} catch {
+		return null
+	}
+}
+
+function resolveApiBaseUrl(): string {
+	const configured = normalizeApiBaseUrl(API_URL)
+
+	if (typeof window === "undefined") {
+		return configured
+	}
+
+	const appUrl = new URL(window.location.origin)
+	const configuredUrl = parseUrl(configured)
+
+	if (!configuredUrl) {
+		return configured
+	}
+
+	if (isLocalHostname(appUrl.hostname) || isLocalHostname(configuredUrl.hostname)) {
+		return configured
+	}
+
+	const appOnCustomDomain = appUrl.hostname.endsWith(".hamhochoi.com")
+	const configuredOnRender = configuredUrl.hostname.endsWith(".onrender.com")
+
+	if (appOnCustomDomain && configuredOnRender) {
+		return `${appUrl.protocol}//api.${appUrl.hostname}`
+	}
+
+	return configured
+}
+
 // ---------------------------------------------------------------------------
 // snake_case ↔ camelCase transforms (for Laravel ↔ React convention bridge)
 // ---------------------------------------------------------------------------
@@ -73,7 +113,7 @@ function unwrapData(obj: unknown): unknown {
 
 // Auto-prefix /api/ → /api/v1/ for Laravel backend-v2
 function buildUrl(path: string): string {
-	const normalizedBaseUrl = normalizeApiBaseUrl(API_URL)
+	const normalizedBaseUrl = resolveApiBaseUrl()
 	return `${normalizedBaseUrl}${path.replace(/^\/api\//, "/api/v1/")}`
 }
 
