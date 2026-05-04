@@ -649,7 +649,7 @@ interface PracticeNextResponse {
 	currentLevel: string
 }
 
-type PracticeMode = "guided" | "free"
+type PracticeMode = "guided" | "free" | "shadowing" | "drill"
 
 interface PracticeSession {
 	id: string
@@ -717,6 +717,9 @@ interface PracticeItem {
 	difficulty: string
 	isReview: boolean
 	writingScaffold?: WritingScaffold
+	referenceText?: string
+	referenceAudioPath?: string | null
+	targetText?: string
 }
 
 interface PracticeRecommendation {

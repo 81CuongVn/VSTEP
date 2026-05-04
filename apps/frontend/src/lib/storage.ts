@@ -8,6 +8,14 @@ function isFullUrl(value: string): boolean {
 	return value.startsWith("http://") || value.startsWith("https://")
 }
 
+function isPublicStorageKey(value: string): boolean {
+	return (
+		value.startsWith("listening/") ||
+		value.startsWith("reference_audio/") ||
+		value.startsWith("audio/")
+	)
+}
+
 /**
  * Resolve a storage key to a full URL synchronously.
  * Falls back to VITE_STORAGE_URL if set, otherwise returns the key as-is.
@@ -24,6 +32,10 @@ const PRESIGN_GC = 60 * 60 * 1000 // 1 hour
 
 async function fetchPresignedUrl(key: string): Promise<string> {
 	if (isFullUrl(key)) return key
+	if (STORAGE_URL && isPublicStorageKey(key)) {
+		return resolveStorageUrl(key)
+	}
+
 	try {
 		const res = await api.get<{ url: string; expiresIn: number }>(
 			`/api/audio/presign?path=${encodeURIComponent(key)}`,

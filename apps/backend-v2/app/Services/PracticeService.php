@@ -69,8 +69,8 @@ class PracticeService
             'started_at' => now(),
         ]);
 
-        $firstQuestion = $this->pickNextQuestion($session);
-        if (! $firstQuestion) {
+        $firstItem = $this->pickNextQuestion($session);
+        if (! $firstItem['question']) {
             $session->delete();
 
             $this->throwNoQuestionAvailable($skill, $level, $options['part'] ?? null);
@@ -80,7 +80,7 @@ class PracticeService
 
         return [
             'session' => $session->fresh(),
-            'current_item' => $this->buildItem($session, $firstQuestion),
+            'current_item' => $this->buildItem($session, $firstItem['question'], $firstItem['is_review']),
             'recommendation' => $recommendation,
             'progress' => $this->buildProgress($session),
             'writing_tier' => $writingTier,
@@ -117,7 +117,7 @@ class PracticeService
 
         return [
             'session' => $session,
-            'current_item' => $question ? $this->buildItem($session, $question) : null,
+            'current_item' => $question ? $this->buildItem($session, $question, (bool) ($session->config['current_is_review'] ?? false)) : null,
             'progress' => $this->buildProgress($session),
         ];
     }
@@ -198,10 +198,11 @@ class PracticeService
         $nextItem = null;
         if (! $isRetry) {
             $session->clearCompletedCountCache();
-            $nextQuestion = $this->pickNextQuestion($session);
+            $nextPick = $this->pickNextQuestion($session);
+            $nextQuestion = $nextPick['question'];
 
             if ($nextQuestion) {
-                $nextItem = $this->buildItem($session, $nextQuestion);
+                $nextItem = $this->buildItem($session, $nextQuestion, $nextPick['is_review']);
             } elseif ($session->hasMoreItems()) {
                 // No unique question available — auto-complete to avoid stuck session
                 $this->complete($session);
@@ -221,12 +222,18 @@ class PracticeService
         ];
     }
 
-    private function pickNextQuestion(PracticeSession $session): ?Question
+    /**
+     * @return array{question: ?Question, is_review: bool}
+     */
+    private function pickNextQuestion(PracticeSession $session): array
     {
         if (! $session->hasMoreItems()) {
-            $session->update(['current_question_id' => null]);
+            $session->update([
+                'current_question_id' => null,
+                'config' => [...$session->config, 'current_is_review' => false],
+            ]);
 
-            return null;
+            return ['question' => null, 'is_review' => false];
         }
 
         $sessionQuestionIds = $session->submissions()->pluck('question_id')->unique();
@@ -234,7 +241,7 @@ class PracticeService
         // Shadowing/Drill: keep exact level. Free/Guided: use difficulty curve.
         $useDifficultyCurve = in_array($session->mode, [PracticeMode::Free, PracticeMode::Guided]);
 
-        $question = $this->picker->pick(
+        $pick = $this->picker->pick(
             $session->user_id,
             $session->skill,
             $session->level,
@@ -246,12 +253,15 @@ class PracticeService
             $session->config['part'] ?? null,
         );
 
-        $session->update(['current_question_id' => $question?->id]);
+        $session->update([
+            'current_question_id' => $pick['question']?->id,
+            'config' => [...$session->config, 'current_is_review' => $pick['is_review']],
+        ]);
 
-        return $question;
+        return $pick;
     }
 
-    private function buildItem(PracticeSession $session, Question $question): array
+    private function buildItem(PracticeSession $session, Question $question, bool $isReview = false): array
     {
         $question->makeHidden(['answer_key', 'explanation']);
         $handler = $this->resolveHandler($session->mode);
@@ -264,7 +274,7 @@ class PracticeService
                 $session->completedCount(),
                 $session->itemsCount(),
             )->value,
-            'is_review' => false,
+            'is_review' => $isReview,
             ...$handler->enrichItem($question, $writingTier),
             ...$this->buildWritingScaffold($question, $writingTier),
         ];

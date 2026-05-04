@@ -26,6 +26,9 @@ class QuestionPicker
         private readonly WeakPointService $weakPointService,
     ) {}
 
+    /**
+     * @return array{question: ?Question, is_review: bool}
+     */
     public function pick(
         string $userId,
         Skill $skill,
@@ -36,14 +39,14 @@ class QuestionPicker
         ?string $focusKp = null,
         ?string $topic = null,
         ?int $part = null,
-    ): ?Question {
+    ): array {
         $excludeIds = $this->buildExcludeIds($userId, $skill, $sessionQuestionIds);
 
         // Every 3rd item → try review from weak points (skip if learner chose a focus KP)
         if (! $focusKp && $currentIndex > 0 && $currentIndex % 3 === 0) {
             $review = $this->pickReviewItem($userId, $skill, $excludeIds, $topic, $part);
             if ($review) {
-                return $review;
+                return ['question' => $review, 'is_review' => true];
             }
         }
 
@@ -60,11 +63,11 @@ class QuestionPicker
             );
 
             if ($question && ! $sessionQuestionIds->contains($question->id)) {
-                return $question;
+                return ['question' => $question, 'is_review' => false];
             }
         }
 
-        return null;
+        return ['question' => null, 'is_review' => false];
     }
 
     public function resolveDifficulty(Level $baseLevel, int $index, int $total): Level
