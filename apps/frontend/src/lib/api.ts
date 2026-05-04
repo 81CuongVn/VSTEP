@@ -44,10 +44,13 @@ function resolveApiBaseUrl(): string {
 	}
 
 	const appOnCustomDomain = appUrl.hostname.endsWith(".hamhochoi.com")
+	const configuredOnCustomApiDomain = configuredUrl.hostname === `api.${appUrl.hostname}`
 	const configuredOnRender = configuredUrl.hostname.endsWith(".onrender.com")
 
-	if (appOnCustomDomain && configuredOnRender) {
-		return `${appUrl.protocol}//api.${appUrl.hostname}`
+	// On the production custom domain, prefer same-origin /api proxy via Vercel rewrites.
+	// This avoids browser CORS failures when the backend/proxy chain omits CORS headers.
+	if (appOnCustomDomain && (configuredOnCustomApiDomain || configuredOnRender)) {
+		return appUrl.origin
 	}
 
 	return configured
