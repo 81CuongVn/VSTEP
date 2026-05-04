@@ -56,6 +56,6 @@ class ExamController extends Controller
     {
         $session = $this->sessionService->start($exam, $request->user()->id);
 
-        return (new ExamSessionDetailResource($this->sessionService->show($session)))->response()->setStatusCode(201);
+        return new ExamSessionDetailResource($this->sessionService->show($session));
     }
 }
