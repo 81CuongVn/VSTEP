@@ -13,47 +13,8 @@ function normalizeApiBaseUrl(rawUrl: string): string {
 	return rawUrl.replace(/\/+$/, "").replace(/\/api(?:\/v1)?$/, "")
 }
 
-function isLocalHostname(hostname: string): boolean {
-	return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1"
-}
-
-function parseUrl(rawUrl: string): URL | null {
-	try {
-		return new URL(rawUrl)
-	} catch {
-		return null
-	}
-}
-
 function resolveApiBaseUrl(): string {
-	const configured = normalizeApiBaseUrl(API_URL)
-
-	if (typeof window === "undefined") {
-		return configured
-	}
-
-	const appUrl = new URL(window.location.origin)
-	const configuredUrl = parseUrl(configured)
-
-	if (!configuredUrl) {
-		return configured
-	}
-
-	if (isLocalHostname(appUrl.hostname) || isLocalHostname(configuredUrl.hostname)) {
-		return configured
-	}
-
-	const appOnCustomDomain = appUrl.hostname.endsWith(".hamhochoi.com")
-	const configuredOnCustomApiDomain = configuredUrl.hostname === `api.${appUrl.hostname}`
-	const configuredOnRender = configuredUrl.hostname.endsWith(".onrender.com")
-
-	// On the production custom domain, prefer same-origin /api proxy via Vercel rewrites.
-	// This avoids browser CORS failures when the backend/proxy chain omits CORS headers.
-	if (appOnCustomDomain && (configuredOnCustomApiDomain || configuredOnRender)) {
-		return appUrl.origin
-	}
-
-	return configured
+	return normalizeApiBaseUrl(API_URL)
 }
 
 // ---------------------------------------------------------------------------
