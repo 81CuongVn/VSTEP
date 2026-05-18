@@ -68,12 +68,18 @@ class SessionService
 
     public function show(ExamSession $session): ExamSession
     {
-        $session->load(['exam', 'answers']);
+        // Load exam with makeVisible to access blueprint
+        $session->load(['exam' => fn ($q) => $q->makeVisible('blueprint'), 'answers']);
 
         $questionIds = $this->collectExamQuestionIds($session->exam);
 
-        $questionsKeyed = Question::whereIn('id', $questionIds)->get()->keyBy('id');
-        $questions = $questionIds->map(fn ($id) => $questionsKeyed->get($id))->filter()->values();
+        // Handle empty question IDs
+        if ($questionIds->isEmpty()) {
+            $questions = collect([]);
+        } else {
+            $questionsKeyed = Question::whereIn('id', $questionIds)->get()->keyBy('id');
+            $questions = $questionIds->map(fn ($id) => $questionsKeyed->get($id))->filter()->values();
+        }
 
         if ($session->status === SessionStatus::InProgress) {
             $questions->each->makeHidden(['answer_key', 'explanation']);
