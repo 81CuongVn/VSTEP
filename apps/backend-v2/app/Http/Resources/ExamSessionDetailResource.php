@@ -11,6 +11,11 @@ class ExamSessionDetailResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $exam = $this->whenLoaded('exam');
+        $questions = $this->whenLoaded('questions');
+        $answers = $this->whenLoaded('answers');
+        $submissions = $this->whenLoaded('submissions');
+
         return [
             'session' => [
                 ...parent::toArray($request),
@@ -19,13 +24,13 @@ class ExamSessionDetailResource extends JsonResource
                 'answers' => null,
                 'submissions' => null,
             ],
-            'exam' => new ExamSummaryResource($this->whenLoaded('exam')),
-            'questions' => SessionQuestionResource::collection($this->whenLoaded('questions')),
-            'answers' => ExamAnswerResource::collection($this->whenLoaded('answers')),
-            'submissions' => SubmissionResource::collection($this->whenLoaded('submissions')),
+            'exam' => $exam ? new ExamSummaryResource($exam) : null,
+            'questions' => $questions ? SessionQuestionResource::collection($questions) : [],
+            'answers' => $answers ? ExamAnswerResource::collection($answers) : [],
+            'submissions' => $submissions ? SubmissionResource::collection($submissions) : [],
             'progress' => [
-                'answered' => $this->whenLoaded('answers', fn () => $this->answers->count()),
-                'total' => $this->whenLoaded('questions', fn () => $this->questions->count()),
+                'answered' => $answers ? $answers->count() : 0,
+                'total' => $questions ? $questions->count() : 0,
             ],
         ];
     }
