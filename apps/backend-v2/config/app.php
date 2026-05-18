@@ -123,4 +123,16 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Database Seeding on Boot
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, the application will automatically seed the database
+    | on first boot if it's empty. Useful for containerized deployments.
+    |
+    */
+
+    'seed_on_boot' => (bool) env('DB_SEED_ON_BOOT', false),
+
 ];

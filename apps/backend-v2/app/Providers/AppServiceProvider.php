@@ -34,5 +34,29 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::shouldBeStrict(! app()->isProduction());
+
+        // Seed database on boot if configured and database is empty
+        if (config('app.seed_on_boot') && $this->shouldSeedDatabase()) {
+            $this->seedDatabase();
+        }
+    }
+
+    private function shouldSeedDatabase(): bool
+    {
+        try {
+            // Check if users table has data (simple check)
+            return \App\Models\User::count() === 0;
+        } catch (\Exception) {
+            return false;
+        }
+    }
+
+    private function seedDatabase(): void
+    {
+        try {
+            $this->command->call('db:seed', ['--class' => 'Database\Seeders\DatabaseSeeder']);
+        } catch (\Exception $e) {
+            \Log::warning('Database seeding failed: ' . $e->getMessage());
+        }
     }
 }
