@@ -1,0 +1,2 @@
+VITE_API_URL=https://vstep.onrender.com
+VITE_STORAGE_URL=https://pub-44427da338f348eca0451808ade7798e.r2.dev
