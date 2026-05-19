@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Casts\LevelCast;
 use App\Enums\ExamType;
-use App\Enums\Level;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -21,7 +21,7 @@ class Exam extends BaseModel
     protected function casts(): array
     {
         return [
-            'level' => Level::class,
+            'level' => LevelCast::class,
             'type' => ExamType::class,
             'is_active' => 'boolean',
             'duration_minutes' => 'integer',

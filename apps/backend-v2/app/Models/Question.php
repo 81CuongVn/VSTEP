@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\BloomLevel;
-use App\Enums\Level;
-use App\Enums\Skill;
+use App\Casts\BloomLevelCast;
+use App\Casts\LevelCast;
+use App\Casts\SkillCast;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,9 +19,9 @@ class Question extends BaseModel
     protected function casts(): array
     {
         return [
-            'skill' => Skill::class,
-            'level' => Level::class,
-            'bloom_level' => BloomLevel::class,
+            'skill' => SkillCast::class,
+            'level' => LevelCast::class,
+            'bloom_level' => BloomLevelCast::class,
             'content' => 'array',
             'answer_key' => 'array',
             'is_active' => 'boolean',

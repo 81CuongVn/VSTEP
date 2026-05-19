@@ -81,17 +81,27 @@ function ExamListPage() {
 	const filteredExams = useMemo(() => applyFilters(exams, filters), [exams, filters])
 	const selectedExam = filteredExams.find((e) => e.id === selectedId) ?? null
 	const hasSelection = selectedExam !== null
+	const startError =
+		startExam.error instanceof Error ? startExam.error.message : startExam.error ? "Không thể bắt đầu bài thi" : null
 
 	const handleStart = useCallback(async () => {
 		if (!selectedExam) return
 		setStartingId(selectedExam.id)
 		try {
 			const session = await startExam.mutateAsync(selectedExam.id)
-			navigate({ to: "/practice/$sessionId", params: { sessionId: session.id } })
+			navigate({ to: "/exams/sessions/$sessionId", params: { sessionId: session.id } })
 		} catch {
 			setStartingId(null)
 		}
 	}, [selectedExam, startExam, navigate])
+
+	const handleSelect = useCallback(
+		(examId: string) => {
+			startExam.reset()
+			setSelectedId(examId)
+		},
+		[startExam],
+	)
 
 	const handleDeselect = useCallback(() => setSelectedId(null), [])
 
@@ -179,7 +189,7 @@ function ExamListPage() {
 										key={exam.id}
 										exam={exam}
 										isSelected={selectedId === exam.id}
-										onSelect={() => setSelectedId(exam.id)}
+										onSelect={() => handleSelect(exam.id)}
 										compact={hasSelection}
 									/>
 								))}
@@ -210,6 +220,7 @@ function ExamListPage() {
 								exam={selectedExam}
 								onStart={handleStart}
 								isStarting={startingId === selectedExam.id}
+								startError={startError}
 								onBack={handleDeselect}
 							/>
 						)}
@@ -258,7 +269,7 @@ function ExamListPage() {
 								key={exam.id}
 								exam={exam}
 								isSelected={selectedId === exam.id}
-								onSelect={() => setSelectedId(exam.id)}
+								onSelect={() => handleSelect(exam.id)}
 								compact={false}
 							/>
 						))}
@@ -277,6 +288,7 @@ function ExamListPage() {
 								exam={selectedExam}
 								onStart={handleStart}
 								isStarting={startingId === selectedExam.id}
+								startError={startError}
 								onBack={handleDeselect}
 							/>
 						</div>

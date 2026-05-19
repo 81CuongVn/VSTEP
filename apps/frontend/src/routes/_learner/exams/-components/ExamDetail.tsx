@@ -12,11 +12,13 @@ function ExamDetail({
 	onStart,
 	isStarting,
 	onBack,
+	startError,
 }: {
 	exam: Exam
 	onStart: () => void
 	isStarting: boolean
 	onBack: () => void
+	startError?: string | null
 }) {
 	const bp = getBlueprint(exam)
 	const duration = getDuration(exam)
@@ -92,6 +94,12 @@ function ExamDetail({
 					})}
 				</div>
 			</div>
+
+			{startError && (
+				<p className="mb-3 rounded-xl bg-destructive/10 px-4 py-2 text-sm text-destructive">
+					{startError}
+				</p>
+			)}
 
 			{/* Start button */}
 			<Button
