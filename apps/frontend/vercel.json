@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://api.vstep.hamhochoi.com/api/$1"
+      "destination": "http://5.223.87.142:8000/api/$1"
     },
     {
       "source": "/(.*)",

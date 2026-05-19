@@ -1,0 +1,101 @@
+{
+  "version": "1.0",
+  "description": "GitNoise configuration to prevent secrets from being committed",
+  "rules": [
+    {
+      "name": "Environment Files",
+      "description": "Prevent .env files from being committed",
+      "pattern": "(?:^|/)\\.(env|env\\.\\w+)$",
+      "severity": "error",
+      "message": "❌ SECURITY: .env files contain secrets and must not be committed. Use .env.example instead."
+    },
+    {
+      "name": "Database Credentials",
+      "description": "Detect database connection strings with credentials",
+      "pattern": "(?:postgresql|mysql|mongodb)://[^:]+:[^@]+@",
+      "severity": "error",
+      "message": "❌ SECURITY: Database credentials detected. Store in environment variables, not in code."
+    },
+    {
+      "name": "API Keys",
+      "description": "Detect common API key patterns",
+      "pattern": "(?:api[_-]?key|apikey|api_secret|secret_key|access_key|secret_access_key)\\s*[=:]\\s*['\"]?[a-zA-Z0-9_\\-]{20,}['\"]?",
+      "severity": "error",
+      "message": "❌ SECURITY: API key detected. Store in environment variables, not in code."
+    },
+    {
+      "name": "JWT Secrets",
+      "description": "Detect JWT secret patterns",
+      "pattern": "(?:jwt[_-]?secret|jwt_key|jwtSecret)\\s*[=:]\\s*['\"]?[a-zA-Z0-9_\\-]{20,}['\"]?",
+      "severity": "error",
+      "message": "❌ SECURITY: JWT secret detected. Store in environment variables, not in code."
+    },
+    {
+      "name": "AWS Credentials",
+      "description": "Detect AWS access keys and secrets",
+      "pattern": "(?:AKIA[0-9A-Z]{16}|aws_secret_access_key|AWS_SECRET_ACCESS_KEY)\\s*[=:]",
+      "severity": "error",
+      "message": "❌ SECURITY: AWS credentials detected. Store in environment variables, not in code."
+    },
+    {
+      "name": "Azure Keys",
+      "description": "Detect Azure API keys",
+      "pattern": "(?:azure[_-]?key|azure_speech_key|AZURE_SPEECH_KEY)\\s*[=:]\\s*['\"]?[a-zA-Z0-9]{32,}['\"]?",
+      "severity": "error",
+      "message": "❌ SECURITY: Azure key detected. Store in environment variables, not in code."
+    },
+    {
+      "name": "OpenAI Keys",
+      "description": "Detect OpenAI API keys",
+      "pattern": "(?:sk-[a-zA-Z0-9]{20,}|openai[_-]?api[_-]?key|OPENAI_API_KEY)\\s*[=:]",
+      "severity": "error",
+      "message": "❌ SECURITY: OpenAI key detected. Store in environment variables, not in code."
+    },
+    {
+      "name": "Redis URLs",
+      "description": "Detect Redis connection strings with credentials",
+      "pattern": "redis://[^:]+:[^@]+@",
+      "severity": "error",
+      "message": "❌ SECURITY: Redis credentials detected. Store in environment variables, not in code."
+    },
+    {
+      "name": "Private Keys",
+      "description": "Detect private key files",
+      "pattern": "(?:-----BEGIN (?:RSA |DSA |EC )?PRIVATE KEY|private[_-]?key|privateKey)",
+      "severity": "error",
+      "message": "❌ SECURITY: Private key detected. Never commit private keys to git."
+    },
+    {
+      "name": "Exposed Secrets in Documentation",
+      "description": "Detect actual secrets in markdown files (not examples)",
+      "pattern": "(?:postgresql|mysql)://(?!user:password@|YOUR_|your_)[^\\s]+:[^\\s@]+@",
+      "severity": "error",
+      "message": "❌ SECURITY: Real database credentials in documentation. Use placeholders like 'user:password@host'."
+    },
+    {
+      "name": "Hardcoded Tokens",
+      "description": "Detect hardcoded authentication tokens",
+      "pattern": "(?:token|auth|bearer)\\s*[=:]\\s*['\"]?(?!YOUR_|your_|example_)[a-zA-Z0-9_\\-\\.]{20,}['\"]?",
+      "severity": "warning",
+      "message": "⚠️ WARNING: Possible hardcoded token. Verify this is not a secret."
+    }
+  ],
+  "allowedPatterns": [
+    "^\\.env\\.example$",
+    "^DEPLOYMENT_GUIDE\\.md$",
+    "^README\\.md$",
+    "^CLAUDE\\.md$",
+    "^docs/",
+    "^apps/backend-v2/\\.env\\.example$",
+    "^apps/frontend/\\.env\\.example$"
+  ],
+  "excludePaths": [
+    "node_modules/",
+    "vendor/",
+    ".git/",
+    "dist/",
+    "build/",
+    ".venv/",
+    "venv/"
+  ]
+}

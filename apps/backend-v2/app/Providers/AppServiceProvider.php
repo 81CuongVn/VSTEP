@@ -54,7 +54,7 @@ class AppServiceProvider extends ServiceProvider
     private function seedDatabase(): void
     {
         try {
-            $this->command->call('db:seed', ['--class' => 'Database\Seeders\DatabaseSeeder']);
+            \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'Database\Seeders\DatabaseSeeder']);
         } catch (\Exception $e) {
             \Log::warning('Database seeding failed: ' . $e->getMessage());
         }
