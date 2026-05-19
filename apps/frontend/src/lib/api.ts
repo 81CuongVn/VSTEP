@@ -9,10 +9,7 @@ import type { AuthUser, LoginResponse, RegisterResponse } from "@/types/api"
 
 const DEFAULT_API_URL = import.meta.env.PROD ? "" : "http://localhost:8000"
 const CONFIGURED_API_URL = import.meta.env.VITE_API_URL?.trim().replace(/\/+$/, "")
-const API_URL =
-	import.meta.env.PROD && CONFIGURED_API_URL === "https://vstep.onrender.com"
-		? DEFAULT_API_URL
-		: CONFIGURED_API_URL || DEFAULT_API_URL
+const API_URL = CONFIGURED_API_URL || DEFAULT_API_URL
 
 function normalizeApiBaseUrl(rawUrl: string): string {
 	return rawUrl.replace(/\/+$/, "").replace(/\/api(?:\/v1)?$/, "")
